@@ -49,7 +49,10 @@ abstract class Model
      * 
      * It can be a one dimensional array of strings, where each string is the 
      * name of a column in the db table associated with this model.
-     * e.g. ['id', 'title', 'body', ....]
+     * 
+     * Eg.for a table posts associated with this model this array could look like 
+     * 
+     *  ['id', 'title', 'body', ....]
      * 
      * OR
      * 
@@ -57,7 +60,8 @@ abstract class Model
      * column in the db table associated with this model and the value is an
      * array containing more data about the column (it's up to the implementer
      * of this class to decide what the structure of the metadata array will be).
-     * e.g.
+     * 
+     * Eg.for a table posts associated with this model this array could look like 
      *  [
      *      'id' => ['type'=>int, 'size'=>10, 'notnull'=>true, ... ],
      *      'title' => ['type'=>varchar, 'size'=>255, 'notnull'=>true, ... ],
@@ -65,6 +69,73 @@ abstract class Model
      *      ......................,
      *      ......................
      *  ]
+     * 
+     * In both cases above, it will be trivial to implement a getColumnNames()
+     * method that returns an array of column names for this Model using code 
+     * like this:
+     * 
+     * if( $this->_table_cols itself is not empty ) {
+     * 
+     *      if( $this->_table_cols has numeric keys ) {
+     *          
+     *          return $this->_table_cols;
+     * 
+     *      } else {
+     *          
+     *          //the keys are non-numeric and must be strings that represent
+     *          //the column names we're looking for
+     *          
+     *          return array_keys($this->_table_cols);
+     *      }
+     * }
+     * 
+     * It is strongly recommended that the users of this class should stick to 
+     * populating this array strictly as a one-dimensional array or strictly as 
+     * a two-dimensional array as defined above. Definitions like the one below 
+     * should either be rejected (an exception could be thrown) or corrected (by 
+     * implementers of this class in parts of their code that accesses 
+     * $this->_table_cols).
+     * 
+     * Bad Definition:
+     * [
+     *      'id',
+     *      'title'=>['type'=>varchar, 'size'=>255, 'notnull'=>true, ... ],
+     *      'body',
+     *      .......
+     * ]
+     * 
+     * Solution
+     * 1. Throw an exception stating that $this->_table_cols has missing metadata
+     *    for the 'id' and 'body' columns.
+     * 
+     * 2. Correct by either converting $this->_table_cols to a one-dimensional
+     *    array or a two-dimensional array like below:
+     * 
+     *    One-dimensional (meta-data for 'title' is discarded):
+     * 
+     *      ['id', 'title', 'body', ....]
+     * 
+     *    Two-dimensional (dummy meta-data is added for 'id' and 'body'):
+     * 
+     *      [
+     *         'id' => ['type'=>'', 'size'=>'', 'notnull'=>'', ... ],
+     *         'title' => ['type'=>varchar, 'size'=>255, 'notnull'=>true, ... ],
+     *         'body' => ['type'=>'', 'size'=>'', 'notnull'=>'', ... ],,
+     *         ......................,
+     *         ......................
+     *      ]
+     * 
+     * Solution 1, seems to be the best way to go since it involves less code 
+     * and would force consumers of implementations of this class to get into
+     * the habit of properly populating $this->_table_cols in the recommended
+     * formats (1-d or 2-d).
+     * 
+     * 
+     * Aura.SqlSchema (https://github.com/auraphp/Aura.SqlSchema , 
+     * https://packagist.org/packages/aura/sqlschema ) is a php package that can 
+     * be easily used to populate $this->_table_cols. 
+     * Db schema meta-data could also easily be queried using the PDO object 
+     * available via $this->getPDO().
      * 
      * @var aray
      */
