@@ -10,8 +10,8 @@ namespace GDAO;
  * created via the Model.
  * 
  * Users of any implementation of this API should not be directly instantiating 
- * new Collections or Records they should be doing this by calling the appropriate
- * implementation of
+ * new Collections or Records via their constructors, instead they should create
+ * them by calling the appropriate implementation of
  * \GDAO\Model::createCollection(..) or \GDAO\Model::createRecord(..)
  * 
  * 
@@ -26,10 +26,52 @@ namespace GDAO;
  */
 abstract class Model
 {
-    protected $_primary_col = 'id';                     //The column name for the 
-    //primary key; default is 'id'.
+    /**
+     * 
+     * Name of the primary key column in the db table associated with this model
+     * Default is 'id'.
+     * 
+     * @var string
+     */
+    protected $_primary_col = 'id';
+    
+    /**
+     *
+     * Name of the db table associated with this model
+     * 
+     * @var string
+     */
+    protected $_table_name = null;
 
     /**
+     *
+     * Array of column information for the db table associated with this model.
+     * 
+     * It can be a one dimensional array of strings, where each string is the 
+     * name of a column in the db table associated with this model.
+     * e.g. ['id', 'title', 'body', ....]
+     * 
+     * OR
+     * 
+     * It can be a two dimensional array where the each key is a name of a 
+     * column in the db table associated with this model and the value is an
+     * array containing more data about the column (it's up to the implementer
+     * of this class to decide what the structure of the metadata array will be).
+     * e.g.
+     *  [
+     *      'id' => ['type'=>int, 'size'=>10, 'notnull'=>true, ... ],
+     *      'title' => ['type'=>varchar, 'size'=>255, 'notnull'=>true, ... ],
+     *      'body' => ['type'=>text, 'size'=>null, 'notnull'=>true, ... ],
+     *      ......................,
+     *      ......................
+     *  ]
+     * 
+     * @var aray
+     */
+    protected $_table_cols = array();
+
+    /**
+     * 
      * Name of the collection class for this model. 
      * Must be a descendant of \GDAO\Model\Collection
      * 
@@ -38,6 +80,7 @@ abstract class Model
     protected $_collection_class_name = null;
 
     /**
+     * 
      * Name of the record class for this model. 
      * Must be a descendant of \GDAO\Model\Record
      * 
@@ -45,9 +88,6 @@ abstract class Model
      */
     protected $_record_class_name = null;
 
-    protected $_table_name = null;                      //The table name.
-
-    protected $_table_cols = array();                   //The column specification 
     //array for all columns 
     //in this table
 
