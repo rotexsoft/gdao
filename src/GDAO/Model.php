@@ -73,32 +73,32 @@ abstract class Model
      *
      * 2-dimensional array defining Has-One relationships
      * 
-            --------------------------
-            |         posts          |
-            --------------------------
-            ||=======||--------|-----|
-            ||post_id||........|title|
-            ||=======||--------|-----|
-            --------------------------
-                ||
-                ||
-                ||
-               VVVV
-            ---------------------------------
-            |           summaries           |
-            ---------------------------------
-            ||=========||--------|----------|
-            ||s_post_id||........|view_count|
-            ||=========||--------|----------|
-            ---------------------------------
-
-            NOTE: the post_id column in the posts table is an auto-incrementing 
-            integer primary key.
-
-            NOTE: the summaries table does not have a primary key. 
-            There should be a unique index on its s_post_id column to 
-            enforce the rule that a post can have only one summary
-            and to also improve query performance.
+     *      --------------------------
+     *      |         posts          |
+     *      --------------------------
+     *      ||=======||--------|-----|
+     *      ||post_id||........|title|
+     *      ||=======||--------|-----|
+     *      --------------------------
+     *          ||
+     *          ||
+     *          ||
+     *         VVVV
+     *      ---------------------------------
+     *      |           summaries           |
+     *      ---------------------------------
+     *      ||=========||--------|----------|
+     *      ||s_post_id||........|view_count|
+     *      ||=========||--------|----------|
+     *      ---------------------------------
+     *     
+     *      NOTE: the post_id column in the posts table is an auto-incrementing 
+     *      integer primary key.
+     *     
+     *      NOTE: the summaries table does not have a primary key. 
+     *      There should be a unique index on its s_post_id column to 
+     *      enforce the rule that a post can have only one summary
+     *      and to also improve query performance.
      * 
      * Inside the model with \GDAO\Model->_table_name === 'posts'
      * 
@@ -124,31 +124,31 @@ abstract class Model
      *
      * 2-dimensional array defining Has-Many relationships
      * 
-            --------------------------
-            |         posts          |
-            --------------------------
-            ||=======||--------|-----|
-            ||post_id||........|title|
-            ||=======||--------|-----|
-            --------------------------
-                ||
-                ||
-                ==============
-                            ||
-                           VVVV
-            --------------------------------------------
-            |                comments                  |
-            --------------------------------------------
-            |----------||=========||--------|----------|
-            |comment_id||c_post_id||........|   body   |
-            |----------||=========||--------|----------|
-            --------------------------------------------
-
-            NOTE: the post_id column in the posts table is an
-            auto-incrementing integer primary key.
-
-            NOTE: the comment_id column in the comments table is an
-            auto-incrementing integer primary key.
+     *      --------------------------
+     *      |         posts          |
+     *      --------------------------
+     *      ||=======||--------|-----|
+     *      ||post_id||........|title|
+     *      ||=======||--------|-----|
+     *      --------------------------
+     *          ||
+     *          ||
+     *          ==============
+     *                      ||
+     *                     VVVV
+     *      --------------------------------------------
+     *      |                comments                  |
+     *      --------------------------------------------
+     *      |----------||=========||--------|----------|
+     *      |comment_id||c_post_id||........|   body   |
+     *      |----------||=========||--------|----------|
+     *      --------------------------------------------
+     *     
+     *      NOTE: the post_id column in the posts table is an
+     *      auto-incrementing integer primary key.
+     *     
+     *      NOTE: the comment_id column in the comments table is an
+     *      auto-incrementing integer primary key.
      * 
      * Inside the model with \GDAO\Model->_table_name === 'posts'
      * 
@@ -174,31 +174,31 @@ abstract class Model
      *
      * 2-dimensional array defining Belongs-To relationships
      * 
-            ---------------------------
-            |         authors         |
-            ---------------------------
-            ||=========||--------|----|
-            ||author_id||........|name|
-            ||=========||--------|----|
-            ---------------------------
-                ||
-                ||
-                =============
-                           ||
-                          VVVV
-            --------------------------------------
-            |                posts               |
-            --------------------------------------
-            |-------||===========||--------|-----|
-            |post_id||p_author_id||........|title|
-            |-------||===========||--------|-----|
-            --------------------------------------
-
-            NOTE: the author_id column in the authors table is an
-            auto-incrementing integer primary key.
-
-            NOTE: the post_id column in the posts table is an
-            auto-incrementing integer primary key.
+     *      ---------------------------
+     *      |         authors         |
+     *      ---------------------------
+     *      ||=========||--------|----|
+     *      ||author_id||........|name|
+     *      ||=========||--------|----|
+     *      ---------------------------
+     *          ||
+     *          ||
+     *          =============
+     *                     ||
+     *                    VVVV
+     *      --------------------------------------
+     *      |                posts               |
+     *      --------------------------------------
+     *      |-------||===========||--------|-----|
+     *      |post_id||p_author_id||........|title|
+     *      |-------||===========||--------|-----|
+     *      --------------------------------------
+     *     
+     *      NOTE: the author_id column in the authors table is an
+     *      auto-incrementing integer primary key.
+     *     
+     *      NOTE: the post_id column in the posts table is an
+     *      auto-incrementing integer primary key.
      * 
      * Inside the model with \GDAO\Model->_table_name === 'posts'
      * 
@@ -223,35 +223,35 @@ abstract class Model
     /**
      *
      * 2-dimensional array defining Has-Many-Through relationships
-     * 
-            --------------------------  ------------------------
-            |         posts          |  |         tags         |
-            --------------------------  ------------------------
-            ||=======||--------|-----|  ||======||--------|----|
-            ||post_id||........|title|  ||tag_id||........|name|
-            ||=======||--------|-----|  ||======||--------|----|
-            --------------------------  ------------------------
-                 ||                          ||
-                 ||                          ||
-                 =================           ||
-                                ||           ||
-                               VVVV         VVVV
-            -------------------------------------------
-            |              posts_tags                 |
-            -------------------------------------------
-            |-------------||============||===========||
-            |posts_tags_id||psts_post_id||psts_tag_id||
-            |-------------||============||===========||
-            -------------------------------------------
-
-            NOTE: the post_id column in the posts table is an
-            auto-incrementing integer primary key.
-
-            NOTE: the tag_id column in the tags table is an
-            auto-incrementing integer primary key.
-
-            NOTE: the posts_tags_id column in the posts_tags 
-            table is an auto-incrementing integer primary key. 
+     *     
+     *      --------------------------  ------------------------
+     *      |         posts          |  |         tags         |
+     *      --------------------------  ------------------------
+     *      ||=======||--------|-----|  ||======||--------|----|
+     *      ||post_id||........|title|  ||tag_id||........|name|
+     *      ||=======||--------|-----|  ||======||--------|----|
+     *      --------------------------  ------------------------
+     *           ||                          ||
+     *           ||                          ||
+     *           =================           ||
+     *                          ||           ||
+     *                         VVVV         VVVV
+     *      -------------------------------------------
+     *      |              posts_tags                 |
+     *      -------------------------------------------
+     *      |-------------||============||===========||
+     *      |posts_tags_id||psts_post_id||psts_tag_id||
+     *      |-------------||============||===========||
+     *      -------------------------------------------
+     *     
+     *      NOTE: the post_id column in the posts table is an
+     *      auto-incrementing integer primary key.
+     *     
+     *      NOTE: the tag_id column in the tags table is an
+     *      auto-incrementing integer primary key.
+     *     
+     *      NOTE: the posts_tags_id column in the posts_tags 
+     *      table is an auto-incrementing integer primary key. 
      * 
      * Inside the model with \GDAO\Model->_table_name === 'posts'
      * 
@@ -277,8 +277,7 @@ abstract class Model
      */
     protected static $_has_many_through_relationships = array();
 
-
-
+    
     /**
      * 
      * @param type $dsn
@@ -289,7 +288,6 @@ abstract class Model
      * 
      * @see PDO::__construct(...) for definition of first four parameters
      */
-
     public function __construct(
         $dsn = '',
         $username = '', 
