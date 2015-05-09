@@ -3,26 +3,15 @@
 namespace GDAO;
 
 /**
- * Assumptions with this API. 
- * DB has a single auto-incrementing numeric primary key column 
+ * An abstract Model class that can be extended to create a Model class that 
+ * performs data Creation, Retrieval, Update and Deletion operations on an sql
+ * data-source.
  * 
- * This API is architected with the intent of having Records and Collections 
- * created via the Model.
+ * Support for other data-sources like xml, csv, no-SQL, etc. may be added in 
+ * the future. 
  * 
- * Users of any implementation of this API should not be directly instantiating 
- * new Collections or Records via their constructors, instead they should create
- * them by calling the appropriate implementation of
- * \GDAO\Model::createCollection(..) or \GDAO\Model::createRecord(..)
- * 
- * 
-// Relationships should be handled using __call and/or __get at the Record level
-// Need to add mechanism for paging, e.g. limit and offset in mysql.
- */
-
-/**
- * Description of Model
- *
- * @author aadegbam
+ * @author Rotimi Adegbamigbe
+ * @copyright (c) 2015, Rotimi Adegbamigbe
  */
 abstract class Model
 {
@@ -30,6 +19,8 @@ abstract class Model
      * 
      * Name of the primary key column in the db table associated with this model
      * Default is 'id'.
+     * 
+     * This is a REQUIRED field & must be properly set by consumers of this class
      * 
      * @var string
      */
@@ -39,6 +30,8 @@ abstract class Model
      *
      * Name of the db table associated with this model
      * 
+     * This is a REQUIRED field & must be properly set by consumers of this class
+     * 
      * @var string
      */
     protected $_table_name = null;
@@ -46,6 +39,10 @@ abstract class Model
     /**
      *
      * Array of column information for the db table associated with this model.
+     * 
+     * This is an OPTIONAL field & may be set by consumers of this class or
+     * auto-populated by implementers of this class preferably inside the
+     * constructor.
      * 
      * It can be a one dimensional array of strings, where each string is the 
      * name of a column in the db table associated with this model.
@@ -130,7 +127,6 @@ abstract class Model
      * the habit of properly populating $this->_table_cols in the recommended
      * formats (1-d or 2-d).
      * 
-     * 
      * Aura.SqlSchema (https://github.com/auraphp/Aura.SqlSchema , 
      * https://packagist.org/packages/aura/sqlschema ) is a php package that can 
      * be easily used to populate $this->_table_cols. 
@@ -146,6 +142,15 @@ abstract class Model
      * Name of the collection class for this model. 
      * Must be a descendant of \GDAO\Model\Collection
      * 
+     * This is an OPTIONAL field & may be set by consumers of this class if they
+     * would be calling methods of this class that either return instance(s) of
+     * \GDAO\Model\Collection or its descendants or accepts \GDAO\Model\Collection 
+     * or its descendants as parameters.
+     * 
+     * Implementers of this class should check that $this->_collection_class_name 
+     * has a valid value before attempting to use it inside method(s) they are 
+     * implementing.
+     * 
      * @var string 
      */
     protected $_collection_class_name = null;
@@ -155,34 +160,90 @@ abstract class Model
      * Name of the record class for this model. 
      * Must be a descendant of \GDAO\Model\Record
      * 
+     * This is a REQUIRED field & must be properly set by consumers of this class
+     * 
      * @var string 
      */
     protected $_record_class_name = null;
 
-    //array for all columns 
-    //in this table
-
+    /**
+     *
+     * Name of a column in the db table associated with this model that is used
+     * to keep track of the time when a row of data was initially inserted into
+     * a db table. 
+     * 
+     * The column whose name is assigned to $this->_created_timestamp_column_name
+     * should be of a timestamp data-type (i.e. it must be able to store day,
+     * month, year, hour, minute and second information. Eg. DATETIME / TIMESTAMP 
+     * in MySQL, timestamp in Postgresql, datetime2 / datetimeoffset in MSSqlServer).
+     * 
+     * This is an OPTIONAL field & may be set by consumers of this class if the 
+     * db table associated with this model has a column that satisfies the 
+     * definitions above.
+     * 
+     * The value of this field can be used by implementers of this class to 
+     * implement functionality that automatically updates the db column that
+     * tracks the time a row of data was initially inserted into a db table.
+     * 
+     * 
+     * @var string
+     */
     protected $_created_timestamp_column_name = null;   //string
 
+    /**
+     *
+     * Name of a column in the db table associated with this model that is used
+     * to keep track of the time when a row of data was last updated in a db 
+     * table.
+     * 
+     * The column whose name is assigned to $this->_created_timestamp_column_name
+     * should be of a timestamp data-type (i.e. it must be able to store day,
+     * month, year, hour, minute and second information. Eg. DATETIME / TIMESTAMP 
+     * in MySQL, timestamp in Postgresql, datetime2 / datetimeoffset in MSSqlServer).
+     * 
+     * This is an OPTIONAL field & may be set by consumers of this class if the 
+     * db table associated with this model has a column that satisfies the 
+     * definitions above.
+     * 
+     * The value of this field can be used by implementers of this class to 
+     * implement functionality that automatically updates the db column that
+     * tracks the time a row of data was last updated in a db table.
+     * 
+     * @var string
+     */
     protected $_updated_timestamp_column_name = null;   //string
     
-    //Arrays for modeling relationships
-    //Four types of relationships supported
-    // - One-To-One (e.g. One Post has exactly One Summary) a.k.a Has-One
-    // - One-To-Many (e.g. One Post has Many Comments) a.k.a Has-Many
-    // - Many-To-One (e.g. Many Posts belong to One Author) a.k.a Belongs-To
-    // - Many-To-Many a.k.a Has-Many-Through 
-    //   (e.g. eg: One Post has Many Tags through the posts_tags table)
-    //
-    // It is up to the individual(s) extending this class to implement
-    // this relationship functionality based on definition structures
-    // outlined below. Things like eager loading and saving related
-    // records are some of the functionalities that can be implemented
-    // using the relationship definitions
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    //* There are 4 arrays below for modeling relationships                  *//
+    //*                                                                      *//
+    //* Four types of relationships supported                                *//
+    //*  - One-To-One (eg. 1 Post has exactly 1 Summary) a.k.a Has-One       *//
+    //*  - One-To-Many (eg. 1 Post has Many Comments) a.k.a Has-Many         *//
+    //*  - Many-To-One (eg. Many Posts belong to 1 Author) a.k.a Belongs-To  *//
+    //*  - Many-To-Many a.k.a Has-Many-Through                               *//
+    //*    (eg. 1 Post has Many Tags through the posts_tags table)           *//
+    //*                                                                      *//
+    //* It is up to the individual(s) extending this class to implement      *//
+    //* this relationship related features based on definition structures    *//
+    //* outlined below. Things like eager loading and saving related         *//
+    //* records are some of the features that can be implemented using       *//
+    //* these relationship definitions.                                      *//
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
     
     /**
      *
      * 2-dimensional array defining Has-One relationships
+     * 
+     * The Implementers of this class can use the definition(s) in 
+     * \GDAO\Model::$_has_one_relationships to implement retrieval of data from
+     * db tables associated with other models related to this model.
+     * 
+     * This is an OPTIONAL field & may be set by consumers of this class if they
+     * want to define Has-One relationship(s) between the current model's db 
+     * table and other models' db table(s) in their application using the 
+     * format described below.
      * 
      *      --------------------------
      *      |         posts          |
@@ -211,21 +272,23 @@ abstract class Model
      *      enforce the rule that a post can have only one summary
      *      and to also improve query performance.
      * 
-     * Inside the model with \GDAO\Model->_table_name === 'posts'
+     * To specify that a model with a \GDAO\Model->_table_name value of 
+     * 'posts' has one summary for each post record (based on the schema above),
+     * modify \GDAO\Model::$_has_one_relationships like below:
      * 
-     * Structure
-     * [
-     *    'summary' => //has_one relation name preferably in singular form
+     * \GDAO\Model::$_has_one_relationships['summary'] = 
      *      [
      *          'my_models_table' => 'posts',
      *          'foreign_key_col_in_my_models_table' => 'post_id',
      *          
      *          'foreign_models_table' => 'summaries',
-     *          'foreign_key_col_in_foreign_models_table' => 's_post_id',
-     *      ],
-     *      .......,
-     *      .......
-     * ]
+     *          'foreign_key_col_in_foreign_models_table' => 's_post_id'
+     *      ]
+     * 
+     * NOTE: the array key value 'summary' is a relation name that can be used to 
+     * later access this particular relationship definiton. Any value can be used 
+     * to name a relationship (but it is recommended that it should not be a name 
+     * of an existing column in the current model's db table)
      * 
      * @var array
      */
@@ -234,6 +297,15 @@ abstract class Model
     /**
      *
      * 2-dimensional array defining Has-Many relationships
+     * 
+     * The Implementers of this class can use the definition(s) in 
+     * \GDAO\Model::$_has_many_relationships to implement retrieval of data from
+     * db tables associated with other models related to this model.
+     * 
+     * This is an OPTIONAL field & may be set by consumers of this class if they
+     * want to define Has-Many relationship(s) between the current model's db 
+     * table and other models' db table(s) in their application using the 
+     * format described below.
      * 
      *      --------------------------
      *      |         posts          |
@@ -260,22 +332,24 @@ abstract class Model
      *     
      *      NOTE: the comment_id column in the comments table is an
      *      auto-incrementing integer primary key.
+     *
+     * To specify that a model with a \GDAO\Model->_table_name value of 
+     * 'posts' has many comments for each post record (based on the schema above),
+     * modify \GDAO\Model::$_has_many_relationships like below:
      * 
-     * Inside the model with \GDAO\Model->_table_name === 'posts'
-     * 
-     * Structure
-     * [
-     *    'comments' => //has_many relation name preferably in plural form
+     * \GDAO\Model::$_has_many_relationships['comments'] = 
      *      [
      *          'my_models_table' => 'posts',
      *          'foreign_key_col_in_my_models_table' => 'post_id',
      *          
      *          'foreign_models_table' => 'comments',
-     *          'foreign_key_col_in_foreign_models_table' => 'c_post_id',
-     *      ],
-     *      .......,
-     *      .......
-     * ]
+     *          'foreign_key_col_in_foreign_models_table' => 'c_post_id'
+     *      ]
+     * 
+     * NOTE: the array key value 'comments' is a relation name that can be used to 
+     * later access this particular relationship definiton. Any value can be used 
+     * to name a relationship (but it is recommended that it should not be a name 
+     * of an existing column in the current model's db table)
      * 
      * @var array
      */
@@ -284,6 +358,15 @@ abstract class Model
     /**
      *
      * 2-dimensional array defining Belongs-To relationships
+     * 
+     * The Implementers of this class can use the definition(s) in 
+     * \GDAO\Model::$_belongs_to_relationships to implement retrieval of data 
+     * from db tables associated with other models related to this model.
+     * 
+     * This is an OPTIONAL field & may be set by consumers of this class if they
+     * want to define Belongs-To relationship(s) between the current model's db 
+     * table and other models' db table(s) in their application using the format 
+     * described below.
      * 
      *      ---------------------------
      *      |         authors         |
@@ -311,21 +394,23 @@ abstract class Model
      *      NOTE: the post_id column in the posts table is an
      *      auto-incrementing integer primary key.
      * 
-     * Inside the model with \GDAO\Model->_table_name === 'posts'
+     * To specify that a model with a \GDAO\Model->_table_name value of 
+     * 'posts' has each of its post records belonging to one author (based on 
+     * the schema above), modify \GDAO\Model::$_belongs_to_relationships like below:
      * 
-     * Structure
-     * [
-     *    'author' => //belongs_to relation name preferably in singular form
+     * \GDAO\Model::$_belongs_to_relationships['author'] = 
      *      [
      *          'my_models_table' => 'posts',
      *          'foreign_key_col_in_my_models_table' => 'p_author_id',
      *          
      *          'foreign_models_table' => 'authors',
      *          'foreign_key_col_in_foreign_models_table' => 'author_id',
-     *      ],
-     *      .......,
-     *      .......
-     * ]
+     *      ]
+     * 
+     * NOTE: the array key value 'author' is a relation name that can be used to 
+     * later access this particular relationship definiton. Any value can be used 
+     * to name a relationship (but it is recommended that it should not be a name 
+     * of an existing column in the current model's db table)
      * 
      * @var array
      */
@@ -334,6 +419,15 @@ abstract class Model
     /**
      *
      * 2-dimensional array defining Has-Many-Through relationships
+     * 
+     * The Implementers of this class can use the definition(s) in 
+     * \GDAO\Model::$_has_many_through_relationships to implement retrieval of 
+     * data from db tables associated with other models related to this model.
+     * 
+     * This is an OPTIONAL field & may be set by consumers of this class if they
+     * want to define Has-Many-Through relationship(s) between the current model's 
+     * db table and other models' db table(s) in their application using the format 
+     * described below.
      *     
      *      --------------------------  ------------------------
      *      |         posts          |  |         tags         |
@@ -364,11 +458,12 @@ abstract class Model
      *      NOTE: the posts_tags_id column in the posts_tags 
      *      table is an auto-incrementing integer primary key. 
      * 
-     * Inside the model with \GDAO\Model->_table_name === 'posts'
+     * To specify that a model with a \GDAO\Model->_table_name value of 
+     * 'posts' has many tags for each post record through a join table called
+     * posts_tags (based on the schema above), modify 
+     * \GDAO\Model::$_has_many_through_relationships like below:
      * 
-     * Structure
-     * [
-     *    'tags' => //has_many_through relation name preferably in plural form
+     * \GDAO\Model::$_has_many_through_relationships['tags'] = 
      *      [
      *          'my_models_table' => 'posts',
      *          'col_in_my_models_table_linked_to_join_table' => 'post_id',
@@ -379,10 +474,13 @@ abstract class Model
      *
      *          'foreign_models_table' => 'tags',
      *          'col_in_foreign_models_table_linked_to_join_table' => 'tag_id',
-     *      ],
-     *      .......,
-     *      .......
-     * ]
+     *      ]
+     * 
+     * NOTE: the array key value 'tags' is a relation name that can be used to 
+     * later access this particular relationship definiton. Any value can be used 
+     * to name a relationship (but it is recommended that it should not be a name 
+     * of an existing column in the current model's db table)
+     * 
      * 
      * @var array
      */
@@ -391,13 +489,14 @@ abstract class Model
     
     /**
      * 
-     * @param type $dsn
-     * @param type $username
-     * @param type $passwd
-     * @param type $pdo_driver_opts
-     * @param type $extra_opts
+     * @param string $dsn
+     * @param string $username
+     * @param string $passwd
+     * @param array $pdo_driver_opts
+     * @param array $extra_opts an array of other parameters that may be needed 
+     *                          in creating an instance of this class
      * 
-     * @see PDO::__construct(...) for definition of first four parameters
+     * @see \PDO::__construct(...) for definition of first four parameters
      */
     public function __construct(
         $dsn = '',

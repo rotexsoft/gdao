@@ -2,7 +2,7 @@
 
 ## Description
 
-A package containing abstract class definitions that can be used as a basis for a Table Data Gateway-ish (http://bit.ly/1F8Zjfc) implementation of a DB access library that performs data manipulation (DM)  tasks.
+A package containing abstract class definitions that can be used as a basis for a Table Data Gateway-ish (http://bit.ly/1F8Zjfc) implementation of a DB access library that performs data manipulation (DM) tasks.
 It has 3 Main Classes:
 
 * a Model class (it interacts with a DB table by performing DM tasks like Selection, Insertion, Deletion & Updating of data)
@@ -11,8 +11,14 @@ It has 3 Main Classes:
 
 * an optional Collection class (holds multiple Record objects & supports batch operations on Records)
 
+This API is intended to make it easy / trivial to swap out different implementations of each of the Main classes.
+For example, an application may have been written to use a package with ModelYY, CollectionYY and RecordYY.
+In the future if another package implementing this API has a ModelZZ which performs some operations more
+efficiently than ModelYY, you should be able to easily substitute ModelYY with ModelZZ if all your
+data access code strictly adheres to the GDAO API (you would now end up using ModelZZ, CollectionYY 
+and RecordYY in your updated code; which should all work nicely together).
 
-This package isn't meant to perform DB schema management tasks like creating/altering tables, etc. However, it exposes a PDO object (via \GDAO\Model->getPDO()) that can be used to perform such tasks.
+This package isn't meant to perform DB schema management tasks like creating/altering tables, etc. However, it exposes a PDO object (via \GDAO\Model->getPDO()) that can be used to perform such tasks and other data manipulation (DM) tasks that cannot be accomplished via this API.
 
 
 ##  Assumptions and Conventions in this API. 

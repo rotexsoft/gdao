@@ -4,7 +4,8 @@ namespace GDAO\Model;
 /**
  * Description of Record
  *
- * @author aadegbam
+ * @author Rotimi Adegbamigbe
+ * @copyright (c) 2015, Rotimi Adegbamigbe
  */
 abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
 {

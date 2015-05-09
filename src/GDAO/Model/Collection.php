@@ -5,7 +5,8 @@ namespace GDAO\Model;
 /**
  * Description of Collection
  *
- * @author aadegbam
+ * @author Rotimi Adegbamigbe
+ * @copyright (c) 2015, Rotimi Adegbamigbe
  */
 abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
 {
