@@ -12,7 +12,8 @@ It has 3 Main Classes:
 * an optional **Collection** class (holds multiple Record objects & supports batch operations on Records)
 
 This API is intended to make it easy / trivial to swap out different implementations of each of the Main classes.
-For example, an application may have been written to use a package with **ModelYY**, **CollectionYY** and **RecordYY**.
+For example, an application may have been written to use a package that implements this API in the following classes:
+**ModelYY**, **CollectionYY** and **RecordYY**.
 In the future if another package implementing this API has a **ModelZZ** which performs some operations more
 efficiently than **ModelYY**, you should be able to easily substitute **ModelYY** with **ModelZZ** if all your
 data access code strictly adheres to the GDAO API (you would now end up using **ModelZZ**, **CollectionYY** 
