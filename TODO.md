@@ -6,3 +6,7 @@
 * Re-arrange composer dependencies (only composer package needed in GDAO is danielgsims/php-collections )
 
 * Re-implement \Collections\Collection used inside GDAORecordsList in order to sever dependency on danielgsims/php-collections
+
+* Add Model class name as part of the entries to be supplied in the relationship definition arrays
+
+* Change relationship arrays (eg. $_has_many_through_relationships) from static to non-static

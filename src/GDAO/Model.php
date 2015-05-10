@@ -487,6 +487,12 @@ abstract class Model
     protected static $_has_many_through_relationships = array();
 
     
+    protected $_dsn = '';
+    protected $_username = ''; 
+    protected $_passwd = '';
+    protected $_pdo_driver_opts = array();
+    protected $_extra_opts = array();
+    
     /**
      * 
      * @param string $dsn
@@ -505,6 +511,11 @@ abstract class Model
         $pdo_driver_opts = array(),
         $extra_opts = array()
     ) {
+        $this->_dsn = $dsn;
+        $this->_username = $username;
+        $this->_passwd = $passwd;
+        $this->_pdo_driver_opts = $pdo_driver_opts;
+        $this->_extra_opts = $extra_opts;
         $this->_setup();
         
         if( empty($this->_primary_col) || strlen($this->_primary_col) <= 0 ) {
