@@ -237,7 +237,7 @@ abstract class Model
      * 2-dimensional array defining Has-One relationships
      * 
      * The Implementers of this class can use the definition(s) in 
-     * \GDAO\Model::$_has_one_relationships to implement retrieval of data from
+     * \GDAO\Model->_has_one_relationships to implement retrieval of data from
      * db tables associated with other models related to this model.
      * 
      * This is an OPTIONAL field & may be set by consumers of this class if they
@@ -274,9 +274,9 @@ abstract class Model
      * 
      * To specify that a model with a \GDAO\Model->_table_name value of 
      * 'posts' has one summary for each post record (based on the schema above),
-     * modify \GDAO\Model::$_has_one_relationships like below:
+     * modify \GDAO\Model->_has_one_relationships like below:
      * 
-     * \GDAO\Model::$_has_one_relationships['summary'] = 
+     * \GDAO\Model->_has_one_relationships['summary'] = 
      *      [
      *          'my_models_table' => 'posts',
      *          'foreign_key_col_in_my_models_table' => 'post_id',
@@ -292,14 +292,14 @@ abstract class Model
      * 
      * @var array
      */
-    protected static $_has_one_relationships = array();
+    protected $_has_one_relationships = array();
     
     /**
      *
      * 2-dimensional array defining Has-Many relationships
      * 
      * The Implementers of this class can use the definition(s) in 
-     * \GDAO\Model::$_has_many_relationships to implement retrieval of data from
+     * \GDAO\Model->_has_many_relationships to implement retrieval of data from
      * db tables associated with other models related to this model.
      * 
      * This is an OPTIONAL field & may be set by consumers of this class if they
@@ -335,9 +335,9 @@ abstract class Model
      *
      * To specify that a model with a \GDAO\Model->_table_name value of 
      * 'posts' has many comments for each post record (based on the schema above),
-     * modify \GDAO\Model::$_has_many_relationships like below:
+     * modify \GDAO\Model->_has_many_relationships like below:
      * 
-     * \GDAO\Model::$_has_many_relationships['comments'] = 
+     * \GDAO\Model->_has_many_relationships['comments'] = 
      *      [
      *          'my_models_table' => 'posts',
      *          'foreign_key_col_in_my_models_table' => 'post_id',
@@ -353,14 +353,14 @@ abstract class Model
      * 
      * @var array
      */
-    protected static $_has_many_relationships = array();
+    protected $_has_many_relationships = array();
     
     /**
      *
      * 2-dimensional array defining Belongs-To relationships
      * 
      * The Implementers of this class can use the definition(s) in 
-     * \GDAO\Model::$_belongs_to_relationships to implement retrieval of data 
+     * \GDAO\Model->_belongs_to_relationships to implement retrieval of data 
      * from db tables associated with other models related to this model.
      * 
      * This is an OPTIONAL field & may be set by consumers of this class if they
@@ -396,9 +396,9 @@ abstract class Model
      * 
      * To specify that a model with a \GDAO\Model->_table_name value of 
      * 'posts' has each of its post records belonging to one author (based on 
-     * the schema above), modify \GDAO\Model::$_belongs_to_relationships like below:
+     * the schema above), modify \GDAO\Model->_belongs_to_relationships like below:
      * 
-     * \GDAO\Model::$_belongs_to_relationships['author'] = 
+     * \GDAO\Model->_belongs_to_relationships['author'] = 
      *      [
      *          'my_models_table' => 'posts',
      *          'foreign_key_col_in_my_models_table' => 'p_author_id',
@@ -414,14 +414,14 @@ abstract class Model
      * 
      * @var array
      */
-    protected static $_belongs_to_relationships = array();
+    protected $_belongs_to_relationships = array();
     
     /**
      *
      * 2-dimensional array defining Has-Many-Through relationships
      * 
      * The Implementers of this class can use the definition(s) in 
-     * \GDAO\Model::$_has_many_through_relationships to implement retrieval of 
+     * \GDAO\Model->_has_many_through_relationships to implement retrieval of 
      * data from db tables associated with other models related to this model.
      * 
      * This is an OPTIONAL field & may be set by consumers of this class if they
@@ -461,9 +461,9 @@ abstract class Model
      * To specify that a model with a \GDAO\Model->_table_name value of 
      * 'posts' has many tags for each post record through a join table called
      * posts_tags (based on the schema above), modify 
-     * \GDAO\Model::$_has_many_through_relationships like below:
+     * \GDAO\Model->_has_many_through_relationships like below:
      * 
-     * \GDAO\Model::$_has_many_through_relationships['tags'] = 
+     * \GDAO\Model->_has_many_through_relationships['tags'] = 
      *      [
      *          'my_models_table' => 'posts',
      *          'col_in_my_models_table_linked_to_join_table' => 'post_id',
@@ -484,13 +484,60 @@ abstract class Model
      * 
      * @var array
      */
-    protected static $_has_many_through_relationships = array();
+    protected $_has_many_through_relationships = array();
 
-    
+    /**
+     * 
+     * A PDO compliant Data Source Name (DSN) string containing the information 
+     * required to connect to a desired database. 
+     * 
+     * @var string
+     * @see \PDO::__construct() See description of the 1st parameter 
+     *                          (http://php.net/manual/en/pdo.construct.php) if 
+     *                          this Model will indeed be powered by a PDO instance
+     */
     protected $_dsn = '';
+    
+    /**
+     *
+     * The username for the database to be connected to.
+     * 
+     * @var string
+     * @see \PDO::__construct() See description of the 2nd parameter 
+     *                          (http://php.net/manual/en/pdo.construct.php) if 
+     *                          this Model will indeed be powered by a PDO instance
+     */
     protected $_username = ''; 
+    
+    /**
+     *
+     * The password for the database to be connected to.
+     * 
+     * @var string
+     * @see \PDO::__construct() See description of the 3rd parameter 
+     *                          (http://php.net/manual/en/pdo.construct.php) if 
+     *                          this Model will indeed be powered by a PDO instance
+     */
     protected $_passwd = '';
+    
+    /**
+     *
+     * An array of options for a PDO driver
+     * 
+     * @var array
+     * @see \PDO::__construct() See description of the 4th parameter 
+     *                          (http://php.net/manual/en/pdo.construct.php) if 
+     *                          this Model will indeed be powered by a PDO instance
+     */
     protected $_pdo_driver_opts = array();
+    
+    /**
+     *
+     * An array that can be used to pass other parameters that may be needed
+     * in the construction of a new instance of this class.
+     * 
+     * @var array
+     */
     protected $_extra_opts = array();
     
     /**
