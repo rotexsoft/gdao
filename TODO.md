@@ -8,3 +8,7 @@
 * Re-implement \Collections\Collection used inside GDAORecordsList in order to sever dependency on danielgsims/php-collections
 
 * Add Model class name as part of the entries to be supplied in the relationship definition arrays
+
+* Make API usable with tables that do not have a primary key column defined.
+> Remove the phrase **Working on supporting tables that do not have any primary key column defined** from **README.md** once the above task is completed
+> Remove the earlier mentioned phrase from the doc-block of \GDAO\Model->_primary_col

@@ -18,9 +18,10 @@ abstract class Model
     /**
      * 
      * Name of the primary key column in the db table associated with this model
-     * Default is 'id'.
+     * Default value is 'id'.
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
+     * Working on supporting tables that do not have any primary key column defined
      * 
      * @var string
      */
@@ -533,8 +534,12 @@ abstract class Model
     
     /**
      *
-     * An array that can be used to pass other parameters that may be needed
-     * in the construction of a new instance of this class.
+     * An array that can be used to pass other parameters specific to a child 
+     * class extending this class.
+     * 
+     * Eg. this array may be used to pass initialization value(s) for protected
+     * and / or private properties that are defined in this class' subclasses but
+     * not defined in this class.
      * 
      * @var array
      */

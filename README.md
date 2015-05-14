@@ -24,7 +24,8 @@ This package isn't meant to perform DB schema management tasks like creating/alt
 
 ##  Assumptions and Conventions in this API. 
 
-* Each database table has a single auto-incrementing numeric primary key column 
+* Each database table has a single auto-incrementing numeric primary key column (composite primary keys are not supported)
+> Working on supporting tables that do not have any primary key column defined
 
 * This API is architected with the intent of having Records and Collections created via the Model.
 > Users of any implementation of this API should not be directly instantiating new Collections or Records via their constructors, instead they should create them by calling the appropriate implementation of \GDAO\Model::createCollection(..) or \GDAO\Model::createRecord(..).

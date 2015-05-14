@@ -18,3 +18,5 @@ nbproject/
 composer.lock
 
 fuel/app/config/production/migrations.php
+
+file-only-present-on-dev-pc-at-home.txt
