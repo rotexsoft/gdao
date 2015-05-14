@@ -21,7 +21,8 @@ abstract class Model
      * Default value is 'id'.
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
-     * Working on supporting tables that do not have any primary key column defined
+     * 
+     * @todo Working on supporting tables that do not have any primary key column defined
      * 
      * @var string
      */
@@ -48,7 +49,7 @@ abstract class Model
      * It can be a one dimensional array of strings, where each string is the 
      * name of a column in the db table associated with this model.
      * 
-     * Eg.for a table posts associated with this model this array could look like 
+     * Eg. for a table posts associated with this model this array could look like 
      * 
      *  ['id', 'title', 'body', ....]
      * 
@@ -59,7 +60,7 @@ abstract class Model
      * array containing more data about the column (it's up to the implementer
      * of this class to decide what the structure of the metadata array will be).
      * 
-     * Eg.for a table posts associated with this model this array could look like 
+     * Eg. for a table posts associated with this model this array could look like 
      *  [
      *      'id' => ['type'=>int, 'size'=>10, 'notnull'=>true, ... ],
      *      'title' => ['type'=>varchar, 'size'=>255, 'notnull'=>true, ... ],
@@ -72,7 +73,7 @@ abstract class Model
      * method that returns an array of column names for this Model using code 
      * like this:
      * 
-     * if( $this->_table_cols itself is not empty ) {
+     * if( $this->_table_cols is not empty ) {
      * 
      *      if( $this->_table_cols has numeric keys ) {
      *          
@@ -91,7 +92,7 @@ abstract class Model
      * populating this array strictly as a one-dimensional array or strictly as 
      * a two-dimensional array as defined above. Definitions like the one below 
      * should either be rejected (an exception could be thrown) or corrected (by 
-     * implementers of this class in parts of their code that accesses 
+     * implementers of this class in parts of their code that access
      * $this->_table_cols).
      * 
      * Bad Definition:
