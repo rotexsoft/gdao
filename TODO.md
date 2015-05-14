@@ -11,4 +11,8 @@
 
 * Make API usable with tables that do not have a primary key column defined.
 > Remove the phrase **Working on supporting tables that do not have any primary key column defined** from **README.md** once the above task is completed   
-> Also remove the earlier mentioned phrase from the doc-block of \GDAO\Model->_primary_col
+> Remove the earlier mentioned phrase from the doc-block of **\GDAO\Model->_primary_col**   
+> Also change the phrase **This is a REQUIRED field & must be properly set by 
+> consumers of this class** in the doc-block of **\GDAO\Model->_primary_col** to
+> ***This is an OPTIONAL field & must be properly set by consumers of this class**
+
