@@ -22,7 +22,7 @@ abstract class Model
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
-     * @todo Working on supporting tables that do not have any primary key column defined
+     * @todo Work on supporting tables that do not have any primary key column defined
      * 
      * @var string
      */
@@ -57,8 +57,9 @@ abstract class Model
      * 
      * It can be a two dimensional array where the each key is a name of a 
      * column in the db table associated with this model and the value is an
-     * array containing more data about the column (it's up to the implementer
-     * of this class to decide what the structure of the metadata array will be).
+     * array containing more data (meta-data) about the column (it's up to the 
+     * implementer of this class to decide what the structure of the meta-data 
+     * array will be).
      * 
      * Eg. for a table posts associated with this model this array could look like 
      *  [
@@ -198,7 +199,7 @@ abstract class Model
      * to keep track of the time when a row of data was last updated in a db 
      * table.
      * 
-     * The column whose name is assigned to $this->_created_timestamp_column_name
+     * The column whose name is assigned to $this->_updated_timestamp_column_name
      * should be of a timestamp data-type (i.e. it must be able to store day,
      * month, year, hour, minute and second information. Eg. DATETIME / TIMESTAMP 
      * in MySQL, timestamp in Postgresql, datetime2 / datetimeoffset in MSSqlServer).
@@ -227,7 +228,7 @@ abstract class Model
     //*    (eg. 1 Post has Many Tags through the posts_tags table)           *//
     //*                                                                      *//
     //* It is up to the individual(s) extending this class to implement      *//
-    //* this relationship related features based on definition structures    *//
+    //* relationship related features based on the definition structures     *//
     //* outlined below. Things like eager loading and saving related         *//
     //* records are some of the features that can be implemented using       *//
     //* these relationship definitions.                                      *//
@@ -285,12 +286,18 @@ abstract class Model
      *          
      *          'foreign_models_table' => 'summaries',
      *          'foreign_key_col_in_foreign_models_table' => 's_post_id'
+     *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
      *      ]
      * 
      * NOTE: the array key value 'summary' is a relation name that can be used to 
      * later access this particular relationship definiton. Any value can be used 
      * to name a relationship (but it is recommended that it should not be a name 
-     * of an existing column in the current model's db table)
+     * of an existing column in the current model's db table).
+     * 
+     * NOTE: 'foreign_models_class_name' should contain the name of a Model
+     * class whose _table_name property has the same value as
+     * \GDAO\Model->_has_one_relationships['relation_name']['foreign_models_table'].
+     * In the example above 'relation_name' is substituted with 'summary'.
      * 
      * @var array
      */
@@ -346,12 +353,18 @@ abstract class Model
      *          
      *          'foreign_models_table' => 'comments',
      *          'foreign_key_col_in_foreign_models_table' => 'c_post_id'
+     *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
      *      ]
      * 
      * NOTE: the array key value 'comments' is a relation name that can be used to 
      * later access this particular relationship definiton. Any value can be used 
      * to name a relationship (but it is recommended that it should not be a name 
      * of an existing column in the current model's db table)
+     * 
+     * NOTE: 'foreign_models_class_name' should contain the name of a Model
+     * class whose _table_name property has the same value as
+     * \GDAO\Model->_has_many_relationships['relation_name']['foreign_models_table'].
+     * In the example above 'relation_name' is substituted with 'comments'.
      * 
      * @var array
      */
@@ -407,12 +420,18 @@ abstract class Model
      *          
      *          'foreign_models_table' => 'authors',
      *          'foreign_key_col_in_foreign_models_table' => 'author_id',
+     *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
      *      ]
      * 
      * NOTE: the array key value 'author' is a relation name that can be used to 
      * later access this particular relationship definiton. Any value can be used 
      * to name a relationship (but it is recommended that it should not be a name 
      * of an existing column in the current model's db table)
+     * 
+     * NOTE: 'foreign_models_class_name' should contain the name of a Model
+     * class whose _table_name property has the same value as
+     * \GDAO\Model->_belongs_to_relationships['relation_name']['foreign_models_table'].
+     * In the example above 'relation_name' is substituted with 'author'.
      * 
      * @var array
      */
@@ -473,9 +492,11 @@ abstract class Model
      *          'join_table_name' => 'posts_tags',
      *          'col_in_join_table_linked_to_my_models_table' => 'psts_post_id',
      *          'col_in_join_table_linked_to_foreign_models_table' => 'psts_tag_id',
-     *
+     *          'join_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
+     * 
      *          'foreign_models_table' => 'tags',
      *          'col_in_foreign_models_table_linked_to_join_table' => 'tag_id',
+     *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
      *      ]
      * 
      * NOTE: the array key value 'tags' is a relation name that can be used to 
@@ -483,6 +504,18 @@ abstract class Model
      * to name a relationship (but it is recommended that it should not be a name 
      * of an existing column in the current model's db table)
      * 
+     * NOTE: 'foreign_models_class_name' should contain the name of a Model
+     * class whose _table_name property has the same value as
+     * \GDAO\Model->_belongs_to_relationships['relation_name']['foreign_models_table'].
+     * In the example above 'relation_name' is substituted with 'author'.
+     * 
+     * NOTE: 'foreign_models_class_name' should contain the name of a Model
+     * class whose _table_name property has the same value as
+     * \GDAO\Model->_has_many_through_relationships['relation_name']['foreign_models_table'].
+     * 'join_models_class_name' should contain the name of a Model class whose 
+     * _table_name property has the same value as
+     * \GDAO\Model->_has_many_through_relationships['relation_name']['join_table_name'].
+     * In the example above 'relation_name' is substituted with 'tags'.
      * 
      * @var array
      */
@@ -568,8 +601,9 @@ abstract class Model
         $this->_username = $username;
         $this->_passwd = $passwd;
         $this->_pdo_driver_opts = $pdo_driver_opts;
-        $this->_extra_opts = $extra_opts;
-        $this->_setup();
+        $this->_extra_opts = $extra_opts; //values here could be used to populate
+                                          //$this->_table_name and other protected
+                                          //properties
         
         if( empty($this->_primary_col) || strlen($this->_primary_col) <= 0 ) {
             
@@ -583,16 +617,6 @@ abstract class Model
             throw new ModelTableNameNotSetDuringConstructionException($msg);
         }
     }
-
-    /**
-     * 
-     * Model setup. 
-     * Set the properties of this model (like $this->_primary_col) here.
-     * 
-     * @return void
-     * 
-     */
-    protected abstract function _setup();
 
     public function __call($method, $params) {
 

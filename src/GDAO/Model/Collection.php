@@ -21,6 +21,19 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * @var array of \GDAO\Model\Record records
      */
     protected $_data = array();
+    
+    /**
+     *
+     * An array that can be used to pass other parameters specific to a child 
+     * class extending this class.
+     * 
+     * Eg. this array may be used to pass initialization value(s) for protected
+     * and / or private properties that are defined in this class' subclasses but
+     * not defined in this class.
+     * 
+     * @var array
+     */
+    protected $_extra_opts = array();
 
     /**
      * 
@@ -31,9 +44,12 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * $this->_data should be assigned the value of 
      * \GDAO\Model\GDAORecordsList->toArray(). In this case $data->toArray().
      * 
-     * @param \GDAO\Model\GDAORecordsList $data list of 
+     * @param \GDAO\Model\GDAORecordsList $data list of instances of \GDAO\Model\Record
+     * @param array $extra_opts an array of other parameters that may be needed 
+     *                          in creating an instance of this class
+     * 
      */
-	public abstract function __construct(\GDAO\Model\GDAORecordsList $data);
+	public abstract function __construct(\GDAO\Model\GDAORecordsList $data, array $extra_opts=array());
     
 	public abstract function deleteAll();
     // Deletes each record in the collection one-by-one.
