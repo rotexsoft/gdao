@@ -703,9 +703,130 @@ abstract class Model
     /**
      * 
      * Fetch a collection (an instance of GDAO\Model\Collection or any of its 
-     * sub-classes) of records [Eager Loading should be considered here]
+     * sub-classes) of records [Eager Loading should be implemented here]
      * 
-     * @param array $params
+     * @param array $params an array of parameters for the fetch with the keys below
+     * 
+     *  `relations_to_include`
+     *      : (array) An array of relation names as defined in any or all of 
+     *        \GDAO\Model->_has_one_relationships, 
+     *        \GDAO\Model->_has_many_relationships,
+     *        \GDAO\Model->_belongs_to_relationships and 
+     *        \GDAO\Model->_has_many_through_relationships. 
+     *        Eager-fetch related rows of data for each relation name.
+     * 
+     *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
+     *        relation name. Eg. array_keys( $this->_has_one_relationships )
+     *        returns an array of Has-One relation name(s) for a model.
+     *
+     *  `distinct`
+     *      : (bool) True if the DISTINCT keyword should be added to the query, 
+     *        else false if the DISTINCT keyword should be ommitted. 
+     * 
+     *        NOTE: If `distinct` is not set/specified, implementers of this class 
+     *        should give it a default value of false.
+     * 
+     *  `cols`
+     *      : (array) An array of the name(s) of column(s) to be returned. 
+     *        Return only these columns.
+     * 
+     *  `where`
+     *      : (string|array)
+     *        Either a string containing a valid where clause statement (excluding 
+     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
+     * 
+     *        OR an array of parameters for building a WHERE clause, 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *        use:
+     *          [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value
+     *        NOTE: Only question mark place holders allowed in the where clause string.
+     *              That is for the case where `where` is assigned a string value.
+     * 
+     *  `where_bind_values`
+     *      : (array) Values to bind into the query. Only applicable when the 
+     *        value of `where` is a string. Only question mark place holders 
+     *        expected in the where clause string.
+     * 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
+     *        use the array below:
+     *        [
+     *          'where' => ' column_name_1 > ? AND column_name_2 > ? ',
+     *          'where_bind_values'=> [58, 59] 
+     *        ]
+     * 
+     *  `group`
+     *      : (array) An array of the name(s) of column(s) which the results 
+     *        will be grouped by.
+     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
+     *        use the array below:
+     *        [
+     *          'group' => ['column_name_1', 'column_name_2']
+     *        ]
+     * 
+     *  `having`
+     *      : (array) An array of parameters for building a HAVING clause.
+     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        use:
+     *          [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value
+     *    
+     *  `order`
+     *      : (array) an array of parameters for building an ORDER BY clause.
+     *        The keys are the column names and the values are the directions
+     *        of the ORDER BY operation.
+     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC'
+     *        [
+     *          'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *        ]
+     *        
+     *        NOTE: Consumers of an implementation of this class should supply 
+     *        whatever direction value their DB system supports for an ORDER BY 
+     *        clause. Eg. MySQL supports ASC and DESC.
+     * 
+     *  `limit_offset`
+     *  : (int) Limit offset.
+     * 
+     *  `limit_size`
+     *  : (int) Limit to a count of this many records.
+     *
+     * 
      * @return GDAO\Model\Collection
      */
     public function fetchAll($params = array()) {
