@@ -3,6 +3,7 @@
 namespace GDAO;
 
 /**
+ * 
  * An abstract Model class that can be extended to create a Model class that 
  * performs data Creation, Retrieval, Update and Deletion operations on an sql
  * data-source.
@@ -12,6 +13,7 @@ namespace GDAO;
  * 
  * @author Rotimi Adegbamigbe
  * @copyright (c) 2015, Rotimi Adegbamigbe
+ * 
  */
 abstract class Model
 {
@@ -25,6 +27,7 @@ abstract class Model
      * @todo Work on supporting tables that do not have any primary key column defined
      * 
      * @var string
+     * 
      */
     protected $_primary_col = 'id';
     
@@ -35,6 +38,7 @@ abstract class Model
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
      * @var string
+     * 
      */
     protected $_table_name = null;
 
@@ -137,6 +141,7 @@ abstract class Model
      * available via $this->getPDO().
      * 
      * @var aray
+     * 
      */
     protected $_table_cols = array();
 
@@ -154,7 +159,8 @@ abstract class Model
      * has a valid value before attempting to use it inside method(s) they are 
      * implementing.
      * 
-     * @var string 
+     * @var string
+     * 
      */
     protected $_collection_class_name = null;
 
@@ -165,7 +171,8 @@ abstract class Model
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
-     * @var string 
+     * @var string
+     * 
      */
     protected $_record_class_name = null;
 
@@ -188,8 +195,8 @@ abstract class Model
      * implement functionality that automatically updates the db column that
      * tracks the time a row of data was initially inserted into a db table.
      * 
-     * 
      * @var string
+     * 
      */
     protected $_created_timestamp_column_name = null;   //string
 
@@ -213,6 +220,7 @@ abstract class Model
      * tracks the time a row of data was last updated in a db table.
      * 
      * @var string
+     * 
      */
     protected $_updated_timestamp_column_name = null;   //string
     
@@ -268,12 +276,12 @@ abstract class Model
      *      ---------------------------------
      *     
      *      NOTE: the post_id column in the posts table is an auto-incrementing 
-     *      integer primary key.
+     *            integer primary key.
      *     
      *      NOTE: the summaries table does not have a primary key. 
-     *      There should be a unique index on its s_post_id column to 
-     *      enforce the rule that a post can have only one summary
-     *      and to also improve query performance.
+     *            There should be a unique index on its s_post_id column to 
+     *            enforce the rule that a post can have only one summary and to 
+     *            also improve query performance.
      * 
      * To specify that a model with a \GDAO\Model->_table_name value of 
      * 'posts' has one summary for each post record (based on the schema above),
@@ -290,16 +298,17 @@ abstract class Model
      *      ]
      * 
      * NOTE: the array key value 'summary' is a relation name that can be used to 
-     * later access this particular relationship definiton. Any value can be used 
-     * to name a relationship (but it is recommended that it should not be a name 
-     * of an existing column in the current model's db table).
+     *       later access this particular relationship definiton. Any value can 
+     *       be used to name a relationship (but it is recommended that it should
+     *       not be a name of an existing column in the current model's db table).
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model
-     * class whose _table_name property has the same value as
-     * \GDAO\Model->_has_one_relationships['relation_name']['foreign_models_table'].
-     * In the example above 'relation_name' is substituted with 'summary'.
+     *       class whose _table_name property has the same value as
+     *       \GDAO\Model->_has_one_relationships['relation_name']['foreign_models_table'].
+     *       In the example above 'relation_name' is substituted with 'summary'.
      * 
      * @var array
+     * 
      */
     protected $_has_one_relationships = array();
     
@@ -337,10 +346,10 @@ abstract class Model
      *      --------------------------------------------
      *     
      *      NOTE: the post_id column in the posts table is an
-     *      auto-incrementing integer primary key.
+     *            auto-incrementing integer primary key.
      *     
      *      NOTE: the comment_id column in the comments table is an
-     *      auto-incrementing integer primary key.
+     *            auto-incrementing integer primary key.
      *
      * To specify that a model with a \GDAO\Model->_table_name value of 
      * 'posts' has many comments for each post record (based on the schema above),
@@ -356,17 +365,18 @@ abstract class Model
      *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
      *      ]
      * 
-     * NOTE: the array key value 'comments' is a relation name that can be used to 
-     * later access this particular relationship definiton. Any value can be used 
-     * to name a relationship (but it is recommended that it should not be a name 
-     * of an existing column in the current model's db table)
+     * NOTE: the array key value 'comments' is a relation name that can be used to
+     *       later access this particular relationship definiton. Any value can be
+     *       used to name a relationship (but it is recommended that it should not
+     *       be a name of an existing column in the current model's db table).
      * 
-     * NOTE: 'foreign_models_class_name' should contain the name of a Model
-     * class whose _table_name property has the same value as
-     * \GDAO\Model->_has_many_relationships['relation_name']['foreign_models_table'].
-     * In the example above 'relation_name' is substituted with 'comments'.
+     * NOTE: 'foreign_models_class_name' should contain the name of a Model class
+     *       whose _table_name property has the same value as
+     *       \GDAO\Model->_has_many_relationships['relation_name']['foreign_models_table'].
+     *       In the example above 'relation_name' is substituted with 'comments'.
      * 
      * @var array
+     * 
      */
     protected $_has_many_relationships = array();
     
@@ -404,10 +414,10 @@ abstract class Model
      *      --------------------------------------
      *     
      *      NOTE: the author_id column in the authors table is an
-     *      auto-incrementing integer primary key.
+     *            auto-incrementing integer primary key.
      *     
      *      NOTE: the post_id column in the posts table is an
-     *      auto-incrementing integer primary key.
+     *            auto-incrementing integer primary key.
      * 
      * To specify that a model with a \GDAO\Model->_table_name value of 
      * 'posts' has each of its post records belonging to one author (based on 
@@ -424,16 +434,17 @@ abstract class Model
      *      ]
      * 
      * NOTE: the array key value 'author' is a relation name that can be used to 
-     * later access this particular relationship definiton. Any value can be used 
-     * to name a relationship (but it is recommended that it should not be a name 
-     * of an existing column in the current model's db table)
+     *       later access this particular relationship definiton. Any value can 
+     *       be used to name a relationship (but it is recommended that it should 
+     *       not be a name of an existing column in the current model's db table).
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model
-     * class whose _table_name property has the same value as
-     * \GDAO\Model->_belongs_to_relationships['relation_name']['foreign_models_table'].
-     * In the example above 'relation_name' is substituted with 'author'.
+     *       class whose _table_name property has the same value as
+     *       \GDAO\Model->_belongs_to_relationships['relation_name']['foreign_models_table'].
+     *       In the example above 'relation_name' is substituted with 'author'.
      * 
      * @var array
+     * 
      */
     protected $_belongs_to_relationships = array();
     
@@ -471,13 +482,13 @@ abstract class Model
      *      -------------------------------------------
      *     
      *      NOTE: the post_id column in the posts table is an
-     *      auto-incrementing integer primary key.
+     *            auto-incrementing integer primary key.
      *     
      *      NOTE: the tag_id column in the tags table is an
-     *      auto-incrementing integer primary key.
+     *            auto-incrementing integer primary key.
      *     
      *      NOTE: the posts_tags_id column in the posts_tags 
-     *      table is an auto-incrementing integer primary key. 
+     *            table is an auto-incrementing integer primary key. 
      * 
      * To specify that a model with a \GDAO\Model->_table_name value of 
      * 'posts' has many tags for each post record through a join table called
@@ -500,24 +511,25 @@ abstract class Model
      *      ]
      * 
      * NOTE: the array key value 'tags' is a relation name that can be used to 
-     * later access this particular relationship definiton. Any value can be used 
-     * to name a relationship (but it is recommended that it should not be a name 
-     * of an existing column in the current model's db table)
+     *       later access this particular relationship definiton. Any value can 
+     *       be used to name a relationship (but it is recommended that it should
+     *       not be a name of an existing column in the current model's db table).
      * 
-     * NOTE: 'foreign_models_class_name' should contain the name of a Model
-     * class whose _table_name property has the same value as
-     * \GDAO\Model->_belongs_to_relationships['relation_name']['foreign_models_table'].
-     * In the example above 'relation_name' is substituted with 'author'.
+     * NOTE: 'foreign_models_class_name' should contain the name of a Model class
+     *       whose _table_name property has the same value as
+     *       \GDAO\Model->_belongs_to_relationships['relation_name']['foreign_models_table'].
+     *       In the example above 'relation_name' is substituted with 'author'.
      * 
-     * NOTE: 'foreign_models_class_name' should contain the name of a Model
-     * class whose _table_name property has the same value as
-     * \GDAO\Model->_has_many_through_relationships['relation_name']['foreign_models_table'].
-     * 'join_models_class_name' should contain the name of a Model class whose 
-     * _table_name property has the same value as
-     * \GDAO\Model->_has_many_through_relationships['relation_name']['join_table_name'].
-     * In the example above 'relation_name' is substituted with 'tags'.
+     * NOTE: 'foreign_models_class_name' should contain the name of a Model class 
+     *       whose _table_name property has the same value as
+     *       \GDAO\Model->_has_many_through_relationships['relation_name']['foreign_models_table'].
+     *       'join_models_class_name' should contain the name of a Model class 
+     *       whose _table_name property has the same value as
+     *       \GDAO\Model->_has_many_through_relationships['relation_name']['join_table_name'].
+     *       In the example above 'relation_name' is substituted with 'tags'.
      * 
      * @var array
+     * 
      */
     protected $_has_many_through_relationships = array();
 
@@ -527,9 +539,11 @@ abstract class Model
      * required to connect to a desired database. 
      * 
      * @var string
+     * 
      * @see \PDO::__construct() See description of the 1st parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
      *                          this Model will indeed be powered by a PDO instance
+     * 
      */
     protected $_dsn = '';
     
@@ -538,9 +552,11 @@ abstract class Model
      * The username for the database to be connected to.
      * 
      * @var string
+     * 
      * @see \PDO::__construct() See description of the 2nd parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
      *                          this Model will indeed be powered by a PDO instance
+     * 
      */
     protected $_username = ''; 
     
@@ -549,9 +565,12 @@ abstract class Model
      * The password for the database to be connected to.
      * 
      * @var string
+     * 
      * @see \PDO::__construct() See description of the 3rd parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
-     *                          this Model will indeed be powered by a PDO instance
+     *                          this Model will indeed be powered by a PDO 
+     *                          instance
+     * 
      */
     protected $_passwd = '';
     
@@ -560,9 +579,11 @@ abstract class Model
      * An array of options for a PDO driver
      * 
      * @var array
+     * 
      * @see \PDO::__construct() See description of the 4th parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
      *                          this Model will indeed be powered by a PDO instance
+     * 
      */
     protected $_pdo_driver_opts = array();
     
@@ -576,6 +597,7 @@ abstract class Model
      * not defined in this class.
      * 
      * @var array
+     * 
      */
     protected $_extra_opts = array();
     
@@ -589,6 +611,7 @@ abstract class Model
      *                          in creating an instance of this class
      * 
      * @see \PDO::__construct(...) for definition of first four parameters
+     * 
      */
     public function __construct(
         $dsn = '',
@@ -618,23 +641,72 @@ abstract class Model
         }
     }
 
+    /**
+     * 
+     * Implementers of this class can implement magic methods by overriding this method.
+     * 
+     * For example $this->fetchOneByIdAndTitle(1, 'A title!') will lead to this 
+     * method being called (since fetchOneByIdAndTitle() doen't exist in this
+     * class) with the following values:
+     *      $method === 'fetchOneByIdAndTitle'
+     *      $params === [0 => 1, 1 => 'A title!']
+     * 
+     * The string 'fetchOneByIdAndTitle' can be parsed to extract 'Id' & 'Title'.
+     * 
+     * @param string $method name of a method that does not exist in this class 
+     *                       that is being called
+     * @param array $params arguments passed to the non-existent method
+     * 
+     * @return mixed the return value of the magic method's implementation
+     * 
+     * @throws \GDAO\GDAOModelMustImplementMethodException
+     * 
+     */
     public function __call($method, $params) {
 
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
         throw new GDAOModelMustImplementMethodException($msg);
     }
 
-    public function __get($key) {
+    /**
+     * 
+     * Implementers of this class can use this method to provide access to 
+     * non-existent or publicly inaccessible (eg. protected) properties of 
+     * an instance of this class.
+     * 
+     * @param string $property_name
+     * 
+     * @return mixed value of a non-existent or publicly inaccessible property of
+     *               an instance of this class.
+     * 
+     * @throws \GDAO\GDAOModelMustImplementMethodException
+     * 
+     */
+    public function __get($property_name) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
         throw new GDAOModelMustImplementMethodException($msg);
     }
 
+    /**
+     * 
+     * Returns a string representation of an instance of this class.
+     * 
+     * @return string
+     * 
+     */
     public function __toString() {
 
         return print_r($this->toArray(), true);
     }
 
+    /**
+     * 
+     * Returns an array representation of an instance of this class.
+     * 
+     * @return array an array representation of an instance of this class.
+     * 
+     */
     public function toArray() {
 
         return get_object_vars($this);
@@ -642,10 +714,12 @@ abstract class Model
     
     /**
      * 
-     * Create and return a new collection of zero or more records
+     * Create and return a new collection of zero or more records (instances of \GDAO\Model\Record).
      * 
-     * @param \GDAO\Model\GDAORecordsList $list_of_records
-     * @return \GDAO\Model\Collection a collection of instances of \GDAO\Model\Record
+     * @param \GDAO\Model\GDAORecordsList $list_of_records.
+     * 
+     * @return \GDAO\Model\Collection a collection of instances of \GDAO\Model\Record.
+     * 
      */
     public function createCollection(\GDAO\Model\GDAORecordsList $list_of_records) {
         
@@ -655,19 +729,21 @@ abstract class Model
     
     /**
      * 
-     * Create and return a new record with specified values
+     * Create and return a new record with specified values.
      * 
      * @param array $col_names_and_values
      * @param bool $is_new value to set for the _is_new property of the record to be returned
      *             true if the record is to be treated as new (i.e. never been saved to the db),
      *             else false.
      * 
-     * @return \GDAO\Model\Record new record with specified values
+     * @return \GDAO\Model\Record new record with specified values.
+     * 
      */
     public abstract function createRecord(array $col_names_and_values = array(), $is_new=true);
 
     /**
-     * Delete one or more records matching specified conditions
+     * 
+     * Delete one or more records matching specified conditions.
      * 
      * @param array $cols_n_vals array of where clause conditions for a delete statement
      *                             to delete one or more records in the db table associated
@@ -683,27 +759,32 @@ abstract class Model
      *                             DELETE FROM `x` WHERE id IN (5,6,7)  AND title = 'yipeedoo'
      *
      * @return bool true for a successful deletion, false for a failed deletion 
-     *              OR null if nothing was deleted (an empty array was supplied).                            
+     *              OR null if nothing was deleted (no matching records).
+     * 
      */
     public abstract function deleteRecordsMatchingSpecifiedColsNValues(array $cols_n_vals);
 
     /**
-     * Delete the specified record from the database. 
-     * The record object must be set to a new state by a call to 
-     * $record->setStateToNew() after a successful deletion.
+     * Delete the specified record from the database.
+     * 
+     * NOTE: Implementers of this class must set the record object to a new state 
+     *       by a call to $record->setStateToNew() after a successful deletion 
+     *       via this method.
      * 
      * @param \GDAO\Model\Record $record
      * 
      * @return bool true for a successful deletion, false for a failed deletion 
      *              OR null if supplied record is a new record that has never 
-     *              been saved to the db.  
+     *              been saved to the db.
+     * 
      */
     public abstract function deleteSpecifiedRecord(\GDAO\Model\Record $record);
 
     /**
      * 
      * Fetch a collection (an instance of GDAO\Model\Collection or any of its 
-     * sub-classes) of records [Eager Loading should be implemented here]
+     * sub-classes) of records (instances of \GDAO\Model\Record or any of its 
+     * sub-classes) [Eager Loading should be implemented here].
      * 
      * @param array $params an array of parameters for the fetch with the keys below
      * 
@@ -716,19 +797,32 @@ abstract class Model
      *        Eager-fetch related rows of data for each relation name.
      * 
      *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
-     *        relation name. Eg. array_keys( $this->_has_one_relationships )
-     *        returns an array of Has-One relation name(s) for a model.
+     *              relation name. Eg. array_keys($this->_has_one_relationships)
+     *              returns an array of Has-One relation name(s) for a model.
+     * 
+     *        NOTE: Implementers of this class should make the retreived related
+     *              data accessible in each record via a property named with the
+     *              same name as the relation name. For example, if there exists
+     *              $this->_has_one_relationships['comments'], the retreived 
+     *              comments for each record returned by this fetch method should
+     *              be accessible via $record->comments. Where $record is a 
+     *              reference to one of the records returned by this method.
      *
      *  `distinct`
      *      : (bool) True if the DISTINCT keyword should be added to the query, 
      *        else false if the DISTINCT keyword should be ommitted. 
      * 
      *        NOTE: If `distinct` is not set/specified, implementers of this class 
-     *        should give it a default value of false.
+     *              should give it a default value of false.
      * 
      *  `cols`
      *      : (array) An array of the name(s) of column(s) to be returned. 
      *        Return only these columns.
+     *        Eg. to generate SELECT col_1, col_2, col_3 ......
+     *        use: 
+     *          [
+     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
+     *          ]
      * 
      *  `where`
      *      : (string|array)
@@ -754,10 +848,10 @@ abstract class Model
      *    
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value
+     *              numeric or string value.
      *        NOTE: Only question mark place holders allowed in the where clause string.
      *              That is for the case where `where` is assigned a string value.
      * 
@@ -768,19 +862,19 @@ abstract class Model
      * 
      *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
      *        use the array below:
-     *        [
-     *          'where' => ' column_name_1 > ? AND column_name_2 > ? ',
-     *          'where_bind_values'=> [58, 59] 
-     *        ]
+     *          [
+     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
+     *              'where_bind_values'=> [58, 59] 
+     *          ]
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
      *        will be grouped by.
      *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
      *        use the array below:
-     *        [
-     *          'group' => ['column_name_1', 'column_name_2']
-     *        ]
+     *          [
+     *              'group' => ['column_name_1', 'column_name_2']
+     *          ]
      * 
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
@@ -802,32 +896,54 @@ abstract class Model
      *    
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value
+     *              numeric or string value.
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
      *        The keys are the column names and the values are the directions
      *        of the ORDER BY operation.
-     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC'
-     *        [
-     *          'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
-     *        ]
+     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
+     *          [
+     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *          ]
      *        
      *        NOTE: Consumers of an implementation of this class should supply 
-     *        whatever direction value their DB system supports for an ORDER BY 
-     *        clause. Eg. MySQL supports ASC and DESC.
+     *              whatever direction value their DB system supports for an 
+     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
      * 
      *  `limit_offset`
-     *  : (int) Limit offset.
+     *      : (int) Limit offset. Offset of the first row to return
+     * 
+     *        NOTE: Implementers of this class should use the `limit_offset` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
      *  `limit_size`
-     *  : (int) Limit to a count of this many records.
-     *
+     *      : (int) Limit to a count of this many records.
+     * 
+     *        NOTE: Implementers of this class should use the `limit_size` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
      * @return GDAO\Model\Collection
+     * 
      */
     public function fetchAll($params = array()) {
         
@@ -838,38 +954,623 @@ abstract class Model
     /**
      * 
      * Fetch an array of records (instances of \GDAO\Model\Record or any of its 
-     * sub-classes) [Eager Loading should be considered here]
+     * sub-classes) [Eager Loading should be considered here].
      * 
-     * @param array $params
+     * @param array $params an array of parameters for the fetch with the keys below
+     * 
+     *  `relations_to_include`
+     *      : (array) An array of relation names as defined in any or all of 
+     *        \GDAO\Model->_has_one_relationships, 
+     *        \GDAO\Model->_has_many_relationships,
+     *        \GDAO\Model->_belongs_to_relationships and 
+     *        \GDAO\Model->_has_many_through_relationships. 
+     *        Eager-fetch related rows of data for each relation name.
+     * 
+     *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
+     *              relation name. Eg. array_keys($this->_has_one_relationships)
+     *              returns an array of Has-One relation name(s) for a model.
+     * 
+     *        NOTE: Implementers of this class should make the retreived related
+     *              data accessible in each record via a property named with the
+     *              same name as the relation name. For example, if there exists
+     *              $this->_has_one_relationships['comments'], the retreived 
+     *              comments for each record returned by this fetch method should
+     *              be accessible via $record->comments. Where $record is a 
+     *              reference to one of the records returned by this method.
+     *
+     *  `distinct`
+     *      : (bool) True if the DISTINCT keyword should be added to the query, 
+     *        else false if the DISTINCT keyword should be ommitted. 
+     * 
+     *        NOTE: If `distinct` is not set/specified, implementers of this class 
+     *              should give it a default value of false.
+     * 
+     *  `cols`
+     *      : (array) An array of the name(s) of column(s) to be returned. 
+     *        Return only these columns.
+     *        Eg. to generate SELECT col_1, col_2, col_3 ......
+     *        use: 
+     *          [
+     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
+     *          ]
+     * 
+     *  `where`
+     *      : (string|array)
+     *        Either a string containing a valid where clause statement (excluding 
+     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
+     * 
+     *        OR an array of parameters for building a WHERE clause, 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *        use:
+     *          [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *        NOTE: Only question mark place holders allowed in the where clause string.
+     *              That is for the case where `where` is assigned a string value.
+     * 
+     *  `where_bind_values`
+     *      : (array) Values to bind into the query. Only applicable when the 
+     *        value of `where` is a string. Only question mark place holders 
+     *        expected in the where clause string.
+     * 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
+     *        use the array below:
+     *          [
+     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
+     *              'where_bind_values'=> [58, 59] 
+     *          ]
+     * 
+     *  `group`
+     *      : (array) An array of the name(s) of column(s) which the results 
+     *        will be grouped by.
+     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
+     *        use the array below:
+     *          [
+     *              'group' => ['column_name_1', 'column_name_2']
+     *          ]
+     * 
+     *  `having`
+     *      : (array) An array of parameters for building a HAVING clause.
+     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        use:
+     *          [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *    
+     *  `order`
+     *      : (array) an array of parameters for building an ORDER BY clause.
+     *        The keys are the column names and the values are the directions
+     *        of the ORDER BY operation.
+     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
+     *          [
+     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *          ]
+     *        
+     *        NOTE: Consumers of an implementation of this class should supply 
+     *              whatever direction value their DB system supports for an 
+     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
+     * 
+     *  `limit_offset`
+     *      : (int) Limit offset. Offset of the first row to return
+     * 
+     *        NOTE: Implementers of this class should use the `limit_offset` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     * 
+     *  `limit_size`
+     *      : (int) Limit to a count of this many records.
+     * 
+     *        NOTE: Implementers of this class should use the `limit_size` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     * 
      * @return array of records (instances of \GDAO\Model\Record or any of its 
-     *               sub-classes)
+     *               sub-classes).
+     * 
      */
     public abstract function fetchAllAsArray($params = array());
 
     /**
      * 
      * Fetch an array of db data. Each record is an associative array and not an
-     * instance of \GDAO\Model\Record [Eager Loading should be considered here]
+     * instance of \GDAO\Model\Record [Eager Loading should be considered here].
      * 
-     * @param array $params
+     * @param array $params an array of parameters for the fetch with the keys below
+     * 
+     *  `relations_to_include`
+     *      : (array) An array of relation names as defined in any or all of 
+     *        \GDAO\Model->_has_one_relationships, 
+     *        \GDAO\Model->_has_many_relationships,
+     *        \GDAO\Model->_belongs_to_relationships and 
+     *        \GDAO\Model->_has_many_through_relationships. 
+     *        Eager-fetch related rows of data for each relation name.
+     * 
+     *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
+     *              relation name. Eg. array_keys($this->_has_one_relationships)
+     *              returns an array of Has-One relation name(s) for a model.
+     * 
+     *        NOTE: Implementers of this class should make the retreived related
+     *              data accessible in each record via an array key named with the
+     *              same name as the relation name. For example, if there exists
+     *              $this->_has_one_relationships['comments'], the retreived 
+     *              comments for each record returned by this fetch method should
+     *              be accessible via $record['comments']. Where $record is a 
+     *              reference to one of the records returned by this method.
+     *
+     *  `distinct`
+     *      : (bool) True if the DISTINCT keyword should be added to the query, 
+     *        else false if the DISTINCT keyword should be ommitted. 
+     * 
+     *        NOTE: If `distinct` is not set/specified, implementers of this class 
+     *              should give it a default value of false.
+     * 
+     *  `cols`
+     *      : (array) An array of the name(s) of column(s) to be returned. 
+     *        Return only these columns.
+     *        Eg. to generate SELECT col_1, col_2, col_3 ......
+     *        use: 
+     *          [
+     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
+     *          ]
+     * 
+     *  `where`
+     *      : (string|array)
+     *        Either a string containing a valid where clause statement (excluding 
+     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
+     * 
+     *        OR an array of parameters for building a WHERE clause, 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *        use:
+     *          [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *        NOTE: Only question mark place holders allowed in the where clause string.
+     *              That is for the case where `where` is assigned a string value.
+     * 
+     *  `where_bind_values`
+     *      : (array) Values to bind into the query. Only applicable when the 
+     *        value of `where` is a string. Only question mark place holders 
+     *        expected in the where clause string.
+     * 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
+     *        use the array below:
+     *          [
+     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
+     *              'where_bind_values'=> [58, 59] 
+     *          ]
+     * 
+     *  `group`
+     *      : (array) An array of the name(s) of column(s) which the results 
+     *        will be grouped by.
+     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
+     *        use the array below:
+     *          [
+     *              'group' => ['column_name_1', 'column_name_2']
+     *          ]
+     * 
+     *  `having`
+     *      : (array) An array of parameters for building a HAVING clause.
+     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        use:
+     *          [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *    
+     *  `order`
+     *      : (array) an array of parameters for building an ORDER BY clause.
+     *        The keys are the column names and the values are the directions
+     *        of the ORDER BY operation.
+     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
+     *          [
+     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *          ]
+     *        
+     *        NOTE: Consumers of an implementation of this class should supply 
+     *              whatever direction value their DB system supports for an 
+     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
+     * 
+     *  `limit_offset`
+     *      : (int) Limit offset. Offset of the first row to return
+     * 
+     *        NOTE: Implementers of this class should use the `limit_offset` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     * 
+     *  `limit_size`
+     *      : (int) Limit to a count of this many records.
+     * 
+     *        NOTE: Implementers of this class should use the `limit_size` 
+     *              value with the appropriate limit & offset mechanism for 
+     *              the DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     * 
      * @return array
+     * 
      */
     public abstract function fetchArray($params = array());
 
     /**
      * 
-     * Fetch an array of values for a specified column
+     * Fetch an array of values for a specified column.
      * 
-     * @param array $params
+     * @param array $params an array of parameters for the fetch with the keys below
+     * 
+     *  `distinct`
+     *      : (bool) True if the DISTINCT keyword should be added to the query, 
+     *        else false if the DISTINCT keyword should be ommitted. 
+     * 
+     *        NOTE: If `distinct` is not set/specified, implementers of this class 
+     *              should give it a default value of false.
+     * 
+     *  `cols`
+     *      : (array) An array of the name(s) of column(s) to be returned. Only 
+     *        the first one will be honored.
+     *        Eg. to generate SELECT col_1 FROM......
+     *        use: 
+     *          [
+     *              'cols' => [ 'col_1' ]
+     *          ]
+     *          OR
+     *          [
+     *              'cols' => [ 'col_1', 'col_2' ]
+     *          ]
+     *          OR
+     *          [
+     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
+     *          ]
+     * 
+     *  `where`
+     *      : (string|array)
+     *        Either a string containing a valid where clause statement (excluding 
+     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
+     * 
+     *        OR an array of parameters for building a WHERE clause, 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *        use:
+     *          [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *        NOTE: Only question mark place holders allowed in the where clause string.
+     *              That is for the case where `where` is assigned a string value.
+     * 
+     *  `where_bind_values`
+     *      : (array) Values to bind into the query. Only applicable when the 
+     *        value of `where` is a string. Only question mark place holders 
+     *        expected in the where clause string.
+     * 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
+     *        use the array below:
+     *          [
+     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
+     *              'where_bind_values'=> [58, 59] 
+     *          ]
+     * 
+     *  `group`
+     *      : (array) An array of the name(s) of column(s) which the results 
+     *        will be grouped by.
+     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
+     *        use the array below:
+     *          [
+     *              'group' => ['column_name_1', 'column_name_2']
+     *          ]
+     * 
+     *  `having`
+     *      : (array) An array of parameters for building a HAVING clause.
+     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        use:
+     *          [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *    
+     *  `order`
+     *      : (array) an array of parameters for building an ORDER BY clause.
+     *        The keys are the column names and the values are the directions
+     *        of the ORDER BY operation.
+     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
+     *          [
+     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *          ]
+     *        
+     *        NOTE: Consumers of an implementation of this class should supply 
+     *              whatever direction value their DB system supports for an 
+     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
+     * 
+     *  `limit_offset`
+     *      : (int) Limit offset. Offset of the first row to return
+     * 
+     *        NOTE: Implementers of this class should use the `limit_offset` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     * 
+     *  `limit_size`
+     *      : (int) Limit to a count of this many records.
+     * 
+     *        NOTE: Implementers of this class should use the `limit_size` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     * 
      * @return array
+     * 
      */
     public abstract function fetchCol($params = array());
 
     /**
-     * Fetch a record matching the specified params
      * 
-     * @param array $params
+     * Fetch a single record matching the specified params.
+     * 
+     * @param array $params an array of parameters for the fetch with the keys below
+     * 
+     *  `relations_to_include`
+     *      : (array) An array of relation names as defined in any or all of 
+     *        \GDAO\Model->_has_one_relationships, 
+     *        \GDAO\Model->_has_many_relationships,
+     *        \GDAO\Model->_belongs_to_relationships and 
+     *        \GDAO\Model->_has_many_through_relationships. 
+     *        Eager-fetch related rows of data for each relation name.
+     * 
+     *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
+     *              relation name. Eg. array_keys($this->_has_one_relationships)
+     *              returns an array of Has-One relation name(s) for a model.
+     * 
+     *        NOTE: Implementers of this class should make the retreived related
+     *              data accessible in the returned record via a property named 
+     *              with the same name as the relation name. For example, if 
+     *              there exists $this->_has_one_relationships['comments'], the 
+     *              retreived comments for the record returned by this fetch 
+     *              method should be accessible via $record->comments. Where 
+     *              $record is a reference to the record returned by this method.
+     *
+     *  `distinct`
+     *      : (bool) True if the DISTINCT keyword should be added to the query, 
+     *        else false if the DISTINCT keyword should be ommitted. 
+     * 
+     *        NOTE: If `distinct` is not set/specified, implementers of this class 
+     *              should give it a default value of false.
+     * 
+     *  `cols`
+     *      : (array) An array of the name(s) of column(s) to be returned. 
+     *        Return only these columns.
+     *        Eg. to generate SELECT col_1, col_2, col_3 ......
+     *        use: 
+     *          [
+     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
+     *          ]
+     * 
+     *  `where`
+     *      : (string|array)
+     *        Either a string containing a valid where clause statement (excluding 
+     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
+     * 
+     *        OR an array of parameters for building a WHERE clause, 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *        use:
+     *          [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *        NOTE: Only question mark place holders allowed in the where clause string.
+     *              That is for the case where `where` is assigned a string value.
+     * 
+     *  `where_bind_values`
+     *      : (array) Values to bind into the query. Only applicable when the 
+     *        value of `where` is a string. Only question mark place holders 
+     *        expected in the where clause string.
+     * 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
+     *        use the array below:
+     *          [
+     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
+     *              'where_bind_values'=> [58, 59] 
+     *          ]
+     * 
+     *  `group`
+     *      : (array) An array of the name(s) of column(s) which the results 
+     *        will be grouped by.
+     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
+     *        use the array below:
+     *          [
+     *              'group' => ['column_name_1', 'column_name_2']
+     *          ]
+     * 
+     *  `having`
+     *      : (array) An array of parameters for building a HAVING clause.
+     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        use:
+     *          [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *    
+     *  `order`
+     *      : (array) an array of parameters for building an ORDER BY clause.
+     *        The keys are the column names and the values are the directions
+     *        of the ORDER BY operation.
+     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
+     *          [
+     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *          ]
+     *        
+     *        NOTE: Consumers of an implementation of this class should supply 
+     *              whatever direction value their DB system supports for an 
+     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
+     * 
      * @return \GDAO\Model\Record
+     * 
      */
     public abstract function fetchOne($params = array());
 
@@ -878,23 +1579,281 @@ abstract class Model
      * Fetch an array of key-value pairs from the db table, where the 
      * 1st column's value is the key and the 2nd column's value is the value.
      * 
-     * @param array $params
+     * @param array $params an array of parameters for the fetch with the keys below
+     *
+     *  `distinct`
+     *      : (bool) True if the DISTINCT keyword should be added to the query, 
+     *        else false if the DISTINCT keyword should be ommitted. 
+     * 
+     *        NOTE: If `distinct` is not set/specified, implementers of this class 
+     *              should give it a default value of false.
+     * 
+     *  `cols`
+     *      : (array) An array of the name(s) of column(s) or aggregate sql function
+     *        calls to be returned. Only the first two array items will be honored.
+     *        Eg. to generate 'SELECT col_1, col_2 FROM.....'
+     *        use: 
+     *          [
+     *              'cols' => [ 'col_1', 'col_2' ]
+     *          ]
+     *        OR
+     *          [
+     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
+     *          ]
+     * 
+     *  `where`
+     *      : (string|array)
+     *        Either a string containing a valid where clause statement (excluding 
+     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
+     * 
+     *        OR an array of parameters for building a WHERE clause, 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *        use:
+     *          [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *        NOTE: Only question mark place holders allowed in the where clause string.
+     *              That is for the case where `where` is assigned a string value.
+     * 
+     *  `where_bind_values`
+     *      : (array) Values to bind into the query. Only applicable when the 
+     *        value of `where` is a string. Only question mark place holders 
+     *        expected in the where clause string.
+     * 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
+     *        use the array below:
+     *          [
+     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
+     *              'where_bind_values'=> [58, 59] 
+     *          ]
+     * 
+     *  `group`
+     *      : (array) An array of the name(s) of column(s) which the results 
+     *        will be grouped by.
+     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
+     *        use the array below:
+     *          [
+     *              'group' => ['column_name_1', 'column_name_2']
+     *          ]
+     * 
+     *  `having`
+     *      : (array) An array of parameters for building a HAVING clause.
+     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        use:
+     *          [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *    
+     *  `order`
+     *      : (array) an array of parameters for building an ORDER BY clause.
+     *        The keys are the column names and the values are the directions
+     *        of the ORDER BY operation.
+     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
+     *          [
+     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *          ]
+     *        
+     *        NOTE: Consumers of an implementation of this class should supply 
+     *              whatever direction value their DB system supports for an 
+     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
+     * 
+     *  `limit_offset`
+     *      : (int) Limit offset. Offset of the first row to return
+     * 
+     *        NOTE: Implementers of this class should use the `limit_offset` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     * 
+     *  `limit_size`
+     *      : (int) Limit to a count of this many records.
+     * 
+     *        NOTE: Implementers of this class should use the `limit_size` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     * 
      * @return array
+     * 
      */
     public abstract function fetchPairs($params = array());
 
     /**
      * 
-     * Fetch a single value from the db table matching params
+     * Fetch a single value from the db table matching params.
      * 
-     * @param array $params
-     * @return mixed
+     * @param array $params an array of parameters for the fetch with the keys below
+     * 
+     *  `distinct`
+     *      : (bool) True if the DISTINCT keyword should be added to the query, 
+     *        else false if the DISTINCT keyword should be ommitted. 
+     * 
+     *        NOTE: If `distinct` is not set/specified, implementers of this class 
+     *              should give it a default value of false.
+     * 
+     *  `cols`
+     *      : (array) An array of the name(s) of column(s) or aggregate sql function
+     *        call(s) to be returned. 
+     *         only the first one will be honored.
+     *        Eg. Both: 
+     *          [
+     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
+     *          ]
+     *          and
+     *          [
+     *              'cols' => [ 'col_1']
+     *          ]
+     *          will generate  'SELECT col_1 FROM .....'
+     * 
+     *  `where`
+     *      : (string|array)
+     *        Either a string containing a valid where clause statement (excluding 
+     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
+     * 
+     *        OR an array of parameters for building a WHERE clause, 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *        use:
+     *          [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *        NOTE: Only question mark place holders allowed in the where clause string.
+     *              That is for the case where `where` is assigned a string value.
+     * 
+     *  `where_bind_values`
+     *      : (array) Values to bind into the query. Only applicable when the 
+     *        value of `where` is a string. Only question mark place holders 
+     *        expected in the where clause string.
+     * 
+     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
+     *        use the array below:
+     *          [
+     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
+     *              'where_bind_values'=> [58, 59] 
+     *          ]
+     * 
+     *  `group`
+     *      : (array) An array of the name(s) of column(s) which the result
+     *        will be grouped by.
+     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
+     *        use the array below:
+     *          [
+     *              'group' => ['column_name_1', 'column_name_2']
+     *          ]
+     * 
+     *  `having`
+     *      : (array) An array of parameters for building a HAVING clause.
+     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        use:
+     *          [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                ]
+     *          ]
+     * 
+     *        The 'operator' could be assigned any one of these values:
+     *          [ 
+     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
+     *              '!=', 'not-in', 'not-like', 'not-null'
+     *          ]
+     *    
+     *        NOTE: Implementers of this class should convert each operator to the 
+     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
+     *              'IS NOT NULL'.
+     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
+     *              numeric or string value.
+     *    
+     *  `order`
+     *      : (array) an array of parameters for building an ORDER BY clause.
+     *        The keys are the column names and the values are the directions
+     *        of the ORDER BY operation.
+     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
+     *          [
+     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *          ]
+     *        
+     *        NOTE: Consumers of an implementation of this class should supply 
+     *              whatever direction value their DB system supports for an 
+     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
+     * 
+     * @return mixed A single value either from a column in a row of the db table 
+     *               associated with this model or the result of a sql aggregate
+     *               function (eg. MAX(col_name)).
+     * 
      */
     public abstract function fetchValue($params = array());
 
     /**
      * 
-     * @return bool|\PDO Return the PDO object powering this model or false if PDO is not being used.
+     * Return the PDO object powering this model or false if PDO is not being used.
+     * 
+     * @return bool|\PDO the PDO object powering this model or false if PDO is 
+     *                   not being used.
      * 
      */
     public abstract function getPDO();
@@ -902,56 +1861,105 @@ abstract class Model
     /**
      * 
      * Insert one row to the model table with the specified values.
-     * Can throw exception (if desired) if the insert operation fails.
-     * By default if the insert fails just return false, else return an array of 
-     * the inserted data including auto-incremented values if the insert succeeded.
      * 
      * @param array $col_names_n_vals
-     * @param bool $throw_exception
+     * 
+     * @return bool|array false if insert failed, else return an array of the 
+     *                    inserted data including auto-incremented values if 
+     *                    the insert succeeded.
+     * 
      */
-    public abstract function insert($col_names_n_vals=array(), $throw_exception=false);
+    public abstract function insert($col_names_n_vals=array());
 
     /**
      * 
-     * Updates rows in the model table. Can throw exception (if desired) if the 
-     * update operation fails.
-     * By default if the update fails just return false. Return an array of the 
-     * updated data if the update succeeded.
+     * Updates rows in the model's db table.
      * 
-     * @param type $col_names_n_values
-     * @param type $col_names_n_values_2_match
-     * @param type $throw_exception
+     * @param array $col_names_n_values
+     * @param array $col_names_n_values_2_match
+     * 
+     * @return bool|array false if update failed, or return an array of the 
+     *                    updated data if the update was successful or return
+     *                    null if there were no matching records.
+     * 
      */
-    public abstract function update(
+    public abstract function updateRecordsMatchingSpecifiedColsNValues(
         $col_names_n_values = array(), 
-        $col_names_n_values_2_match = array(),
-        $throw_exception = false
+        $col_names_n_values_2_match = array()
     );
     
+    /**
+     * 
+     * Update the specified record in the database.
+     * 
+     * @param \GDAO\Model\Record $record
+     * 
+     * @return bool true for a successful update, false for a failed update 
+     *              OR null if supplied record is a new record that has never 
+     *              been saved to the db.
+     * 
+     */
+    public abstract function updateSpecifiedRecord(\GDAO\Model\Record $record);
+    
     //////////////////////////////////////
-    //Getters for non-public properties
+    // Getters for non-public properties
     //////////////////////////////////////
     
+    /**
+     * 
+     * Get the value of $this->_created_timestamp_column_name.
+     * 
+     * @return string the value of $this->_created_timestamp_column_name.
+     * 
+     */
     public function getCreatedTimestampColumnName() {
 
         return $this->_created_timestamp_column_name;
     }
     
+    /**
+     * 
+     * Get the value of $this->_primary_col.
+     * 
+     * @return string the value of $this->_primary_col.
+     * 
+     */
     public function getPrimaryColName() {
 
         return $this->_primary_col;
     }
 
+    /**
+     * 
+     * Get the value of $this->_table_cols.
+     * 
+     * @return string the value of $this->_table_cols.
+     * 
+     */
     public function getTableCols() {
 
         return $this->_table_cols;
     }
 
+    /**
+     * 
+     * Get the value of $this->_table_name.
+     * 
+     * @return string the value of $this->_table_name.
+     * 
+     */
     public function getTableName() {
 
         return $this->_table_name;
     }
 
+    /**
+     * 
+     * Get the value of $this->_updated_timestamp_column_name.
+     * 
+     * @return string the value of $this->_updated_timestamp_column_name.
+     * 
+     */
     public function getUpdatedTimestampColumnName() {
 
         return $this->_updated_timestamp_column_name;
