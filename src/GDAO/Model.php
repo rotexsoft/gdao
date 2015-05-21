@@ -1876,8 +1876,19 @@ abstract class Model
      * 
      * Updates rows in the model's db table.
      * 
-     * @param array $col_names_n_values
-     * @param array $col_names_n_values_2_match
+     * @param array $col_names_n_values_2_save array of data to be used to update the matched records
+     * @param array $col_names_n_values_2_match array of where clause conditions for an update statement
+     *                                          to update one or more records in the db table associated
+     *                                          with this model.
+     *                            
+     *                                          Eg. for a table 'x' with the following columns:
+     *                                          'id', 'title' and 'description'
+     *              
+     *                                          ['id'=>5, 'title'=>'yabadabadoo'] should generate the sql below:
+     *                                          UPDATE `x` SET ...  WHERE id = 5 AND title = 'yabadabadoo'
+     *              
+     *                                          ['id'=>[5,6,7], 'title'=>'yipeedoo'] should generate the sql below:
+     *                                          UPDATE `x` SET ...  WHERE id IN (5,6,7)  AND title = 'yipeedoo'
      * 
      * @return bool|array false if update failed, or return an array of the 
      *                    updated data if the update was successful or return
@@ -1885,7 +1896,7 @@ abstract class Model
      * 
      */
     public abstract function updateRecordsMatchingSpecifiedColsNValues(
-        $col_names_n_values = array(), 
+        $col_names_n_values_2_save = array(), 
         $col_names_n_values_2_match = array()
     );
     
