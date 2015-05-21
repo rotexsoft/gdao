@@ -775,8 +775,8 @@ abstract class Model
      * @param \GDAO\Model\Record $record
      * 
      * @return bool true for a successful deletion, false for a failed deletion 
-     *              OR null if supplied record is a new record that has never 
-     *              been saved to the db.
+     *              OR null if supplied record is a record that has never been
+     *              saved to the db.
      * 
      */
     public abstract function deleteSpecifiedRecord(\GDAO\Model\Record $record);
@@ -1896,19 +1896,20 @@ abstract class Model
      * 
      */
     public abstract function updateRecordsMatchingSpecifiedColsNValues(
-        $col_names_n_values_2_save = array(), 
-        $col_names_n_values_2_match = array()
+        array $col_names_n_values_2_save = array(), 
+        array $col_names_n_values_2_match = array()
     );
     
     /**
      * 
      * Update the specified record in the database.
+     * Save all fields in the specified record to the corresponding row in the db.
      * 
      * @param \GDAO\Model\Record $record
      * 
      * @return bool true for a successful update, false for a failed update 
-     *              OR null if supplied record is a new record that has never 
-     *              been saved to the db.
+     *              OR null if supplied record is a record that has never been
+     *              saved to the db.
      * 
      */
     public abstract function updateSpecifiedRecord(\GDAO\Model\Record $record);
@@ -1943,14 +1944,36 @@ abstract class Model
 
     /**
      * 
-     * Get the value of $this->_table_cols.
+     * Get an array of table column names.
      * 
-     * @return string the value of $this->_table_cols.
+     * @return array an array of table column names.
      * 
      */
     public function getTableCols() {
 
-        return $this->_table_cols;
+        $keys = array_keys($this->_table_cols);
+        
+        if( $keys === range(0, count($this->_table_cols) - 1) ) {
+            
+            //$this->_table_cols is a sequential array with numeric keys
+            //its values are most likely to be column names
+            return $this->_table_cols;
+
+        } else {
+            
+            $keys_are_strings = true;
+            
+            foreach($keys as $key) {
+                
+                if( !is_string($key) ) {
+                    
+                    $keys_are_strings = false;
+                    break;
+                }
+            }
+
+            return ($keys_are_strings)? array_keys($this->_table_cols): array();
+        }
     }
 
     /**
