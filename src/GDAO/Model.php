@@ -717,11 +717,13 @@ abstract class Model
      * Create and return a new collection of zero or more records (instances of \GDAO\Model\Record).
      * 
      * @param \GDAO\Model\GDAORecordsList $list_of_records.
+     * @param array $extra_opts an array of other parameters that may be needed 
+     *                          in creating an instance of \GDAO\Model\Collection
      * 
      * @return \GDAO\Model\Collection a collection of instances of \GDAO\Model\Record.
      * 
      */
-    public function createCollection(\GDAO\Model\GDAORecordsList $list_of_records) {
+    public function createCollection(\GDAO\Model\GDAORecordsList $list_of_records, array $extra_opts=array()) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
         throw new GDAOModelMustImplementMethodException($msg);
@@ -732,14 +734,13 @@ abstract class Model
      * Create and return a new record with specified values.
      * 
      * @param array $col_names_and_values
-     * @param bool $is_new value to set for the _is_new property of the record to be returned
-     *             true if the record is to be treated as new (i.e. never been saved to the db),
-     *             else false.
+     * @param array $extra_opts an array of other parameters that may be needed 
+     *                          in creating an instance of \GDAO\Model\Record
      * 
      * @return \GDAO\Model\Record new record with specified values.
      * 
      */
-    public abstract function createRecord(array $col_names_and_values = array(), $is_new=true);
+    public abstract function createRecord(array $col_names_and_values = array(), array $extra_opts=array());
 
     /**
      * 
