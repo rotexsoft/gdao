@@ -787,7 +787,7 @@ abstract class Model
      * sub-classes) of records (instances of \GDAO\Model\Record or any of its 
      * sub-classes) [Eager Loading should be implemented here].
      * 
-     * @param array $params an array of parameters for the fetch with the keys below
+     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      * 
      *  `relations_to_include`
      *      : (array) An array of relation names as defined in any or all of 
@@ -817,7 +817,8 @@ abstract class Model
      *              should give it a default value of false.
      * 
      *  `cols`
-     *      : (array) An array of the name(s) of column(s) to be returned. 
+     *      : (array) An array of the name(s) of column(s) to be returned.
+     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
      *        Return only these columns.
      *        Eg. to generate SELECT col_1, col_2, col_3 ......
      *        use: 
@@ -826,18 +827,27 @@ abstract class Model
      *          ]
      * 
      *  `where`
-     *      : (string|array)
-     *        Either a string containing a valid where clause statement (excluding 
-     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
-     * 
-     *        OR an array of parameters for building a WHERE clause, 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *      : (array) an array of parameters for building a WHERE clause, 
+     *        Eg. to generate 
+     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *             OR (column_name_1 < 58 AND column_name_2 < 58)
+     *            AND (column_name_3 >= 58)
+     *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'where' => 
      *                [
      *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -847,26 +857,20 @@ abstract class Model
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
      *    
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'where' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
-     *        NOTE: Only question mark place holders allowed in the where clause string.
-     *              That is for the case where `where` is assigned a string value.
-     * 
-     *  `where_bind_values`
-     *      : (array) Values to bind into the query. Only applicable when the 
-     *        value of `where` is a string. Only question mark place holders 
-     *        expected in the where clause string.
-     * 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
-     *        use the array below:
-     *          [
-     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
-     *              'where_bind_values'=> [58, 59] 
-     *          ]
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -879,13 +883,26 @@ abstract class Model
      * 
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        Eg. to generate 
+     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *              OR (column_name_1 < 58 AND column_name_2 < 58)
+     *             AND (column_name_3 >= 58)
+     *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -894,13 +911,21 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     *    
+     * 
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'having' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -946,7 +971,7 @@ abstract class Model
      * @return GDAO\Model\Collection
      * 
      */
-    public function fetchAll($params = array()) {
+    public function fetchAll(array $params = array()) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
         throw new GDAOModelMustImplementMethodException($msg);
@@ -957,7 +982,7 @@ abstract class Model
      * Fetch an array of records (instances of \GDAO\Model\Record or any of its 
      * sub-classes) [Eager Loading should be considered here].
      * 
-     * @param array $params an array of parameters for the fetch with the keys below
+     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      * 
      *  `relations_to_include`
      *      : (array) An array of relation names as defined in any or all of 
@@ -987,7 +1012,8 @@ abstract class Model
      *              should give it a default value of false.
      * 
      *  `cols`
-     *      : (array) An array of the name(s) of column(s) to be returned. 
+     *      : (array) An array of the name(s) of column(s) to be returned.
+     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
      *        Return only these columns.
      *        Eg. to generate SELECT col_1, col_2, col_3 ......
      *        use: 
@@ -996,18 +1022,27 @@ abstract class Model
      *          ]
      * 
      *  `where`
-     *      : (string|array)
-     *        Either a string containing a valid where clause statement (excluding 
-     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
-     * 
-     *        OR an array of parameters for building a WHERE clause, 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *      : (array) an array of parameters for building a WHERE clause, 
+     *        Eg. to generate 
+     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *             OR (column_name_1 < 58 AND column_name_2 < 58)
+     *            AND (column_name_3 >= 58)
+     *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'where' => 
      *                [
      *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1017,26 +1052,20 @@ abstract class Model
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
      *    
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'where' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
-     *        NOTE: Only question mark place holders allowed in the where clause string.
-     *              That is for the case where `where` is assigned a string value.
-     * 
-     *  `where_bind_values`
-     *      : (array) Values to bind into the query. Only applicable when the 
-     *        value of `where` is a string. Only question mark place holders 
-     *        expected in the where clause string.
-     * 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
-     *        use the array below:
-     *          [
-     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
-     *              'where_bind_values'=> [58, 59] 
-     *          ]
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -1049,13 +1078,26 @@ abstract class Model
      * 
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        Eg. to generate 
+     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *              OR (column_name_1 < 58 AND column_name_2 < 58)
+     *             AND (column_name_3 >= 58)
+     *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1064,13 +1106,21 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     *    
+     * 
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'having' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -1117,14 +1167,14 @@ abstract class Model
      *               sub-classes).
      * 
      */
-    public abstract function fetchAllAsArray($params = array());
+    public abstract function fetchAllAsArray(array $params = array());
 
     /**
      * 
      * Fetch an array of db data. Each record is an associative array and not an
      * instance of \GDAO\Model\Record [Eager Loading should be considered here].
      * 
-     * @param array $params an array of parameters for the fetch with the keys below
+     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      * 
      *  `relations_to_include`
      *      : (array) An array of relation names as defined in any or all of 
@@ -1154,7 +1204,8 @@ abstract class Model
      *              should give it a default value of false.
      * 
      *  `cols`
-     *      : (array) An array of the name(s) of column(s) to be returned. 
+     *      : (array) An array of the name(s) of column(s) to be returned.
+     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
      *        Return only these columns.
      *        Eg. to generate SELECT col_1, col_2, col_3 ......
      *        use: 
@@ -1163,18 +1214,27 @@ abstract class Model
      *          ]
      * 
      *  `where`
-     *      : (string|array)
-     *        Either a string containing a valid where clause statement (excluding 
-     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
-     * 
-     *        OR an array of parameters for building a WHERE clause, 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *      : (array) an array of parameters for building a WHERE clause, 
+     *        Eg. to generate 
+     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *             OR (column_name_1 < 58 AND column_name_2 < 58)
+     *            AND (column_name_3 >= 58)
+     *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'where' => 
      *                [
      *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1184,26 +1244,20 @@ abstract class Model
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
      *    
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'where' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
-     *        NOTE: Only question mark place holders allowed in the where clause string.
-     *              That is for the case where `where` is assigned a string value.
-     * 
-     *  `where_bind_values`
-     *      : (array) Values to bind into the query. Only applicable when the 
-     *        value of `where` is a string. Only question mark place holders 
-     *        expected in the where clause string.
-     * 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
-     *        use the array below:
-     *          [
-     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
-     *              'where_bind_values'=> [58, 59] 
-     *          ]
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -1216,13 +1270,26 @@ abstract class Model
      * 
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        Eg. to generate 
+     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *              OR (column_name_1 < 58 AND column_name_2 < 58)
+     *             AND (column_name_3 >= 58)
+     *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1231,13 +1298,21 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     *    
+     * 
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'having' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -1283,13 +1358,13 @@ abstract class Model
      * @return array
      * 
      */
-    public abstract function fetchArray($params = array());
+    public abstract function fetchArray(array $params = array());
 
     /**
      * 
      * Fetch an array of values for a specified column.
      * 
-     * @param array $params an array of parameters for the fetch with the keys below
+     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      * 
      *  `distinct`
      *      : (bool) True if the DISTINCT keyword should be added to the query, 
@@ -1301,6 +1376,7 @@ abstract class Model
      *  `cols`
      *      : (array) An array of the name(s) of column(s) to be returned. Only 
      *        the first one will be honored.
+     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
      *        Eg. to generate SELECT col_1 FROM......
      *        use: 
      *          [
@@ -1316,18 +1392,27 @@ abstract class Model
      *          ]
      * 
      *  `where`
-     *      : (string|array)
-     *        Either a string containing a valid where clause statement (excluding 
-     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
-     * 
-     *        OR an array of parameters for building a WHERE clause, 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *      : (array) an array of parameters for building a WHERE clause, 
+     *        Eg. to generate 
+     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *             OR (column_name_1 < 58 AND column_name_2 < 58)
+     *            AND (column_name_3 >= 58)
+     *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'where' => 
      *                [
      *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1337,26 +1422,20 @@ abstract class Model
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
      *    
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'where' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
-     *        NOTE: Only question mark place holders allowed in the where clause string.
-     *              That is for the case where `where` is assigned a string value.
-     * 
-     *  `where_bind_values`
-     *      : (array) Values to bind into the query. Only applicable when the 
-     *        value of `where` is a string. Only question mark place holders 
-     *        expected in the where clause string.
-     * 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
-     *        use the array below:
-     *          [
-     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
-     *              'where_bind_values'=> [58, 59] 
-     *          ]
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -1369,13 +1448,26 @@ abstract class Model
      * 
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        Eg. to generate 
+     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *              OR (column_name_1 < 58 AND column_name_2 < 58)
+     *             AND (column_name_3 >= 58)
+     *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1384,13 +1476,21 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     *    
+     * 
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'having' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -1436,13 +1536,13 @@ abstract class Model
      * @return array
      * 
      */
-    public abstract function fetchCol($params = array());
+    public abstract function fetchCol(array $params = array());
 
     /**
      * 
      * Fetch a single record matching the specified params.
      * 
-     * @param array $params an array of parameters for the fetch with the keys below
+     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      * 
      *  `relations_to_include`
      *      : (array) An array of relation names as defined in any or all of 
@@ -1472,7 +1572,8 @@ abstract class Model
      *              should give it a default value of false.
      * 
      *  `cols`
-     *      : (array) An array of the name(s) of column(s) to be returned. 
+     *      : (array) An array of the name(s) of column(s) to be returned.
+     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
      *        Return only these columns.
      *        Eg. to generate SELECT col_1, col_2, col_3 ......
      *        use: 
@@ -1481,18 +1582,27 @@ abstract class Model
      *          ]
      * 
      *  `where`
-     *      : (string|array)
-     *        Either a string containing a valid where clause statement (excluding 
-     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
-     * 
-     *        OR an array of parameters for building a WHERE clause, 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *      : (array) an array of parameters for building a WHERE clause, 
+     *        Eg. to generate 
+     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *             OR (column_name_1 < 58 AND column_name_2 < 58)
+     *            AND (column_name_3 >= 58)
+     *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'where' => 
      *                [
      *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1502,26 +1612,20 @@ abstract class Model
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
      *    
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'where' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
-     *        NOTE: Only question mark place holders allowed in the where clause string.
-     *              That is for the case where `where` is assigned a string value.
-     * 
-     *  `where_bind_values`
-     *      : (array) Values to bind into the query. Only applicable when the 
-     *        value of `where` is a string. Only question mark place holders 
-     *        expected in the where clause string.
-     * 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
-     *        use the array below:
-     *          [
-     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
-     *              'where_bind_values'=> [58, 59] 
-     *          ]
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -1534,13 +1638,26 @@ abstract class Model
      * 
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        Eg. to generate 
+     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *              OR (column_name_1 < 58 AND column_name_2 < 58)
+     *             AND (column_name_3 >= 58)
+     *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1549,13 +1666,21 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     *    
+     * 
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'having' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -1573,14 +1698,14 @@ abstract class Model
      * @return \GDAO\Model\Record
      * 
      */
-    public abstract function fetchOne($params = array());
+    public abstract function fetchOne(array $params = array());
 
     /**
      * 
      * Fetch an array of key-value pairs from the db table, where the 
      * 1st column's value is the key and the 2nd column's value is the value.
      * 
-     * @param array $params an array of parameters for the fetch with the keys below
+     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      *
      *  `distinct`
      *      : (bool) True if the DISTINCT keyword should be added to the query, 
@@ -1592,6 +1717,7 @@ abstract class Model
      *  `cols`
      *      : (array) An array of the name(s) of column(s) or aggregate sql function
      *        calls to be returned. Only the first two array items will be honored.
+     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
      *        Eg. to generate 'SELECT col_1, col_2 FROM.....'
      *        use: 
      *          [
@@ -1603,18 +1729,27 @@ abstract class Model
      *          ]
      * 
      *  `where`
-     *      : (string|array)
-     *        Either a string containing a valid where clause statement (excluding 
-     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
-     * 
-     *        OR an array of parameters for building a WHERE clause, 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *      : (array) an array of parameters for building a WHERE clause, 
+     *        Eg. to generate 
+     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *             OR (column_name_1 < 58 AND column_name_2 < 58)
+     *            AND (column_name_3 >= 58)
+     *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'where' => 
      *                [
      *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1624,26 +1759,20 @@ abstract class Model
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
      *    
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'where' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
-     *        NOTE: Only question mark place holders allowed in the where clause string.
-     *              That is for the case where `where` is assigned a string value.
-     * 
-     *  `where_bind_values`
-     *      : (array) Values to bind into the query. Only applicable when the 
-     *        value of `where` is a string. Only question mark place holders 
-     *        expected in the where clause string.
-     * 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
-     *        use the array below:
-     *          [
-     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
-     *              'where_bind_values'=> [58, 59] 
-     *          ]
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -1656,13 +1785,26 @@ abstract class Model
      * 
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        Eg. to generate 
+     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *              OR (column_name_1 < 58 AND column_name_2 < 58)
+     *             AND (column_name_3 >= 58)
+     *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1671,13 +1813,21 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     *    
+     * 
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'having' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -1723,13 +1873,13 @@ abstract class Model
      * @return array
      * 
      */
-    public abstract function fetchPairs($params = array());
+    public abstract function fetchPairs(array $params = array());
 
     /**
      * 
      * Fetch a single value from the db table matching params.
      * 
-     * @param array $params an array of parameters for the fetch with the keys below
+     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      * 
      *  `distinct`
      *      : (bool) True if the DISTINCT keyword should be added to the query, 
@@ -1740,8 +1890,8 @@ abstract class Model
      * 
      *  `cols`
      *      : (array) An array of the name(s) of column(s) or aggregate sql function
-     *        call(s) to be returned. 
-     *         only the first one will be honored.
+     *        call(s) to be returned. Only the first one will be honored.
+     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
      *        Eg. Both: 
      *          [
      *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
@@ -1753,18 +1903,27 @@ abstract class Model
      *          will generate  'SELECT col_1 FROM .....'
      * 
      *  `where`
-     *      : (string|array)
-     *        Either a string containing a valid where clause statement (excluding 
-     *        the WHERE keyword) Eg. ' column_name_1 > 58 AND column_name_2 > 58 '
-     * 
-     *        OR an array of parameters for building a WHERE clause, 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 58 '
+     *      : (array) an array of parameters for building a WHERE clause, 
+     *        Eg. to generate 
+     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *             OR (column_name_1 < 58 AND column_name_2 < 58)
+     *            AND (column_name_3 >= 58)
+     *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'where' => 
      *                [
      *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ]
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1774,26 +1933,20 @@ abstract class Model
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
      *    
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'where' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
-     *        NOTE: Only question mark place holders allowed in the where clause string.
-     *              That is for the case where `where` is assigned a string value.
-     * 
-     *  `where_bind_values`
-     *      : (array) Values to bind into the query. Only applicable when the 
-     *        value of `where` is a string. Only question mark place holders 
-     *        expected in the where clause string.
-     * 
-     *        Eg. to generate ' WHERE column_name_1 > 58 AND column_name_2 > 59 '
-     *        use the array below:
-     *          [
-     *              'where' => ' column_name_1 > ? AND column_name_2 > ? ',
-     *              'where_bind_values'=> [58, 59] 
-     *          ]
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the result
@@ -1806,13 +1959,26 @@ abstract class Model
      * 
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate ' HAVING count(column_name_1) > 58 AND count(column_name_2) > 59 '
+     *        Eg. to generate 
+     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *              OR (column_name_1 < 58 AND column_name_2 < 58)
+     *             AND (column_name_3 >= 58)
+     *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'count(column_name_1)', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'count(column_name_2)', 'operator'=>'>', 'val'=>59 ]
+     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   'OR'=> [
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR#2'=> [
+     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                          ]
      *                ]
      *          ]
      * 
@@ -1821,13 +1987,21 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     *    
+     * 
+     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
+     *              append a # and a unique string after the # so that the 
+     *              subsequent OR conditions do not override the previous ones.
+     *              Implementers of this class just need to check if an array 
+     *              key inside the 'having' array starts with OR or OR# in order
+     *              to add the condition as an OR condition.
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value.
+     *              numeric or string value. If 'val' is a string, it must be a valid
+     *              value that a NOT IN or IN operator expects including the opening
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -1847,7 +2021,7 @@ abstract class Model
      *               function (eg. MAX(col_name)).
      * 
      */
-    public abstract function fetchValue($params = array());
+    public abstract function fetchValue(array $params = array());
 
     /**
      * 
