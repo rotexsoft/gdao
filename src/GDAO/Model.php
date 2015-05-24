@@ -862,7 +862,75 @@ abstract class Model
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'where' array or the first 
+     *              key in any of the array(s) inside the 'where' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['where'] is 'OR' 
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']['OR'] 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -911,13 +979,81 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     * 
+     *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'having' array or the first 
+     *              key in any of the array(s) inside the 'having' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['having'] is 'OR' 
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']['OR'] 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1057,7 +1193,75 @@ abstract class Model
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'where' array or the first 
+     *              key in any of the array(s) inside the 'where' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['where'] is 'OR' 
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']['OR'] 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1106,13 +1310,81 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     * 
+     *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'having' array or the first 
+     *              key in any of the array(s) inside the 'having' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['having'] is 'OR' 
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']['OR'] 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1249,7 +1521,75 @@ abstract class Model
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'where' array or the first 
+     *              key in any of the array(s) inside the 'where' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['where'] is 'OR' 
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']['OR'] 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1298,13 +1638,81 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     * 
+     *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'having' array or the first 
+     *              key in any of the array(s) inside the 'having' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['having'] is 'OR' 
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']['OR'] 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1427,7 +1835,75 @@ abstract class Model
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'where' array or the first 
+     *              key in any of the array(s) inside the 'where' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['where'] is 'OR' 
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']['OR'] 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1476,13 +1952,81 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     * 
+     *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'having' array or the first 
+     *              key in any of the array(s) inside the 'having' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['having'] is 'OR' 
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']['OR'] 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1617,7 +2161,75 @@ abstract class Model
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'where' array or the first 
+     *              key in any of the array(s) inside the 'where' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['where'] is 'OR' 
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']['OR'] 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1666,13 +2278,81 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     * 
+     *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'having' array or the first 
+     *              key in any of the array(s) inside the 'having' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['having'] is 'OR' 
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']['OR'] 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1764,7 +2444,75 @@ abstract class Model
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'where' array or the first 
+     *              key in any of the array(s) inside the 'where' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['where'] is 'OR' 
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']['OR'] 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1813,13 +2561,81 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     * 
+     *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'having' array or the first 
+     *              key in any of the array(s) inside the 'having' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['having'] is 'OR' 
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']['OR'] 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1938,7 +2754,75 @@ abstract class Model
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'where' array or the first 
+     *              key in any of the array(s) inside the 'where' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['where'] is 'OR' 
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']
+     *          $array = [
+     *              'where' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['where']['OR'] 
+     *          $array = [
+     *             'where' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -1987,13 +2871,81 @@ abstract class Model
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
      *          ]
-     * 
+     *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
      *              Implementers of this class just need to check if an array 
      *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition.
+     *              to add the condition as an OR condition. 
+     *        NOTE: Consumers of any implementation of this class should be careful 
+     *              not to make the first key in the 'having' array or the first 
+     *              key in any of the array(s) inside the 'having' array an 'OR' 
+     *              or 'OR#...' key. Below are some bad examples and their
+     *              corrected equivalents
+     * 
+     *          #BAD 1 - first key in $array['having'] is 'OR' 
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   'OR'=> [ //offending entry. should not be the first item here
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                ]
+     *          ]
+     * 
+     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']
+     *          $array = [
+     *              'having' => 
+     *                [
+     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
+     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                          ],
+     *                ]
+     *          ]
+     *          
+     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             'OR'=> [ //offending entry. should not be the first item here
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *          
+     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
+     *                    in $array['having']['OR'] 
+     *          $array = [
+     *             'having' => 
+     *               [
+     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  'OR'=> [
+     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
+     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                    ],
+     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                         ],
+     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *               ]
+     *         ]
+     *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
