@@ -601,6 +601,21 @@ abstract class Model
      */
     protected $_extra_opts = array();
     
+    protected static $_valid_where_or_having_operators = array(
+        '=', 
+        '>', 
+        '>=', 
+        '<',  
+        '<=', 
+        'in', 
+        'is-null', 
+        'like', 
+        '!=', 
+        'not-in',    
+        'not-like', 
+        'not-null'  
+    );
+    
     /**
      * 
      * @param string $dsn
@@ -659,13 +674,13 @@ abstract class Model
      * 
      * @return mixed the return value of the magic method's implementation
      * 
-     * @throws \GDAO\GDAOModelMustImplementMethodException
+     * @throws \GDAO\ModelMustImplementMethodException
      * 
      */
     public function __call($method, $params) {
 
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new ModelMustImplementMethodException($msg);
     }
 
     /**
@@ -679,13 +694,13 @@ abstract class Model
      * @return mixed value of a non-existent or publicly inaccessible property of
      *               an instance of this class.
      * 
-     * @throws \GDAO\GDAOModelMustImplementMethodException
+     * @throws \GDAO\ModelMustImplementMethodException
      * 
      */
     public function __get($property_name) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new ModelMustImplementMethodException($msg);
     }
 
     /**
@@ -725,8 +740,8 @@ abstract class Model
      */
     public function createCollection(\GDAO\Model\GDAORecordsList $list_of_records, array $extra_opts=array()) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new ModelMustImplementMethodException($msg);
     }
     
     /**
@@ -781,6 +796,293 @@ abstract class Model
      */
     public abstract function deleteSpecifiedRecord(\GDAO\Model\Record $record);
 
+    /**
+     * 
+     * Validates the structure of an array that is meant to contain definitions
+     * for building a WHERE or HAVING clause for an SQL statement.
+     * 
+     * Usage:
+     * For example if you have an array like this
+     * 
+     *  $params = [ 'cols'=>[.....], 'where'=>[.....], ...., 'having'=>[.....] ];
+     * 
+     * which is the type of $params array expected by \GDAO\Model::fetch*($params),
+     * to validate $params['where'] and $params['having'], make the calls below
+     * 
+     *  \GDAO\Model::_validateWhereOrHavingParamsArray($params['where'])
+     *  \GDAO\Model::_validateWhereOrHavingParamsArray($params['having'])
+     * 
+     * @see phpdoc for \GDAO\Model::fetchAll() for the definition of a valid 
+     *      'where' or 'having' array
+     * 
+     * @param array $array 
+     * @return bool true if the array has a valid structure
+     * @throws \GDAO\ModelBadWhereParamSuppliedException
+     */
+    protected function _validateWhereOrHavingParamsArray(array $array) {
+
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveArrayIterator($array),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        $_1st_level_keys_in_array = array_keys($array);
+        $first_key = $_1st_level_keys_in_array[0];
+
+        if (
+                $first_key === "OR" || substr($first_key, 0, 3) === "OR#"
+        ) {
+            //The first key in the first iteration of the loop must !== 'OR' 
+            //and not start with 'OR#'
+            //Badly structured where / having params array supplied.
+            //Where / having params array cannot have its first 
+            //entry with a key value starting with 'OR' or 'OR#'. 
+            $msg = 'ERROR: Bad where param array supplied to '
+                    . get_class($this) . '::' . __FUNCTION__ . '(...). ' 
+                    . PHP_EOL . 'The first key in the where param array '
+                    . 'cannot start with \'OR\' or \'OR#\'' . PHP_EOL
+                    . 'The array passed to ' 
+                    . get_class($this) . '::' . __FUNCTION__ . '(...):' 
+                    . PHP_EOL . print_r($array, true);
+
+            throw new ModelBadWhereParamSuppliedException($msg);
+        }
+
+        foreach ($iterator as $key => $value) {
+
+            $_1st_key_in_curr_value_subarray = '';
+
+            if ( is_array($value) && count($value) > 0 ) {
+
+                $keys_in_current_value_subarray = array_keys($value);
+                $_1st_key_in_curr_value_subarray = 
+                                            $keys_in_current_value_subarray[0];
+            }
+
+            if ( is_array($value) && count($value) <= 0 ) {
+
+                //An empty array. Validation failed.
+                //No value in a valid where / having 
+                //params array should be an empty array.
+                $msg = "ERROR: Bad where param array with an empty sub-array"
+                        . " with a key named '{$key}' supplied to "
+                        . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                        . PHP_EOL . 'The array passed to ' 
+                        . get_class($this) . '::' . __FUNCTION__ . '(...):' 
+                        . PHP_EOL . print_r($array, true);
+
+                throw new ModelBadWhereParamSuppliedException($msg);
+            }
+
+            if ( $key === 'col' && !is_string($value) ) {
+
+                //if $key === 'col' then $value must be a string
+                $msg = "ERROR: Bad where param array having an entry with a key"
+                        . " named 'col' with a non-string value of "
+                        . print_r($value, true) . PHP_EOL
+                        . "inside the array passed to "
+                        . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                        . PHP_EOL;
+
+                throw new ModelBadWhereParamSuppliedException($msg);
+                
+            } else if (
+                    $key === 'operator' 
+                    && !in_array( 
+                            $value, static::$_valid_where_or_having_operators
+                        )
+            ) {
+                //$key === 'operator' then $value must be in valid expected
+                // operators
+                $msg = "ERROR: Bad where param array having an entry with a key"
+                        . " named 'operator' with a non-expected value of "
+                        . PHP_EOL . print_r($value, true) . PHP_EOL
+                        . "inside the array passed to " 
+                        . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                        . PHP_EOL . 'Below are the expected values for an array'
+                        . ' entry with a key named \'operator\' ' . PHP_EOL 
+                        . print_r(
+                                static::$_valid_where_or_having_operators,
+                                true
+                            );
+
+                throw new ModelBadWhereParamSuppliedException($msg);
+                
+            } else if (
+                    $key === 'val' &&
+                    (
+                        (
+                            !is_numeric($value) 
+                            && !is_string($value) 
+                            && !is_array($value)
+                        ) 
+                        ||
+                        (
+                            is_string($value) && empty($value)
+                        ) 
+                        ||
+                        (
+                            is_array($value) && count($value) <= 0
+                        )
+                    )
+            ) {
+                //$key === 'val' must be either numeric, a non-empty string or 
+                //a non-empty array 
+                $msg = "ERROR: Bad where param array having an entry with a key"
+                        . " named 'val' with a non-expected value of "
+                        . PHP_EOL . var_export($value, true) . PHP_EOL
+                        . "inside the array passed to "
+                        . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                        . PHP_EOL . 'Only a numeric or a non-empty string or a'
+                        . ' non-empty array value are allowed for an array entry'
+                        . ' with a key named \'val\'.';
+
+                throw new ModelBadWhereParamSuppliedException($msg);
+                
+            } else if (
+                is_numeric($key) || $key === "OR" || substr($key, 0, 3) === "OR#"
+            ) {
+                $has_a_val_key = 
+                        (is_array($value)) && array_key_exists('val', $value);
+
+                $has_a_col_and_an_operator_key = 
+                                    (is_array($value)) 
+                                        && array_key_exists('col', $value) 
+                                        && array_key_exists('operator', $value);
+
+                if ( !is_array($value) ) {
+
+                    //$key is numeric or $key === 'OR' or starts with 'OR#' 
+                    //then $value must be an array
+                    $msg = "ERROR: Bad where param array having an entry with a"
+                            . " key named '{$key}' with a non-expected value of"
+                            . PHP_EOL . var_export($value, true) . PHP_EOL
+                            . "inside the array passed to "
+                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                            . PHP_EOL . "Any array entry with a numeric key or "
+                            . "a key named 'OR' or a key that starts with 'OR#'"
+                            . " must have a value that is an array.";
+
+                    throw new ModelBadWhereParamSuppliedException($msg);
+                    
+                } else if (
+                        $_1st_key_in_curr_value_subarray === "OR" 
+                        || 
+                        substr($_1st_key_in_curr_value_subarray, 0, 3) === "OR#"
+                ) {
+                    //$key is numeric or $key === 'OR' or starts with 'OR#' then 
+                    //$value must be an array whose first item's key 
+                    //(is not 'OR' or starts with 'OR#')
+                    $msg = "ERROR: Bad where param array having an entry with a"
+                            . " key named '{$key}' with a non-expected value of"
+                            . PHP_EOL . print_r($value, true) . PHP_EOL
+                            . "inside the array passed to "
+                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                            . PHP_EOL . "The first key in any of the sub-arrays"
+                            . " in the array passed to "
+                            . get_class($this) . '::' . __FUNCTION__ . '(...) '
+                            . "cannot start with 'OR' or 'OR#'.";
+
+                    throw new ModelBadWhereParamSuppliedException($msg);
+                    
+                } else if (
+                        ( $has_a_col_and_an_operator_key || $has_a_val_key ) 
+                        &&
+                        count(
+                            array_filter(
+                                    array_keys($value),
+                                    function($v) {
+                                        return 
+                                            is_numeric($v) 
+                                            || $v === 'OR' 
+                                            || substr($v, 0, 3) === "OR#";
+                                    }
+                                )
+                        ) > 0
+                ) {
+                    //Failed Requirement below
+                    //If any of the expected keys ('col', 'operator' or 'val') 
+                    //is present, then no other type of key is allowed in the 
+                    //particular sub-array
+                    $msg = "ERROR: Incorect where condition definition in a"
+                            . " sub-array referenced via a key named '{$key}'."
+                            . " Sub-array:". PHP_EOL 
+                            . print_r($value, true) . PHP_EOL
+                            . "inside the array passed to "
+                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                            . PHP_EOL . "Because one or more of these keys"
+                            . " ('col', 'operator' or 'val') are present," 
+                            . PHP_EOL . "no other type of key is allowed in the"
+                            . " array in which they are present.";
+
+                    throw new ModelBadWhereParamSuppliedException($msg);
+                    
+                } else if (
+                        $has_a_col_and_an_operator_key 
+                        && !$has_a_val_key 
+                        && !in_array($value['operator'], array('is-null', 'not-null'))
+                ) {
+
+                    //Failed Requirement below
+                    //If the $value array is has these 2 keys 'col' & 'operator' 
+                    //the operator's value must be either 'is-null' or 'not-null'
+                    $msg = "ERROR: Incorect where condition definition in a"
+                            . " sub-array referenced via a key named '{$key}'. "
+                            . PHP_EOL . print_r($value, true) . PHP_EOL
+                            . "inside the array passed to "
+                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                            . PHP_EOL . 'A sub-array containing keys named'
+                            . ' \'col\' and \'operator\' without a key named'
+                            . ' \'val\' is valid if and only if the entry with'
+                            . ' a key named \'operator\' has either a value of'
+                            . ' \'is-null\' or \'not-null\' ';
+
+                    throw new ModelBadWhereParamSuppliedException($msg);
+                    
+                } elseif ( !$has_a_col_and_an_operator_key && $has_a_val_key ) {
+
+                    //Failed Requirement below
+                    //Missing keys ('col' & 'operator') when key named 'val' 
+                    //is present
+                    $msg = "ERROR: Incorect where condition definition in a"
+                            . " sub-array referenced via a key named '{$key}'. "
+                            . PHP_EOL . print_r($value, true) . PHP_EOL
+                            . "inside the array passed to "
+                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                            . PHP_EOL . 'A sub-array containing key named'
+                            . ' \'val\' without two other entries with keys'
+                            . ' named \'col\' and \'operator\' ';
+
+                    throw new ModelBadWhereParamSuppliedException($msg);
+                }
+            } else if (
+                    !is_numeric($key) 
+                    && !in_array($key, array('col', 'operator', 'val', 'OR')) 
+                    && substr($key, 0, 3) !== "OR#"
+            ) {
+                $val_2_print = (is_array($value)) ? print_r($value, true) : var_export($value,
+                                true);
+
+                //The key is not in the range of allowable values
+                $msg = "ERROR: Bad where param array having an entry with a"
+                        . " non-expected key named '{$key}' with a value of "
+                        . PHP_EOL . $val_2_print . PHP_EOL
+                        . "inside the array passed to "
+                        . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                        . PHP_EOL . "Allowed keys are as follows:." . PHP_EOL
+                        . "Any of these keys ('col', 'operator', 'val' or 'OR')"
+                        . " or the key must be a numeric key or a string that"
+                        . " starts with 'OR#'.";
+
+                throw new ModelBadWhereParamSuppliedException($msg);
+            }
+            
+        }//foreach ($iterator as $key => $value)
+        
+        //if we got this far, then the array must be valid
+        return true;
+    }
+    
     /**
      * 
      * Fetch a collection (an instance of GDAO\Model\Collection or any of its 
@@ -938,8 +1240,11 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
-     * 
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
      *        will be grouped by.
@@ -1061,8 +1366,11 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
-     *    
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
      *        The keys are the column names and the values are the directions
@@ -1104,13 +1412,13 @@ abstract class Model
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
-     * @return GDAO\Model\Collection
+     * @return GDAO\Model\Collection 
      * 
      */
     public function fetchAll(array $params = array()) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new ModelMustImplementMethodException($msg);
     }
 
     /**
@@ -1269,7 +1577,10 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -1392,8 +1703,11 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
-     *    
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
      *        The keys are the column names and the values are the directions
@@ -1597,7 +1911,10 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -1720,8 +2037,11 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
-     *    
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     *     
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
      *        The keys are the column names and the values are the directions
@@ -1911,7 +2231,10 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -2034,8 +2357,11 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
-     *    
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
      *        The keys are the column names and the values are the directions
@@ -2237,7 +2563,10 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -2360,8 +2689,11 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
-     *    
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
      *        The keys are the column names and the values are the directions
@@ -2520,7 +2852,10 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -2643,7 +2978,10 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -2830,7 +3168,10 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the result
@@ -2953,7 +3294,10 @@ abstract class Model
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
      *              numeric or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )" .
+     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
+     *        NOTE: Implementers of this class can validate the structure of 
+     *              this sub-array by passing it to
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -3127,6 +3471,7 @@ abstract class Model
     }
 }
 
-class ModelPrimaryColNameNotSetDuringConstructionException extends \Exception {}
+class ModelMustImplementMethodException extends \Exception{}
+class ModelBadWhereParamSuppliedException extends \Exception{}
 class ModelTableNameNotSetDuringConstructionException extends \Exception {}
-class GDAOModelMustImplementMethodException extends \Exception{}
+class ModelPrimaryColNameNotSetDuringConstructionException extends \Exception {}

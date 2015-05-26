@@ -302,8 +302,8 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetExists($offset) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelRecordMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
     }
 
     /**
@@ -313,8 +313,8 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetGet($offset) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelRecordMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
     }
 
     /**
@@ -324,8 +324,8 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetSet($offset, $value) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelRecordMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
     }
 
     /**
@@ -335,8 +335,8 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function offsetUnset($offset) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelRecordMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
     }
 
     /**
@@ -346,8 +346,8 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function count(){
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelRecordMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
     }
 
     /**
@@ -357,28 +357,28 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function getIterator(){
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelRecordMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
     }
     
     //Magic Methods
     
     public function __get($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelRecordMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
     }
 
     public function __isset($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelRecordMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
     }
 
     public function __set($key, $value) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelRecordMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
     }
 
     /**
@@ -397,9 +397,9 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
 
     public function __unset($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelRecordMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
     }
 }
 
-class GDAOModelRecordMustImplementMethodException extends \Exception{}
+class RecordMustImplementMethodException extends \Exception{}

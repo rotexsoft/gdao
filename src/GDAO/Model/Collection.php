@@ -96,57 +96,57 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
     //Interface Methods
     public function offsetExists($offset) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelCollectionMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new CollectionMustImplementMethodException($msg);
     }
 
     public function offsetGet($offset) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelCollectionMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new CollectionMustImplementMethodException($msg);
     }
 
     public function offsetSet($offset, $value) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelCollectionMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new CollectionMustImplementMethodException($msg);
     }
 
     public function offsetUnset($offset) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelCollectionMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new CollectionMustImplementMethodException($msg);
     }
 
     public function count() {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelCollectionMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new CollectionMustImplementMethodException($msg);
     }
 
     public function getIterator() {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelCollectionMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new CollectionMustImplementMethodException($msg);
     }
 
     //Magic Methods
     public function __get($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelCollectionMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new CollectionMustImplementMethodException($msg);
     }
 
     public function __isset($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelCollectionMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new CollectionMustImplementMethodException($msg);
     }
 
     public function __set($key, $value) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelCollectionMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new CollectionMustImplementMethodException($msg);
     }
 
     public function __toString() {
@@ -156,9 +156,9 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
 
     public function __unset($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__;
-        throw new GDAOModelCollectionMustImplementMethodException($msg);
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new CollectionMustImplementMethodException($msg);
     }
 }
 
-class GDAOModelCollectionMustImplementMethodException extends \Exception{}
+class CollectionMustImplementMethodException extends \Exception{}
