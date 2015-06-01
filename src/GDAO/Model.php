@@ -1236,9 +1236,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -1362,9 +1365,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -1573,9 +1579,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -1699,9 +1708,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -1907,9 +1919,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -2033,9 +2048,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -2227,9 +2245,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -2353,9 +2374,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -2559,9 +2583,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -2685,9 +2712,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -2848,9 +2878,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -2974,9 +3007,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -3164,9 +3200,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
@@ -3290,9 +3329,12 @@ abstract class Model
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: The operators: 'not-null' and 'is-null' do not need 'val' to be set.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array, 
-     *              numeric or string value. If 'val' is a string, it must be a valid
+     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              any item in that sub-array with a key named 'val', but there must
+     *              be a corresponding item with a key named 'col' with a string value.
+     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
+     *              or string value. If 'val' is a string, it must be a valid
      *              value that a NOT IN or IN operator expects including the opening
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 

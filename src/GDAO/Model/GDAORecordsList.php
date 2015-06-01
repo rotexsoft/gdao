@@ -28,7 +28,7 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
 
         $this->_data = new \Collections\Collection('\\GDAO\\Model\\Record');
 
-        if (is_array($gdao_records) && count($gdao_records)) {
+        if (is_array($gdao_records) && count($gdao_records) > 0) {
 
             $this->_data->addRange($gdao_records);
         }
