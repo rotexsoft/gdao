@@ -26,5 +26,8 @@
     },
     "autoload-dev": {
         "classmap": ["src/", "tests/"]
-    }   
+    },
+    "suggest": {
+        "rotexsoft/idiorm-gdao": "A Generic Data Objects (GDAO https://github.com/rotexsoft/gdao ) implementation based on idiorm."
+    }
 }
