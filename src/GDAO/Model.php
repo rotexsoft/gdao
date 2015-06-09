@@ -24,7 +24,7 @@ abstract class Model
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
-     * @todo Work on supporting tables that do not have any primary key column defined
+     * @todo Work on supporting tables that don't have any primary key column defined
      * 
      * @var string
      * 
