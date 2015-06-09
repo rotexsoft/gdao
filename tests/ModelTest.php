@@ -44,6 +44,10 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             
                 $msg = 'Test 1: First key is OR or starts with OR#';
                 $this->assertInstanceOf( $expected, $actual_exception, $msg);
+                
+                $substr = "The first key in the where param array cannot start"
+                        . " with 'OR' or 'OR#'";              
+                $this->assertContains( $substr, $actual_exception->getMessage());
         }
         
 
