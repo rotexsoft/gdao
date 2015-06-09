@@ -10,13 +10,19 @@ desktop.ini
 *.tmproj
 build
 .idea
+
 nbproject/
 /nbproject/
 /nbproject/*
 /nbproject/*.*
 /nbproject/*/
-composer.lock
 
-fuel/app/config/production/migrations.php
+vendor/
+/vendor/
+/vendor/*
+/vendor/*.*
+/vendor/*/
+
+composer.lock
 
 file-only-present-on-dev-pc-at-home.txt
