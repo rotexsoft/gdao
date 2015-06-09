@@ -613,7 +613,7 @@ abstract class Model
         '!=', 
         'not-in',    
         'not-like', 
-        'not-null'  
+        'not-null', 
     );
     
     /**
