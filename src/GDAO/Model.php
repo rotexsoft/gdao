@@ -632,8 +632,8 @@ abstract class Model
         $dsn = '',
         $username = '', 
         $passwd = '', 
-        $pdo_driver_opts = array(),
-        $extra_opts = array()
+        array $pdo_driver_opts = array(),
+        array $extra_opts = array()
     ) {
         $this->_dsn = $dsn;
         $this->_username = $username;
@@ -821,9 +821,9 @@ abstract class Model
      */
     protected function _validateWhereOrHavingParamsArray(array $array) {
 
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveArrayIterator($array),
-            RecursiveIteratorIterator::SELF_FIRST
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveArrayIterator($array),
+            \RecursiveIteratorIterator::SELF_FIRST
         );
 
         $_1st_level_keys_in_array = array_keys($array);
@@ -843,10 +843,13 @@ abstract class Model
                     . 'cannot start with \'OR\' or \'OR#\'' . PHP_EOL
                     . 'The array passed to ' 
                     . get_class($this) . '::' . __FUNCTION__ . '(...):' 
-                    . PHP_EOL . print_r($array, true);
+                    . PHP_EOL . var_export($array, true). PHP_EOL;
 
             throw new ModelBadWhereParamSuppliedException($msg);
         }
+
+        $previous_key = null;
+        $previous_value = null;
 
         foreach ($iterator as $key => $value) {
 
@@ -856,7 +859,7 @@ abstract class Model
 
                 $keys_in_current_value_subarray = array_keys($value);
                 $_1st_key_in_curr_value_subarray = 
-                                            $keys_in_current_value_subarray[0];
+                                  $keys_in_current_value_subarray[0];
             }
 
             if ( is_array($value) && count($value) <= 0 ) {
@@ -869,7 +872,7 @@ abstract class Model
                         . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                         . PHP_EOL . 'The array passed to ' 
                         . get_class($this) . '::' . __FUNCTION__ . '(...):' 
-                        . PHP_EOL . print_r($array, true);
+                        . PHP_EOL . var_export($array, true). PHP_EOL;
 
                 throw new ModelBadWhereParamSuppliedException($msg);
             }
@@ -879,10 +882,10 @@ abstract class Model
                 //if $key === 'col' then $value must be a string
                 $msg = "ERROR: Bad where param array having an entry with a key"
                         . " named 'col' with a non-string value of "
-                        . print_r($value, true) . PHP_EOL
-                        . "inside the array passed to "
+                        . var_export($value, true) . PHP_EOL
+                        . "inside the a sub-array in the array passed to "
                         . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                        . PHP_EOL;
+                        . PHP_EOL . var_export($array, true). PHP_EOL;
 
                 throw new ModelBadWhereParamSuppliedException($msg);
                 
@@ -896,15 +899,16 @@ abstract class Model
                 // operators
                 $msg = "ERROR: Bad where param array having an entry with a key"
                         . " named 'operator' with a non-expected value of "
-                        . PHP_EOL . print_r($value, true) . PHP_EOL
+                        . PHP_EOL . var_export($value, true) . PHP_EOL
                         . "inside the array passed to " 
                         . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                         . PHP_EOL . 'Below are the expected values for an array'
                         . ' entry with a key named \'operator\' ' . PHP_EOL 
-                        . print_r(
+                        . var_export(
                                 static::$_valid_where_or_having_operators,
                                 true
-                            );
+                            )
+                        . PHP_EOL;
 
                 throw new ModelBadWhereParamSuppliedException($msg);
                 
@@ -915,6 +919,7 @@ abstract class Model
                             !is_numeric($value) 
                             && !is_string($value) 
                             && !is_array($value)
+                            && !is_bool($value)
                         ) 
                         ||
                         (
@@ -927,15 +932,15 @@ abstract class Model
                     )
             ) {
                 //$key === 'val' must be either numeric, a non-empty string or 
-                //a non-empty array 
+                //a non-empty array or a boolean value 
                 $msg = "ERROR: Bad where param array having an entry with a key"
                         . " named 'val' with a non-expected value of "
                         . PHP_EOL . var_export($value, true) . PHP_EOL
                         . "inside the array passed to "
                         . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                        . PHP_EOL . 'Only a numeric or a non-empty string or a'
-                        . ' non-empty array value are allowed for an array entry'
-                        . ' with a key named \'val\'.';
+                        . PHP_EOL . 'Only numeric, non-empty string, boolean or'
+                        . ' non-empty array values are allowed for an array entry'
+                        . ' with a key named \'val\'.'. PHP_EOL;
 
                 throw new ModelBadWhereParamSuppliedException($msg);
                 
@@ -949,11 +954,18 @@ abstract class Model
                                     (is_array($value)) 
                                         && array_key_exists('col', $value) 
                                         && array_key_exists('operator', $value);
-
-                if ( !is_array($value) ) {
-
+                                        
+                if ( 
+                	!is_array($value) 
+                	&& $previous_key !== 'val' 
+                	&& !( is_numeric($key) && is_numeric($previous_key) && !is_array($previous_value) ) 
+                ) {
                     //$key is numeric or $key === 'OR' or starts with 'OR#' 
-                    //then $value must be an array
+                    //then $value must be an array except, if the current key 
+                    //is inside a sub-array referenced by a key named 'val' 
+                    //ie. if this key is numeric and is inside an array referenced by a 
+                    //key named 'val' 
+                    //( 'val'=>array(...) is allowed when 'operator'=>'in' & 'operator'=>'not-in' )
                     $msg = "ERROR: Bad where param array having an entry with a"
                             . " key named '{$key}' with a non-expected value of"
                             . PHP_EOL . var_export($value, true) . PHP_EOL
@@ -961,27 +973,26 @@ abstract class Model
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . "Any array entry with a numeric key or "
                             . "a key named 'OR' or a key that starts with 'OR#'"
-                            . " must have a value that is an array.";
+                            . " must have a value that is an array.". PHP_EOL;
 
                     throw new ModelBadWhereParamSuppliedException($msg);
                     
                 } else if (
-                        $_1st_key_in_curr_value_subarray === "OR" 
-                        || 
-                        substr($_1st_key_in_curr_value_subarray, 0, 3) === "OR#"
+                	substr($_1st_key_in_curr_value_subarray, 0, 3) === "OR#"
+                        || $_1st_key_in_curr_value_subarray === "OR"                        
                 ) {
                     //$key is numeric or $key === 'OR' or starts with 'OR#' then 
                     //$value must be an array whose first item's key 
                     //(is not 'OR' or starts with 'OR#')
                     $msg = "ERROR: Bad where param array having an entry with a"
                             . " key named '{$key}' with a non-expected value of"
-                            . PHP_EOL . print_r($value, true) . PHP_EOL
+                            . PHP_EOL . var_export($value, true) . PHP_EOL
                             . "inside the array passed to "
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . "The first key in any of the sub-arrays"
                             . " in the array passed to "
                             . get_class($this) . '::' . __FUNCTION__ . '(...) '
-                            . "cannot start with 'OR' or 'OR#'.";
+                            . "cannot start with 'OR' or 'OR#'.". PHP_EOL;
 
                     throw new ModelBadWhereParamSuppliedException($msg);
                     
@@ -994,8 +1005,12 @@ abstract class Model
                                     function($v) {
                                         return 
                                             is_numeric($v) 
-                                            || $v === 'OR' 
-                                            || substr($v, 0, 3) === "OR#";
+                                            || 
+                                            (
+                                            	is_string($v)
+                                            	&& !in_array( $v, array('col', 'operator', 'val') )
+                                            )
+                                            ;
                                     }
                                 )
                         ) > 0
@@ -1007,13 +1022,13 @@ abstract class Model
                     $msg = "ERROR: Incorect where condition definition in a"
                             . " sub-array referenced via a key named '{$key}'."
                             . " Sub-array:". PHP_EOL 
-                            . print_r($value, true) . PHP_EOL
+                            . var_export($value, true) . PHP_EOL
                             . "inside the array passed to "
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . "Because one or more of these keys"
                             . " ('col', 'operator' or 'val') are present," 
                             . PHP_EOL . "no other type of key is allowed in the"
-                            . " array in which they are present.";
+                            . " array in which they are present.". PHP_EOL;
 
                     throw new ModelBadWhereParamSuppliedException($msg);
                     
@@ -1022,20 +1037,43 @@ abstract class Model
                         && !$has_a_val_key 
                         && !in_array($value['operator'], array('is-null', 'not-null'))
                 ) {
-
                     //Failed Requirement below
                     //If the $value array is has these 2 keys 'col' & 'operator' 
                     //the operator's value must be either 'is-null' or 'not-null'
                     $msg = "ERROR: Incorect where condition definition in a"
                             . " sub-array referenced via a key named '{$key}'. "
-                            . PHP_EOL . print_r($value, true) . PHP_EOL
+                            . PHP_EOL . var_export($value, true) . PHP_EOL
                             . "inside the array passed to "
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing keys named'
                             . ' \'col\' and \'operator\' without a key named'
                             . ' \'val\' is valid if and only if the entry with'
                             . ' a key named \'operator\' has either a value of'
-                            . ' \'is-null\' or \'not-null\' ';
+                            . ' \'is-null\' or \'not-null\' '. PHP_EOL;
+
+                    throw new ModelBadWhereParamSuppliedException($msg);
+                    
+                } else if (
+                        $has_a_col_and_an_operator_key 
+                        && $has_a_val_key 
+                        && in_array($value['operator'], array('is-null', 'not-null'))
+                ) {
+                    //Failed Requirement below
+                    //For any sub-array containing an item with a key named 'operator' 
+                    //with a value of either 'not-null' or 'is-null', there must not be
+                    //any item in that sub-array with a key named 'val', but there must
+                    //be a corresponding item with a key named 'col' with a string value.
+                    $msg = "ERROR: Incorect where condition definition in a"
+                            . " sub-array referenced via a key named '{$key}'. "
+                            . PHP_EOL . var_export($value, true) . PHP_EOL
+                            . "inside the array passed to "
+                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                            . PHP_EOL . 'A sub-array containing a key named'
+                            . ' \'operator\' with a value of \''
+                            . $value['operator'].'\' cannot also contain a'
+                            . ' key named \'val\'. Please remove the item'
+                            . ' with the key named \'val\' from the sub-array.'
+                            . PHP_EOL;
 
                     throw new ModelBadWhereParamSuppliedException($msg);
                     
@@ -1046,36 +1084,124 @@ abstract class Model
                     //is present
                     $msg = "ERROR: Incorect where condition definition in a"
                             . " sub-array referenced via a key named '{$key}'. "
-                            . PHP_EOL . print_r($value, true) . PHP_EOL
+                            . PHP_EOL . var_export($value, true) . PHP_EOL
                             . "inside the array passed to "
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing key named'
                             . ' \'val\' without two other entries with keys'
-                            . ' named \'col\' and \'operator\' ';
+                            . ' named \'col\' and \'operator\' '
+                            . PHP_EOL;
+
+                    throw new ModelBadWhereParamSuppliedException($msg);
+                    
+                } else if (
+                        $has_a_col_and_an_operator_key 
+                        && $has_a_val_key 
+                        && in_array($value['operator'], array('in', 'not-in'))
+                        && !is_array($value['val'])
+                        && !is_string($value['val'])
+                        && !is_numeric($value['val'])
+                ) {
+                    //Failed Requirement below
+		    //For any sub-array containing an item with a key named 'operator' 
+		    //with a value of either 'in' or 'not-in', there must be another
+		    //item in that sub-array with a key named 'val' with either a 
+		    //numeric, string or an array value.
+                    $msg = "ERROR: Incorect where condition definition in a"
+                            . " sub-array referenced via a key named '{$key}'. "
+                            . PHP_EOL . var_export($value, true) . PHP_EOL
+                            . "inside the array passed to "
+                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                            . PHP_EOL . 'A sub-array containing a key named'
+                            . ' \'operator\' with a value of \''
+                            . $value['operator'].'\' contains an item with'
+                            . ' a key named \'val\' whose value '
+                            . var_export($value['val'], true)
+                            . ' is not numeric or a string or an array. Please supply a'
+                            . ' numeric or an array or a string value for the item with'
+                            . ' the key named \'val\' in the sub-array.'
+                            . PHP_EOL;
+
+                    throw new ModelBadWhereParamSuppliedException($msg);
+                    
+                } else if (
+                        $has_a_col_and_an_operator_key 
+                        && $has_a_val_key 
+                        && in_array( $value['operator'], array('like', 'not-like') )
+                        && !is_string($value['val'])
+                ) {
+                    //Failed Requirement below
+                    //For any sub-array containing an item with a key named 'operator' 
+                    //with a value of either 'like' or 'not-like', there must be another
+                    //item in that sub-array with a key named 'val' with a string value.
+                    $msg = "ERROR: Incorect where condition definition in a"
+                            . " sub-array referenced via a key named '{$key}'. "
+                            . PHP_EOL . var_export($value, true) . PHP_EOL
+                            . "inside the array passed to "
+                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                            . PHP_EOL . 'A sub-array containing a key named'
+                            . ' \'operator\' with a value of \''
+                            . $value['operator'].'\' contains an item with'
+                            . ' a key named \'val\' whose value '
+                            . var_export($value['val'], true)
+                            . ' is not a string. Please supply a'
+                            . ' string value for the item with the'
+                            . ' key named \'val\' in the sub-array.'
+                            . PHP_EOL;
+
+                    throw new ModelBadWhereParamSuppliedException($msg);
+                    
+                } else if (
+                        $has_a_col_and_an_operator_key 
+                        && $has_a_val_key 
+                        && in_array( $value['operator'], array('=', '>', '>=', '<', '<=', '!=') )
+                        && !is_string($value['val'])
+                        && !is_numeric($value['val'])
+                ) {
+                    //Failed Requirement below
+                    //For any sub-array containing an item with a key named 'operator' 
+                    //with any of the following values: '=', '>', '>=', '<', '<=' or '!=', 
+                    //there must be another item in that sub-array with a key named 'val' 
+                    //with either an array or string value.
+                    $msg = "ERROR: Incorect where condition definition in a"
+                            . " sub-array referenced via a key named '{$key}'. "
+                            . PHP_EOL . var_export($value, true) . PHP_EOL
+                            . "inside the array passed to "
+                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                            . PHP_EOL . 'A sub-array containing a key named'
+                            . ' \'operator\' with a value of \''
+                            . $value['operator'].'\' contains an item with'
+                            . ' a key named \'val\' whose value '
+                            . var_export($value['val'], true)
+                            . ' is not a string or numeric. Please supply a'
+                            . ' numeric or string value for the item with the'
+                            . ' key named \'val\' in the sub-array.'
+                            . PHP_EOL;
 
                     throw new ModelBadWhereParamSuppliedException($msg);
                 }
+                
             } else if (
                     !is_numeric($key) 
                     && !in_array($key, array('col', 'operator', 'val', 'OR')) 
                     && substr($key, 0, 3) !== "OR#"
             ) {
-                $val_2_print = (is_array($value)) ? print_r($value, true) : var_export($value,
-                                true);
-
                 //The key is not in the range of allowable values
                 $msg = "ERROR: Bad where param array having an entry with a"
                         . " non-expected key named '{$key}' with a value of "
-                        . PHP_EOL . $val_2_print . PHP_EOL
+                        . PHP_EOL . var_export($value, true) . PHP_EOL
                         . "inside the array passed to "
                         . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                         . PHP_EOL . "Allowed keys are as follows:." . PHP_EOL
                         . "Any of these keys ('col', 'operator', 'val' or 'OR')"
                         . " or the key must be a numeric key or a string that"
-                        . " starts with 'OR#'.";
+                        . " starts with 'OR#'.". PHP_EOL;
 
                 throw new ModelBadWhereParamSuppliedException($msg);
             }
+            
+            $previous_key = $key;
+            $previous_value = $value;
             
         }//foreach ($iterator as $key => $value)
         

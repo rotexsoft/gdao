@@ -6,6 +6,12 @@
  */
 class MockModelForTestingNonAbstractMethods extends \GDAO\Model
 {
+    public function __construct(
+        $dsn = '', $username = '', $passwd = '', $pdo_driver_opts = array(), $extra_opts = array()
+    ) {
+        //parent::__construct($dsn, $username, $passwd, $pdo_driver_opts, $extra_opts);
+    }
+    
     public function createRecord(
         array $col_names_and_values = array(), array $extra_opts = array()
     ) {
@@ -60,5 +66,10 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
 
     public function updateSpecifiedRecord(\GDAO\Model\Record $record) {
         
+    }
+    
+    public function validateWhereOrHavingParamsArray(array $array) {
+        
+        return $this->_validateWhereOrHavingParamsArray($array);
     }
 }
