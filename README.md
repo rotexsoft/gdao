@@ -1,7 +1,4 @@
-# Generic Data Access Objects (GDAO)
-
-## Quality
-![Build Status](https://travis-ci.org/rotexsoft/gdao.svg?branch=master)
+# Generic Data Access Objects (GDAO) ![Build Status](https://travis-ci.org/rotexsoft/gdao.svg?branch=master)
 
 ## Description
 
