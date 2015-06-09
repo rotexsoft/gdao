@@ -12,7 +12,7 @@
             "homepage": "https://github.com/rotexdegba",
             "role": "Developer"
         }
-    ],
+    ],    
     "require": {
         "danielgsims/php-collections": "^1.4"
     },
@@ -23,8 +23,5 @@
     },
     "autoload": {
         "classmap": ["src/", "tests/"]
-    },
-    "suggest": { 
-        "rotexsoft/idiorm-gdao": "A stand-alone Generic Data Objects implementation based on idiorm." 
-    }
+    }    
 }
