@@ -23,6 +23,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testValidateWhereOrHavingParamsArrayDoesntStartWithOrKey() {
+        
         $expected = '\\GDAO\\ModelBadWhereParamSuppliedException';
         $data = [
             'where' =>
