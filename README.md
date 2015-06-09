@@ -1,5 +1,8 @@
 # Generic Data Access Objects (GDAO)
 
+## Quality
+![Build Status](https://travis-ci.org/rotexsoft/gdao.svg?branch=master)
+
 ## Description
 
 A package containing abstract class definitions that can be used as a basis for a Table Data Gateway-ish (http://bit.ly/1F8Zjfc) implementation of a DB access library that performs data manipulation (DM) tasks.
@@ -35,3 +38,4 @@ This package isn't meant to perform DB schema management tasks like creating/alt
  * **Consumer:** an individual developer or group of developers that use a package / library containing concrete implementation of the APIs specified in the abstract classes in this package.
  
  * **Implementer:** The developer that creates a package / library containing concrete implementation of the APIs specified in the abstract classes in this package.
+
