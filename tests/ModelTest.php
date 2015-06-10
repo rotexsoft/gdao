@@ -7,12 +7,12 @@
  */
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
-    protected $_mock_model_obj;
+    protected $_mock_model_obj_with_no_db_connection;
 
     protected function setUp() {
         parent::setUp();
 
-        $this->_mock_model_obj = 
+        $this->_mock_model_obj_with_no_db_connection = 
             new \MockModelForTestingNonAbstractMethods('', '', '', [], []);
     }
 
@@ -304,7 +304,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
              . " the non-empty array must not have an array key named 'OR' or"
              . " starts with 'OR#'.";
         $substr = "The first key in any of the sub-arrays in the array passed to "
-                .  get_class($this->_mock_model_obj) 
+                .  get_class($this->_mock_model_obj_with_no_db_connection) 
                 ."::_validateWhereOrHavingParamsArray(...) cannot start with 'OR' or 'OR#'.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
@@ -1473,7 +1473,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $expected = '\\GDAO\\ModelBadWhereParamSuppliedException';
         
         try {
-            $this->_mock_model_obj->validateWhereOrHavingParamsArray($data);
+            $this->_mock_model_obj_with_no_db_connection->validateWhereOrHavingParamsArray($data);
             
         } catch (\Exception $actual_exception) {
             

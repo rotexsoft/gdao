@@ -1254,6 +1254,11 @@ abstract class Model
      *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
      *          ]
      * 
+     *        NOTE: If `cols` is not set/specified or is assigned an empty array
+     *              value, implementers of this class should select all columns
+     *              from the table associated with the model 
+     *              (ie. SELECT * FROM models_table ..... ).
+     * 
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
@@ -1597,6 +1602,11 @@ abstract class Model
      *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
      *          ]
      * 
+     *        NOTE: If `cols` is not set/specified or is assigned an empty array
+     *              value, implementers of this class should select all columns
+     *              from the table associated with the model 
+     *              (ie. SELECT * FROM models_table ..... ).
+     * 
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
@@ -1937,6 +1947,11 @@ abstract class Model
      *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
      *          ]
      * 
+     *        NOTE: If `cols` is not set/specified or is assigned an empty array
+     *              value, implementers of this class should select all columns
+     *              from the table associated with the model 
+     *              (ie. SELECT * FROM models_table ..... ).
+     * 
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
@@ -2262,6 +2277,11 @@ abstract class Model
      *          [
      *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
      *          ]
+     * 
+     *        NOTE: If `cols` is not set/specified or is assigned an empty array
+     *              value, implementers of this class should select all columns
+     *              from the table associated with the model 
+     *              (ie. SELECT * FROM models_table ..... ).
      * 
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
@@ -2601,6 +2621,11 @@ abstract class Model
      *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
      *          ]
      * 
+     *        NOTE: If `cols` is not set/specified or is assigned an empty array
+     *              value, implementers of this class should select all columns
+     *              from the table associated with the model 
+     *              (ie. SELECT * FROM models_table ..... ).
+     * 
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
@@ -2895,6 +2920,11 @@ abstract class Model
      *          [
      *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
      *          ]
+     * 
+     *        NOTE: If `cols` is not set/specified or is assigned an empty array
+     *              value, implementers of this class should select all columns
+     *              from the table associated with the model 
+     *              (ie. SELECT * FROM models_table ..... ).
      * 
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
@@ -3217,6 +3247,11 @@ abstract class Model
      *              'cols' => [ 'col_1']
      *          ]
      *          will generate  'SELECT col_1 FROM .....'
+     * 
+     *        NOTE: If `cols` is not set/specified or is assigned an empty array
+     *              value, implementers of this class should select all columns
+     *              from the table associated with the model 
+     *              (ie. SELECT * FROM models_table ..... ).
      * 
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
