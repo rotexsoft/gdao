@@ -1103,10 +1103,10 @@ abstract class Model
                         && !is_numeric($value['val'])
                 ) {
                     //Failed Requirement below
-		    //For any sub-array containing an item with a key named 'operator' 
-		    //with a value of either 'in' or 'not-in', there must be another
-		    //item in that sub-array with a key named 'val' with either a 
-		    //numeric, string or an array value.
+                    //For any sub-array containing an item with a key named 'operator' 
+                    //with a value of either 'in' or 'not-in', there must be another
+                    //item in that sub-array with a key named 'val' with either a 
+                    //numeric, string or an array value.
                     $msg = "ERROR: Incorect where condition definition in a"
                             . " sub-array referenced via a key named '{$key}'. "
                             . PHP_EOL . var_export($value, true) . PHP_EOL
@@ -1162,7 +1162,7 @@ abstract class Model
                     //For any sub-array containing an item with a key named 'operator' 
                     //with any of the following values: '=', '>', '>=', '<', '<=' or '!=', 
                     //there must be another item in that sub-array with a key named 'val' 
-                    //with either an array or string value.
+                    //with either a numeric or string value.
                     $msg = "ERROR: Incorect where condition definition in a"
                             . " sub-array referenced via a key named '{$key}'. "
                             . PHP_EOL . var_export($value, true) . PHP_EOL
@@ -1192,7 +1192,7 @@ abstract class Model
                         . PHP_EOL . var_export($value, true) . PHP_EOL
                         . "inside the array passed to "
                         . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                        . PHP_EOL . "Allowed keys are as follows:." . PHP_EOL
+                        . PHP_EOL . "Allowed keys are as follows:" . PHP_EOL
                         . "Any of these keys ('col', 'operator', 'val' or 'OR')"
                         . " or the key must be a numeric key or a string that"
                         . " starts with 'OR#'.". PHP_EOL;
