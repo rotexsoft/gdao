@@ -1257,9 +1257,9 @@ abstract class Model
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
-     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
-     *            AND (column_name_3 >= 58)
+     *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -1386,9 +1386,9 @@ abstract class Model
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
      *        Eg. to generate 
-     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
-     *             AND (column_name_3 >= 58)
+     *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -1600,9 +1600,9 @@ abstract class Model
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
-     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
-     *            AND (column_name_3 >= 58)
+     *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -1729,9 +1729,9 @@ abstract class Model
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
      *        Eg. to generate 
-     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
-     *             AND (column_name_3 >= 58)
+     *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -1940,9 +1940,9 @@ abstract class Model
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
-     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
-     *            AND (column_name_3 >= 58)
+     *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -2069,9 +2069,9 @@ abstract class Model
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
      *        Eg. to generate 
-     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
-     *             AND (column_name_3 >= 58)
+     *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -2266,9 +2266,9 @@ abstract class Model
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
-     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
-     *            AND (column_name_3 >= 58)
+     *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -2395,9 +2395,9 @@ abstract class Model
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
      *        Eg. to generate 
-     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
-     *             AND (column_name_3 >= 58)
+     *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -2604,9 +2604,9 @@ abstract class Model
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
-     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
-     *            AND (column_name_3 >= 58)
+     *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -2733,9 +2733,9 @@ abstract class Model
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
      *        Eg. to generate 
-     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
-     *             AND (column_name_3 >= 58)
+     *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -2899,9 +2899,9 @@ abstract class Model
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
-     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
-     *            AND (column_name_3 >= 58)
+     *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -3028,9 +3028,9 @@ abstract class Model
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
      *        Eg. to generate 
-     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
-     *             AND (column_name_3 >= 58)
+     *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -3221,9 +3221,9 @@ abstract class Model
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
-     *          WHERE (column_name_1 > 58 AND column_name_2 > 58)
+     *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
-     *            AND (column_name_3 >= 58)
+     *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
@@ -3350,9 +3350,9 @@ abstract class Model
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
      *        Eg. to generate 
-     *          HAVING (column_name_1 > 58 AND column_name_2 > 58)
+     *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
-     *             AND (column_name_3 >= 58)
+     *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
      *        use:
      *          [
