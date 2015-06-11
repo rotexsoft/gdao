@@ -2,7 +2,8 @@
 
 * Look into the possibility of refactoring the Record class to have connected and disconnected records
 > Connected records will contain a reference to the Model object that created them while disconnected records will have no reference to the model that created them 
-> (they can be used separately (by supplying an array of data to their constructor), no need for a Model or Collection class).
+> (they can be used separately (by supplying an array of data to their constructor), no need for a Model or Collection class). 
+> Fast Read-Only Records are another possibility (they don't need to keep track of initial data).
 
 * Re-implement \Collections\Collection used inside GDAORecordsList in order to sever dependency on danielgsims/php-collections
 
