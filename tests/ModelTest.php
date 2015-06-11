@@ -1470,7 +1470,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     
     private function _testParamsArray4Exception($data, $label, $expected_err_msg_substr) {
         
-        $expected = '\\GDAO\\ModelBadWhereParamSuppliedException';
+        $expected = '\\GDAO\\ModelBadHavingOrWhereParamSuppliedException';
         
         try {
             $this->_mock_model_obj_with_no_db_connection->validateWhereOrHavingParamsArray($data);
