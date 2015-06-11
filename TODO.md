@@ -6,7 +6,7 @@
 
 * Re-implement \Collections\Collection used inside GDAORecordsList in order to sever dependency on danielgsims/php-collections
 
-* Write an implementation of \GDAO\Model\Collection using SplFixedArray instead of a plain old php array (SplFixedArray seem to be more memory efficient than php arrays). 
+* Write an alternative implementation of \GDAO\Model\Collection using SplFixedArray instead of a plain old php array (SplFixedArray seems to be more memory efficient than php arrays). 
 > in loadData(..) and __construct(..) add this line   
 > $this->_data = \SplFixedArray::fromArray( $data->toArray() );   
 > where $data is an instance of \GDAO\Model\GDAORecordsList expected as the first parameter to loadData(..) and __construct(..) 
