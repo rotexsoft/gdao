@@ -30,6 +30,6 @@
         "classmap": ["src/", "tests/"]
     },
     "suggest": {
-        "rotexsoft/idiorm-gdao": "A Generic Data Objects (GDAO https://github.com/rotexsoft/gdao ) implementation based on idiorm."
+        "rotexsoft/idiorm-gdao": "A Concrete Implementation of the Abstract Classes in rotexsoft/gdao based on idiorm. Light weight data access library."
     }
 }

@@ -1,5 +1,3 @@
-* Add suggest rotexsoft/idiorm-gdao to composer.json once rotexsoft/idiorm-gdao is good to go
-
 * Strive for 100% Unit Test Coverage
 
 * Look into the possibility of refactoring the Record class to have connected and disconnected records
