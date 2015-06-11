@@ -817,7 +817,7 @@ abstract class Model
      * 
      * @param array $array 
      * @return bool true if the array has a valid structure
-     * @throws \GDAO\ModelBadWhereParamSuppliedException
+     * @throws \GDAO\ModelBadHavingOrWhereParamSuppliedException
      */
     protected function _validateWhereOrHavingParamsArray(array $array) {
 
@@ -845,7 +845,7 @@ abstract class Model
                     . get_class($this) . '::' . __FUNCTION__ . '(...):' 
                     . PHP_EOL . var_export($array, true). PHP_EOL;
 
-            throw new ModelBadWhereParamSuppliedException($msg);
+            throw new ModelBadHavingOrWhereParamSuppliedException($msg);
         }
 
         $previous_key = null;
@@ -874,7 +874,7 @@ abstract class Model
                         . get_class($this) . '::' . __FUNCTION__ . '(...):' 
                         . PHP_EOL . var_export($array, true). PHP_EOL;
 
-                throw new ModelBadWhereParamSuppliedException($msg);
+                throw new ModelBadHavingOrWhereParamSuppliedException($msg);
             }
 
             if ( $key === 'col' && !is_string($value) ) {
@@ -887,7 +887,7 @@ abstract class Model
                         . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                         . PHP_EOL . var_export($array, true). PHP_EOL;
 
-                throw new ModelBadWhereParamSuppliedException($msg);
+                throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                 
             } else if (
                     $key === 'operator' 
@@ -910,7 +910,7 @@ abstract class Model
                             )
                         . PHP_EOL;
 
-                throw new ModelBadWhereParamSuppliedException($msg);
+                throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                 
             } else if (
                     $key === 'val' &&
@@ -942,7 +942,7 @@ abstract class Model
                         . ' non-empty array values are allowed for an array entry'
                         . ' with a key named \'val\'.'. PHP_EOL;
 
-                throw new ModelBadWhereParamSuppliedException($msg);
+                throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                 
             } else if (
                 is_numeric($key) || $key === "OR" || substr($key, 0, 3) === "OR#"
@@ -975,7 +975,7 @@ abstract class Model
                             . "a key named 'OR' or a key that starts with 'OR#'"
                             . " must have a value that is an array.". PHP_EOL;
 
-                    throw new ModelBadWhereParamSuppliedException($msg);
+                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                     
                 } else if (
                 	substr($_1st_key_in_curr_value_subarray, 0, 3) === "OR#"
@@ -994,7 +994,7 @@ abstract class Model
                             . get_class($this) . '::' . __FUNCTION__ . '(...) '
                             . "cannot start with 'OR' or 'OR#'.". PHP_EOL;
 
-                    throw new ModelBadWhereParamSuppliedException($msg);
+                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                     
                 } else if (
                         ( $has_a_col_and_an_operator_key || $has_a_val_key ) 
@@ -1030,7 +1030,7 @@ abstract class Model
                             . PHP_EOL . "no other type of key is allowed in the"
                             . " array in which they are present.". PHP_EOL;
 
-                    throw new ModelBadWhereParamSuppliedException($msg);
+                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                     
                 } else if (
                         $has_a_col_and_an_operator_key 
@@ -1051,7 +1051,7 @@ abstract class Model
                             . ' a key named \'operator\' has either a value of'
                             . ' \'is-null\' or \'not-null\' '. PHP_EOL;
 
-                    throw new ModelBadWhereParamSuppliedException($msg);
+                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                     
                 } else if (
                         $has_a_col_and_an_operator_key 
@@ -1075,7 +1075,7 @@ abstract class Model
                             . ' with the key named \'val\' from the sub-array.'
                             . PHP_EOL;
 
-                    throw new ModelBadWhereParamSuppliedException($msg);
+                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                     
                 } elseif ( !$has_a_col_and_an_operator_key && $has_a_val_key ) {
 
@@ -1092,7 +1092,7 @@ abstract class Model
                             . ' named \'col\' and \'operator\' '
                             . PHP_EOL;
 
-                    throw new ModelBadWhereParamSuppliedException($msg);
+                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                     
                 } else if (
                         $has_a_col_and_an_operator_key 
@@ -1122,7 +1122,7 @@ abstract class Model
                             . ' the key named \'val\' in the sub-array.'
                             . PHP_EOL;
 
-                    throw new ModelBadWhereParamSuppliedException($msg);
+                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                     
                 } else if (
                         $has_a_col_and_an_operator_key 
@@ -1149,7 +1149,7 @@ abstract class Model
                             . ' key named \'val\' in the sub-array.'
                             . PHP_EOL;
 
-                    throw new ModelBadWhereParamSuppliedException($msg);
+                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                     
                 } else if (
                         $has_a_col_and_an_operator_key 
@@ -1178,7 +1178,7 @@ abstract class Model
                             . ' key named \'val\' in the sub-array.'
                             . PHP_EOL;
 
-                    throw new ModelBadWhereParamSuppliedException($msg);
+                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
                 }
                 
             } else if (
@@ -1197,7 +1197,7 @@ abstract class Model
                         . " or the key must be a numeric key or a string that"
                         . " starts with 'OR#'.". PHP_EOL;
 
-                throw new ModelBadWhereParamSuppliedException($msg);
+                throw new ModelBadHavingOrWhereParamSuppliedException($msg);
             }
             
             $previous_key = $key;
@@ -1510,16 +1510,11 @@ abstract class Model
      * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The keys are the column names and the values are the directions
-     *        of the ORDER BY operation.
+     *        The values are the column names to ORDER BY.
      *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
      *          [
-     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
-     *        
-     *        NOTE: Consumers of an implementation of this class should supply 
-     *              whatever direction value their DB system supports for an 
-     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
      * 
      *  `limit_offset`
      *      : (int) Limit offset. Offset of the first row to return
@@ -1858,16 +1853,11 @@ abstract class Model
      * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The keys are the column names and the values are the directions
-     *        of the ORDER BY operation.
+     *        The values are the column names to ORDER BY.
      *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
      *          [
-     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
-     *        
-     *        NOTE: Consumers of an implementation of this class should supply 
-     *              whatever direction value their DB system supports for an 
-     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
      * 
      *  `limit_offset`
      *      : (int) Limit offset. Offset of the first row to return
@@ -2203,16 +2193,11 @@ abstract class Model
      *     
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The keys are the column names and the values are the directions
-     *        of the ORDER BY operation.
+     *        The values are the column names to ORDER BY.
      *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
      *          [
-     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
-     *        
-     *        NOTE: Consumers of an implementation of this class should supply 
-     *              whatever direction value their DB system supports for an 
-     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
      * 
      *  `limit_offset`
      *      : (int) Limit offset. Offset of the first row to return
@@ -2534,16 +2519,11 @@ abstract class Model
      * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The keys are the column names and the values are the directions
-     *        of the ORDER BY operation.
+     *        The values are the column names to ORDER BY.
      *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
      *          [
-     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
-     *        
-     *        NOTE: Consumers of an implementation of this class should supply 
-     *              whatever direction value their DB system supports for an 
-     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
      * 
      *  `limit_offset`
      *      : (int) Limit offset. Offset of the first row to return
@@ -2877,16 +2857,11 @@ abstract class Model
      * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The keys are the column names and the values are the directions
-     *        of the ORDER BY operation.
+     *        The values are the column names to ORDER BY.
      *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
      *          [
-     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
-     *        
-     *        NOTE: Consumers of an implementation of this class should supply 
-     *              whatever direction value their DB system supports for an 
-     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
      * 
      * @return \GDAO\Model\Record
      * 
@@ -3177,16 +3152,11 @@ abstract class Model
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The keys are the column names and the values are the directions
-     *        of the ORDER BY operation.
+     *        The values are the column names to ORDER BY.
      *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
      *          [
-     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
-     *        
-     *        NOTE: Consumers of an implementation of this class should supply 
-     *              whatever direction value their DB system supports for an 
-     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
      * 
      *  `limit_offset`
      *      : (int) Limit offset. Offset of the first row to return
@@ -3504,16 +3474,11 @@ abstract class Model
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The keys are the column names and the values are the directions
-     *        of the ORDER BY operation.
+     *        The values are the column names to ORDER BY.
      *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
      *          [
-     *              'order' => [ 'col_1'=>'ASC', 'col_2'=>'DESC' ] 
+     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
-     *        
-     *        NOTE: Consumers of an implementation of this class should supply 
-     *              whatever direction value their DB system supports for an 
-     *              ORDER BY clause. Eg. MySQL supports ASC and DESC.
      * 
      * @return mixed A single value either from a column in a row of the db table 
      *               associated with this model or the result of a sql aggregate
@@ -3675,6 +3640,6 @@ abstract class Model
 }
 
 class ModelMustImplementMethodException extends \Exception{}
-class ModelBadWhereParamSuppliedException extends \Exception{}
+class ModelBadHavingOrWhereParamSuppliedException extends \Exception{}
 class ModelTableNameNotSetDuringConstructionException extends \Exception {}
 class ModelPrimaryColNameNotSetDuringConstructionException extends \Exception {}
