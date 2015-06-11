@@ -1,6 +1,6 @@
 * Add suggest rotexsoft/idiorm-gdao to composer.json once rotexsoft/idiorm-gdao is good to go
 
-* Add Unit Tests (using a mock implementation with mock objects)
+* Strive for 100% Unit Test Coverage
 
 * Look into the possibility of refactoring the Record class to have connected and disconnected records
 > Connected records will contain a reference to the Model object that created them while disconnected records will have no reference to the model that created them 
