@@ -22,3 +22,5 @@
 > consumers of this class** in the doc-block of **\GDAO\Model->_primary_col** to
 > ***This is an OPTIONAL field & must be properly set by consumers of this class**
 
+* Figure out why build is failing for hhvm but passing for php 5.4 and above
+
