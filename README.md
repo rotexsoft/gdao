@@ -27,6 +27,8 @@ This package isn't meant to perform DB schema management tasks like creating/alt
 * Each database table has a single auto-incrementing numeric primary key column (composite primary keys are not supported)
 > Working on supporting tables that do not have any primary key column defined
 
+* Implementation of this API must be powered by at least one PDO object. Vendor specific php database extensions (eg. mysqli, SQLite3 etc.) are not to be used in implementation(s) of this API.
+
 * This API is architected with the intent of having Records and Collections created via the Model.
 > Users of any implementation of this API should not be directly instantiating new Collections or Records via their constructors, instead they should create them by calling the appropriate implementation of \GDAO\Model::createCollection(..) or \GDAO\Model::createRecord(..).
 

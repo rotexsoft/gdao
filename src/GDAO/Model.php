@@ -809,11 +809,11 @@ abstract class Model
      * which is the type of $params array expected by \GDAO\Model::fetch*($params),
      * to validate $params['where'] and $params['having'], make the calls below
      * 
-     *  \GDAO\Model::_validateWhereOrHavingParamsArray($params['where'])
-     *  \GDAO\Model::_validateWhereOrHavingParamsArray($params['having'])
+     *  $this->_validateWhereOrHavingParamsArray($params['where']);
+     *  $this->_validateWhereOrHavingParamsArray($params['having']);
      * 
-     * @see phpdoc for \GDAO\Model::fetchAll() for the definition of a valid 
-     *      'where' or 'having' array
+     * @see phpdoc for \GDAO\Model::fetchAll(array $params) for the definition 
+     *      of a valid 'where' or 'having' array
      * 
      * @param array $array 
      * @return bool true if the array has a valid structure
@@ -1309,10 +1309,9 @@ abstract class Model
      *      }
      * 
      * Callers of this method should first validate $array via
-     * \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     * before calling this method.
+     * $this->_validateWhereOrHavingParamsArray($array) before calling this 
+     * method (like in the usage pattern code snippet above).
      * 
-     * @staticvar int $bind_params_index
      * @param array $array an array of where or having condition(s) definition as
      *                     specified in the params documentation of the fetch* methods
      * @param int $indent_level the number of tab characters to add to the sql clause
@@ -1436,7 +1435,7 @@ abstract class Model
                                 
                             } else {
                                 //no need for named place holder just place the
-                                //quated val directly.
+                                //quoted val directly.
                                 $result_sql .= str_repeat("\t", ($indent_level + 1) )
                                          . "{$value['col']} $db_specific_operator $quoted_val " 
                                          . PHP_EOL;
@@ -3794,10 +3793,12 @@ abstract class Model
 
     /**
      * 
-     * Return the PDO object powering this model or false if PDO is not being used.
+     * Return the PDO object powering this model or throw 
+     * \GDAO\ModelRequiresPdoInstanceException if no PDO object is available.
      * 
-     * @return bool|\PDO the PDO object powering this model or false if PDO is 
-     *                   not being used.
+     * @return \PDO the PDO object powering this model.
+     * 
+     * @throws \GDAO\ModelRequiresPdoInstanceException
      * 
      */
     public abstract function getPDO();
@@ -3949,6 +3950,7 @@ abstract class Model
     }
 }
 
+class ModelRequiresPdoInstanceException extends \Exception{}
 class ModelMustImplementMethodException extends \Exception{}
 class ModelBadWhereOrHavingParamSuppliedException extends \Exception{}
 class ModelTableNameNotSetDuringConstructionException extends \Exception {}

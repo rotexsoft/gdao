@@ -24,3 +24,5 @@
 
 * Figure out why build is failing for hhvm but passing for php 5.4 and above
 
+* Relax requirement that PDO be used to power implementation(s) of this API and allow for usage of vendor specific php database extensions (eg. mysqli, SQLite3 etc.) in the implementation(s) of this API.
+> These vendor specific php database extensions may be more performant than their PDO counterparts.
