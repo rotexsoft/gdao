@@ -8,14 +8,27 @@
 class ModelTest extends \PHPUnit_Framework_TestCase
 {
     protected $_mock_model_obj_with_no_db_connection;
+    protected $_mock_model_obj_with_memory_sqlite_connection;
 
     protected function setUp() {
         parent::setUp();
 
         $this->_mock_model_obj_with_no_db_connection = 
             new \MockModelForTestingNonAbstractMethods('', '', '', [], []);
+        
+        ////////////////////////////////////////////////////////////////////////
+        $this->_mock_model_obj_with_memory_sqlite_connection = 
+            new \MockModelForTestingNonAbstractMethods('', '', '', [], []);
+        
+        $pdo = new \PDO("sqlite::memory:");
+        $this->_mock_model_obj_with_memory_sqlite_connection->setPDO($pdo);
+        ////////////////////////////////////////////////////////////////////////
     }
 
+////////////////////////////////////////////////////////////////////////////////
+// Start Tests for \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+////////////////////////////////////////////////////////////////////////////////
+    
     public function testValidateWhereOrHavnParamsDoesntStartWithOrKey() {
         
         $data = [
@@ -1468,19 +1481,6 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    private function _testParamsArray4Exception($data, $label, $expected_err_msg_substr) {
-        
-        $expected = '\\GDAO\\ModelBadHavingOrWhereParamSuppliedException';
-        
-        try {
-            $this->_mock_model_obj_with_no_db_connection->validateWhereOrHavingParamsArray($data);
-            
-        } catch (\Exception $actual_exception) {
-            
-                $this->assertInstanceOf( $expected, $actual_exception, $label);           
-                $this->assertContains( $expected_err_msg_substr, $actual_exception->getMessage());
-        }
-    }
     
     public function testValidateWhereOrHavnParamsHasKeysInTheAcceptableRange() {
         
@@ -1501,5 +1501,95 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 
         $substr = "Any of these keys ('col', 'operator', 'val' or 'OR') or the key must be a numeric key or a string that starts with 'OR#'.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
+    }
+    
+    private function _testParamsArray4Exception($data, $label, $expected_err_msg_substr) {
+
+        $expected = '\\GDAO\\ModelBadWhereOrHavingParamSuppliedException';
+        
+        try {
+            $this->_mock_model_obj_with_no_db_connection->validateWhereOrHavingParamsArray($data);
+            
+        } catch (\Exception $actual_exception) {
+            
+                $this->assertInstanceOf( $expected, $actual_exception, $label);           
+                $this->assertContains( $expected_err_msg_substr, $actual_exception->getMessage());
+        }
+    }
+    
+////////////////////////////////////////////////////////////////////////////////
+// End of Tests for \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+////////////////////////////////////////////////////////////////////////////////
+    
+    public function testToEnsureThatGetWhereOrHavingClauseWithParamsWorksAsExpected() {
+        
+        $data = [
+            'where' => 
+                [
+                    0 => [ 'col' => 'col_1', 'operator' => '<', 'val' => 58],
+                    1 => [ 'col' => 'col_2', 'operator' => '<', 'val' => 68],
+                    [
+                        0 => [ 'col' => 'col_11', 'operator' => '>', 'val' => 581],
+                        1 => [ 'col' => 'col_21', 'operator' => '>', 'val' => 681],
+                        'OR#3' => [
+                            0 => [ 'col' => 'col_12', 'operator' => '<', 'val' => 582],
+                            1 => [ 'col' => 'col_22', 'operator' => '<', 'val' => 682]
+                        ],
+                        2 => [ 'col' => 'col_31', 'operator' => '>=', 'val' => 583],
+                        'OR#4' => [
+                            0 => [ 'col' => 'col_4', 'operator' => '=', 'val' => 584],
+                            1 => [ 'col' => 'col_5', 'operator' => '=', 'val' => 684],
+                        ]
+                    ],
+                    3 => [ 'col' => 'column_name_44', 'operator' => '<', 'val' => 777],
+                    4 => [ 'col' => 'column_name_55', 'operator' => 'is-null'],
+                ]
+        ];
+        
+        $mock_model_obj = $this->_mock_model_obj_with_memory_sqlite_connection;
+                
+        $result = 
+            $mock_model_obj->getWhereOrHavingClauseWithParams($data['where']);
+        
+        $expected_sql = <<<EOT
+(
+	col_1 > :_1_ 
+	AND
+	col_2 > :_2_ 
+	AND
+	(
+		col_11 > :_3_ 
+		AND
+		col_21 > :_4_ 
+		OR
+		(
+			col_12 > :_5_ 
+			AND
+			col_22 > :_6_ 
+		)
+		AND
+		col_31 >= :_7_ 
+		OR
+		(
+			col_4 = :_8_ 
+			AND
+			col_5 = :_9_ 
+		)
+	)
+	AND
+	column_name_44 > :_10_ 
+	AND
+	column_name_55 IS NULL
+)
+EOT;
+
+        $this->assertContains($expected_sql, $result[0]);
+        
+        $expected_params = [
+            '_1_' => 58, '_2_' => 68, '_3_' => 581, '_4_' => 681, '_5_' => 582,
+            '_6_' => 682, '_7_' => 583, '_8_' => 584, '_9_' => 684, '_10_' => 777
+        ];
+
+        $this->assertEquals($expected_params, $result[1]);
     }
 }

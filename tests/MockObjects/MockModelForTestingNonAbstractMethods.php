@@ -52,6 +52,13 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
 
         return $this->_validateWhereOrHavingParamsArray($array);
     }
+    
+    
+    public function getWhereOrHavingClauseWithParams(
+        array &$array, $indent_level=0
+    ) {
+        return $this->_getWhereOrHavingClauseWithParams($array, $indent_level);
+    }
 
     public function deleteSpecifiedRecord(\GDAO\Model\Record $record) {
         
