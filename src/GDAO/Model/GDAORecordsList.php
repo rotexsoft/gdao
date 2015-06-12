@@ -9,7 +9,8 @@ namespace GDAO\Model;
  * It depends on https://github.com/danielgsims/php-collections / 
  * https://packagist.org/packages/danielgsims/php-collections
  *
- * @author aadegbam
+ * @author Rotimi Adegbamigbe
+ * @copyright (c) 2015, Rotimi Adegbamigbe
  */
 final class GDAORecordsList implements \Countable, \IteratorAggregate
 {
