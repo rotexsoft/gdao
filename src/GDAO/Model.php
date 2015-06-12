@@ -599,21 +599,21 @@ abstract class Model
      * @var array
      * 
      */
-    protected $_extra_opts = array();
+    protected $_extra_opts = array();   
     
-    protected static $_valid_where_or_having_operators = array(
-        '=', 
-        '>', 
-        '>=', 
-        '<',  
-        '<=', 
-        'in', 
-        'is-null', 
-        'like', 
-        '!=', 
-        'not-in',    
-        'not-like', 
-        'not-null', 
+    protected static $_where_or_having_ops_2_dbms_ops = array(
+        '='         => '=', 
+        '>'         => '>', 
+        '>='        => '>=', 
+        '<'         => '>', 
+        '<='        => '<=', 
+        'in'        => 'IN', 
+        'is-null'   => 'IS NULL', 
+        'like'      => 'LIKE', 
+        '!='        => '<>', 
+        'not-in'    => 'NOT IN',
+        'not-like'  => 'NOT LIKE', 
+        'not-null'  => 'IS NOT NULL'
     );
     
     /**
@@ -817,7 +817,7 @@ abstract class Model
      * 
      * @param array $array 
      * @return bool true if the array has a valid structure
-     * @throws \GDAO\ModelBadHavingOrWhereParamSuppliedException
+     * @throws \GDAO\ModelBadWhereOrHavingParamSuppliedException
      */
     protected function _validateWhereOrHavingParamsArray(array $array) {
 
@@ -845,7 +845,7 @@ abstract class Model
                     . get_class($this) . '::' . __FUNCTION__ . '(...):' 
                     . PHP_EOL . var_export($array, true). PHP_EOL;
 
-            throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+            throw new ModelBadWhereOrHavingParamSuppliedException($msg);
         }
 
         $previous_key = null;
@@ -874,7 +874,7 @@ abstract class Model
                         . get_class($this) . '::' . __FUNCTION__ . '(...):' 
                         . PHP_EOL . var_export($array, true). PHP_EOL;
 
-                throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                throw new ModelBadWhereOrHavingParamSuppliedException($msg);
             }
 
             if ( $key === 'col' && !is_string($value) ) {
@@ -887,12 +887,12 @@ abstract class Model
                         . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                         . PHP_EOL . var_export($array, true). PHP_EOL;
 
-                throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                 
             } else if (
                     $key === 'operator' 
                     && !in_array( 
-                            $value, static::$_valid_where_or_having_operators
+                            $value, array_keys(static::$_where_or_having_ops_2_dbms_ops)
                         )
             ) {
                 //$key === 'operator' then $value must be in valid expected
@@ -905,12 +905,12 @@ abstract class Model
                         . PHP_EOL . 'Below are the expected values for an array'
                         . ' entry with a key named \'operator\' ' . PHP_EOL 
                         . var_export(
-                                static::$_valid_where_or_having_operators,
+                                 array_keys(static::$_where_or_having_ops_2_dbms_ops),
                                 true
                             )
                         . PHP_EOL;
 
-                throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                 
             } else if (
                     $key === 'val' &&
@@ -942,7 +942,7 @@ abstract class Model
                         . ' non-empty array values are allowed for an array entry'
                         . ' with a key named \'val\'.'. PHP_EOL;
 
-                throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                 
             } else if (
                 is_numeric($key) || $key === "OR" || substr($key, 0, 3) === "OR#"
@@ -975,7 +975,7 @@ abstract class Model
                             . "a key named 'OR' or a key that starts with 'OR#'"
                             . " must have a value that is an array.". PHP_EOL;
 
-                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
                 	substr($_1st_key_in_curr_value_subarray, 0, 3) === "OR#"
@@ -994,7 +994,7 @@ abstract class Model
                             . get_class($this) . '::' . __FUNCTION__ . '(...) '
                             . "cannot start with 'OR' or 'OR#'.". PHP_EOL;
 
-                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
                         ( $has_a_col_and_an_operator_key || $has_a_val_key ) 
@@ -1030,7 +1030,7 @@ abstract class Model
                             . PHP_EOL . "no other type of key is allowed in the"
                             . " array in which they are present.". PHP_EOL;
 
-                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
                         $has_a_col_and_an_operator_key 
@@ -1051,7 +1051,7 @@ abstract class Model
                             . ' a key named \'operator\' has either a value of'
                             . ' \'is-null\' or \'not-null\' '. PHP_EOL;
 
-                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
                         $has_a_col_and_an_operator_key 
@@ -1075,7 +1075,7 @@ abstract class Model
                             . ' with the key named \'val\' from the sub-array.'
                             . PHP_EOL;
 
-                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } elseif ( !$has_a_col_and_an_operator_key && $has_a_val_key ) {
 
@@ -1092,7 +1092,7 @@ abstract class Model
                             . ' named \'col\' and \'operator\' '
                             . PHP_EOL;
 
-                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
                         $has_a_col_and_an_operator_key 
@@ -1122,7 +1122,7 @@ abstract class Model
                             . ' the key named \'val\' in the sub-array.'
                             . PHP_EOL;
 
-                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
                         $has_a_col_and_an_operator_key 
@@ -1149,7 +1149,7 @@ abstract class Model
                             . ' key named \'val\' in the sub-array.'
                             . PHP_EOL;
 
-                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
                         $has_a_col_and_an_operator_key 
@@ -1178,7 +1178,7 @@ abstract class Model
                             . ' key named \'val\' in the sub-array.'
                             . PHP_EOL;
 
-                    throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                 }
                 
             } else if (
@@ -1197,7 +1197,7 @@ abstract class Model
                         . " or the key must be a numeric key or a string that"
                         . " starts with 'OR#'.". PHP_EOL;
 
-                throw new ModelBadHavingOrWhereParamSuppliedException($msg);
+                throw new ModelBadWhereOrHavingParamSuppliedException($msg);
             }
             
             $previous_key = $key;
@@ -1207,6 +1207,269 @@ abstract class Model
         
         //if we got this far, then the array must be valid
         return true;
+    }
+    
+    /**
+     * 
+     * This method builds a valid WHERE or HAVING clause (excluding the WHERE 
+     * and HAVING keywords) that can be appended after the WHERE or HAVING
+     * section of any SELECT, INSERT, UPDATE or DELETE sql statements.
+     * 
+     * It returns a two element array with the first item being the clause and
+     * the second item being an array of values to be bound to the clause (or
+     * an empty array if there are no parameters to be bound).
+     * 
+     * For Example:
+     *  Given the array below
+     * $data = [
+     *     'where' => 
+     *         [
+     *             0 => [ 'col' => 'col_1', 'operator' => '<', 'val' => 58],
+     *             1 => [ 'col' => 'col_2', 'operator' => '<', 'val' => 68],
+     *             [
+     *                 0 => [ 'col' => 'col_11', 'operator' => '>', 'val' => 581],
+     *                 1 => [ 'col' => 'col_21', 'operator' => '>', 'val' => 681],
+     *                 'OR#3' => [
+     *                     0 => [ 'col' => 'col_12', 'operator' => '<', 'val' => 582],
+     *                     1 => [ 'col' => 'col_22', 'operator' => '<', 'val' => 682]
+     *                 ],
+     *                 2 => [ 'col' => 'col_31', 'operator' => '>=', 'val' => 583],
+     *                 'OR#4' => [
+     *                     0 => [ 'col' => 'col_4', 'operator' => '=', 'val' => 584],
+     *                     1 => [ 'col' => 'col_5', 'operator' => '=', 'val' => 684],
+     *                 ]
+     *             ],
+     *             3 => [ 'col' => 'column_name_44', 'operator' => '<', 'val' => 777],
+     *             4 => [ 'col' => 'column_name_55', 'operator' => 'is-null'],
+     *         ]
+     * ];
+     * 
+     * $this->_getWhereOrHavingClauseWithParams($data['where']); 
+     * 
+     * will return an array whose first item is the string below:
+     *  
+     *      "(
+     *      	col_1 > :_1_ 
+     *      	AND
+     *      	col_2 > :_2_ 
+     *      	AND
+     *      	(
+     *      		col_11 > :_3_ 
+     *      		AND
+     *      		col_21 > :_4_ 
+     *      		OR
+     *      		(
+     *      			col_12 > :_5_ 
+     *      			AND
+     *      			col_22 > :_6_ 
+     *      		)
+     *      		AND
+     *      		col_31 >= :_7_ 
+     *      		OR
+     *      		(
+     *      			col_4 = :_8_ 
+     *      			AND
+     *      			col_5 = :_9_ 
+     *      		)
+     *      	)
+     *      	AND
+     *      	column_name_44 > :_10_ 
+     *      	AND
+     *      	column_name_55 IS NULL
+     *      )";
+     * 
+     *  and whose second item is the array below:
+     * 
+     *  [
+     *    '_1_' => 58, '_2_' => 68, '_3_' => 581, '_4_' => 681, '_5_' => 582,
+     *    '_6_' => 682, '_7_' => 583, '_8_' => 584, '_9_' => 684, '_10_' => 777
+     *  ];
+     * 
+     * VERY STRONGLY SUGGESTED USAGE PATTERN:
+     * 
+     *      if( $this->_validateWhereOrHavingParamsArray($data['where']) ) 
+     *      {
+     *          $clause_and_params = 
+     *              $this->_getWhereOrHavingClauseWithParams($data['where']);
+     *      
+     *          $sql = "SELECT * FROM some_table WHERE " . $clause_and_params[0];
+     *          $params_2_bind_2_sql = $clause_and_params[1];
+     * 
+     *          // a PDO connection
+     *          $pdo = new PDO(...);
+     *      
+     *          // prepare the statment
+     *          $sth = $pdo->prepare($sql);
+     *      
+     *          // bind the values and execute
+     *          $sth->execute($params_2_bind_2_sql);
+     *      
+     *          // get the results back as an associative array
+     *          $result = $sth->fetch(PDO::FETCH_ASSOC);
+     *      }
+     * 
+     * Callers of this method should first validate $array via
+     * \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     * before calling this method.
+     * 
+     * @staticvar int $bind_params_index
+     * @param array $array an array of where or having condition(s) definition as
+     *                     specified in the params documentation of the fetch* methods
+     * @param int $indent_level the number of tab characters to add to the sql clause
+     * @return array an array of two items, the first is the having or where 
+     *               clause sql string and the second item is an associative
+     *               array of parameters to bind to the query
+     * @throws ModelBadWhereOrHavingParamSuppliedException
+     * 
+     * @see \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     * 
+     */
+    protected function _getWhereOrHavingClauseWithParams(array &$array, $indent_level=0) {
+
+        static $bind_params_index;
+
+        if( !isset($bind_params_index) ) {
+
+            $bind_params_index = 0;
+        }
+
+        $i = 0;
+        $result_sql = '';
+        $result_bind_params = array();
+        $result_sql .= str_repeat("\t", $indent_level). '('. PHP_EOL;
+
+        foreach ( $array as $key => $value ) {
+
+            if ( is_numeric($key) || $key === "OR" || substr($key, 0, 3) === "OR#" ) {
+
+                $and_or = ( is_numeric($key) ) ? 'AND' : 'OR' ;
+
+                if( $i > 0 ) {
+
+                    //not the first item
+                    $result_sql .= str_repeat("\t", ($indent_level + 1) ). $and_or. PHP_EOL;
+                }
+
+                if( is_array($value) ) {
+
+                    $has_a_val_key = 
+                        (is_array($value)) && array_key_exists('val', $value);
+
+                    $has_a_col_and_an_operator_key = 
+                        (is_array($value)) 
+                        && array_key_exists('col', $value) 
+                        && array_key_exists('operator', $value);
+
+                    if( $has_a_col_and_an_operator_key ) {
+                        
+                        $operator_is_in_or_not_in = 
+                            in_array($value['operator'], array('not-in', 'in'));
+
+                        //quote $value['col'] and $value['val'] as needed
+                        $db_specific_operator = 
+                            static::$_where_or_having_ops_2_dbms_ops[$value['operator']];
+
+                        if( 
+                            !$has_a_val_key 
+                            ||  in_array( $value['operator'], array('not-null', 'is-null') ) 
+                        ) {
+                            $result_sql .= str_repeat("\t", ($indent_level + 1) )
+                                     . "{$value['col']} $db_specific_operator" . PHP_EOL;
+
+                        } else if( $has_a_val_key ) {
+
+                            //$value['val'] should be pdo quoted.
+                            $quoted_val = '';
+                            
+                            if (is_array($value['val'])) {
+
+                                //quote all string values
+                                array_walk(
+                                        
+                                    $value['val'],
+
+                                    function(&$val, $key, $pdo) {
+                                        $val = 
+                                            (is_string($val)) 
+                                                ? $pdo->quote($val) : $val;
+                                    },
+
+                                    $this->getPDO()
+                                );
+
+                                $quoted_val = 
+                                    " (" . implode(',', $value['val']) . ") ";
+                            } else {
+
+                                $quoted_val = 
+                                    (
+                                        !$operator_is_in_or_not_in 
+                                        && is_string($value['val'])
+                                    ) ? 
+                                        $this->getPDO()->quote($value['val']) 
+                                                                : $value['val'];
+                                
+                                if($operator_is_in_or_not_in) {
+                                    
+                                    if(
+                                        is_numeric($value['val'])
+                                        ||
+                                        (
+                                            is_string($value['val'])
+                                            && strpos($value['val'], '(') === false
+                                            && strpos($value['val'], ')') === false
+                                        )
+                                    ) {
+                                        $quoted_val = "($quoted_val)";
+                                    }
+                                }
+                            }
+                            
+                            $bind_params_index++;
+                            
+                            if( !$operator_is_in_or_not_in ) {
+                                
+                                $result_sql .= str_repeat("\t", ($indent_level + 1) )
+                                         . "{$value['col']} $db_specific_operator :_{$bind_params_index}_ " 
+                                         . PHP_EOL;
+                                $result_bind_params["_{$bind_params_index}_"] = $quoted_val;
+                                
+                            } else {
+                                //no need for named place holder just place the
+                                //quated val directly.
+                                $result_sql .= str_repeat("\t", ($indent_level + 1) )
+                                         . "{$value['col']} $db_specific_operator $quoted_val " 
+                                         . PHP_EOL;
+                            }
+                        }
+                    } else {
+                        //a sub-array of more conditions, recurse
+                        $full_result = $this->_getWhereOrHavingClauseWithParams($value, ($indent_level + 1) );
+                        
+                        $result_sql .= $full_result[0];
+                        $result_bind_params = array_merge($result_bind_params, $full_result[1]);
+                    }
+                } else {
+                    //throw exception badly structured array
+                    $msg = "ERROR: Bad where param array having an entry with a"
+                           . " key named '$key' with a non-expected value of "
+                           . PHP_EOL . var_export($value, true) . PHP_EOL
+                           . "inside the array: "
+                           . PHP_EOL . var_export($array, true) . PHP_EOL
+                           . " passed to " 
+                           . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                           . PHP_EOL;
+
+                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
+                }
+            }
+            $i++;
+        }
+
+        return array( 
+                    $result_sql.str_repeat("\t", $indent_level) . ')' . PHP_EOL,
+                    $result_bind_params
+               );
     }
     
     /**
@@ -1378,6 +1641,9 @@ abstract class Model
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
      *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a WHERE clause 
+     *              (excluding the WHERE keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      *
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -1506,7 +1772,10 @@ abstract class Model
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a HAVING clause 
+     *              (excluding the HAVING keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -1720,7 +1989,10 @@ abstract class Model
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a WHERE clause 
+     *              (excluding the WHERE keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -1849,7 +2121,10 @@ abstract class Model
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a HAVING clause 
+     *              (excluding the HAVING keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -2060,7 +2335,10 @@ abstract class Model
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a WHERE clause 
+     *              (excluding the WHERE keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -2189,7 +2467,10 @@ abstract class Model
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a HAVING clause 
+     *              (excluding the HAVING keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      *     
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -2386,7 +2667,10 @@ abstract class Model
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a WHERE clause 
+     *              (excluding the WHERE keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -2515,7 +2799,10 @@ abstract class Model
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a HAVING clause 
+     *              (excluding the HAVING keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -2724,7 +3011,10 @@ abstract class Model
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a WHERE clause 
+     *              (excluding the WHERE keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -2854,6 +3144,9 @@ abstract class Model
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
      *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a HAVING clause 
+     *              (excluding the HAVING keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      * 
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -3019,7 +3312,10 @@ abstract class Model
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a WHERE clause 
+     *              (excluding the WHERE keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
@@ -3148,7 +3444,10 @@ abstract class Model
      *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)   
+     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a HAVING clause 
+     *              (excluding the HAVING keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -3342,6 +3641,9 @@ abstract class Model
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
      *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a WHERE clause 
+     *              (excluding the WHERE keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      * 
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the result
@@ -3471,6 +3773,9 @@ abstract class Model
      *        NOTE: Implementers of this class can validate the structure of 
      *              this sub-array by passing it to
      *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
+     *        NOTE: Implementers of this class can generate a HAVING clause 
+     *              (excluding the HAVING keyword) from this sub-array by passing 
+     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
@@ -3500,12 +3805,17 @@ abstract class Model
     /**
      * 
      * Insert one row to the model table with the specified values.
+     * An exception (\GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException)
+     * should be thrown if auto-incremented primary-key value of the inserted 
+     * record could not be retrieved.
      * 
      * @param array $col_names_n_vals
      * 
      * @return bool|array false if insert failed, else return an array of the 
-     *                    inserted data including auto-incremented values if 
-     *                    the insert succeeded.
+     *                    inserted data including auto-incremented primary-key 
+     *                    value if the insert succeeded.
+     * 
+     * @throws \GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException
      * 
      */
     public abstract function insert($col_names_n_vals=array());
@@ -3640,6 +3950,7 @@ abstract class Model
 }
 
 class ModelMustImplementMethodException extends \Exception{}
-class ModelBadHavingOrWhereParamSuppliedException extends \Exception{}
+class ModelBadWhereOrHavingParamSuppliedException extends \Exception{}
 class ModelTableNameNotSetDuringConstructionException extends \Exception {}
 class ModelPrimaryColNameNotSetDuringConstructionException extends \Exception {}
+class ModelPrimaryColValueNotRetrievableAfterInsertException extends \Exception {}

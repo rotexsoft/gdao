@@ -7,7 +7,14 @@
  */
 class MockModelForTestingNonAbstractMethods extends \GDAO\Model
 {
-
+    /**
+     * 
+     * A pdo object for connecting to the db.
+     * 
+     * @var \PDO a pdo object
+     */
+    private $_pdo;
+    
     public function __construct(
         $dsn = '', $uname = '', $pswd = '', $pdo_drv_opts = [], $ext_opts = []
     ) {
@@ -33,6 +40,12 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
 
     public function getPDO() {
         
+        return $this->_pdo;
+    }
+    
+    public function setPDO(\PDO $pdo) {
+        
+        $this->_pdo = $pdo;
     }
 
     public function validateWhereOrHavingParamsArray(array $array) {
