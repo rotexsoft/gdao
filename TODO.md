@@ -26,3 +26,6 @@
 
 * Relax requirement that PDO be used to power implementation(s) of this API and allow for usage of vendor specific php database extensions (eg. mysqli, SQLite3 etc.) in the implementation(s) of this API.
 > These vendor specific php database extensions may be more performant than their PDO counterparts. (UPDATE THE **Assumptions and Conventions in this API** SECTION IN **README.md** WHEN THIS IS DONE).
+
+* Lower testing requirement to allow for PHP 5.3 (the only downside is the loss of the convenient use of the short array syntax)
+> This is to make sure this package really works for PHP 5.3, since the short array syntax is only used in test files and not in the actual source (src) files
