@@ -3841,7 +3841,22 @@ abstract class Model
      * 
      * Updates rows in the model's db table.
      * 
-     * @param array $col_names_n_values_2_save array of data to be used to update the matched records
+     * An exception (\GDAO\ModelInvalidUpdateValueSuppliedException) should be
+     * thrown if any of the values supplied for update is not a boolean, NULL,
+     * number or string value (this should happen before even attempting to 
+     * perform the update).
+     * 
+     * @param array $col_names_n_values_2_save array of data to be used to update the matched records.
+     *                                         An array whose keys are the names of columns
+     *                                         in the database and whose corresponding values
+     *                                         are the values to be updated for each column.
+     *                                         The values must be one of these types:
+     *                                         boolean, numeric, NULL or string.
+     *                                         Implementers of this class should check
+     *                                         that the supplied values are of the expected 
+     *                                         type, else they should throw the following
+     *                                         exception: \GDAO\ModelInvalidUpdateValueSuppliedException
+     * 
      * @param array $col_names_n_values_2_match array of where clause conditions for an update statement
      *                                          to update one or more records in the db table associated
      *                                          with this model.
@@ -3858,6 +3873,8 @@ abstract class Model
      * @return bool|array false if update failed, or return an array of the 
      *                    updated data if the update was successful or return
      *                    null if there were no matching records.
+     * 
+     * @throws \GDAO\ModelInvalidUpdateValueSuppliedException
      * 
      */
     public abstract function updateRecordsMatchingSpecifiedColsNValues(
@@ -3969,6 +3986,7 @@ abstract class Model
 class ModelRequiresPdoInstanceException extends \Exception{}
 class ModelMustImplementMethodException extends \Exception{}
 class ModelInvalidInsertValueSuppliedException extends \Exception{}
+class ModelInvalidUpdateValueSuppliedException extends \Exception{}
 class ModelBadWhereOrHavingParamSuppliedException extends \Exception{}
 class ModelTableNameNotSetDuringConstructionException extends \Exception {}
 class ModelPrimaryColNameNotSetDuringConstructionException extends \Exception {}
