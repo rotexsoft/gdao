@@ -3806,16 +3806,32 @@ abstract class Model
     /**
      * 
      * Insert one row to the model table with the specified values.
+     * 
      * An exception (\GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException)
      * should be thrown if auto-incremented primary-key value of the inserted 
-     * record could not be retrieved.
+     * record could not be retrieved (in this case the insert could have still
+     * been successful).
      * 
-     * @param array $col_names_n_vals
+     * An exception (\GDAO\ModelInvalidInsertValueSuppliedException) should be
+     * thrown if any of the values supplied for insertion is not a boolean, NULL,
+     * number or string value (this should happen before even attempting to 
+     * perform the insert).
+     * 
+     * @param array $col_names_n_vals an array whose keys are the names of columns
+     *                                in the database and whose corresponding values
+     *                                are the values to be inserted in each column.
+     *                                The values must be one of these types:
+     *                                boolean, numeric, NULL or string.
+     *                                Implementers of this class should check
+     *                                that the supplied values are of the expected 
+     *                                type, else they should throw the following
+     *                                exception: \GDAO\ModelInvalidInsertValueSuppliedException
      * 
      * @return bool|array false if insert failed, else return an array of the 
      *                    inserted data including auto-incremented primary-key 
      *                    value if the insert succeeded.
      * 
+     * @throws \GDAO\ModelInvalidInsertValueSuppliedException
      * @throws \GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException
      * 
      */
@@ -3952,6 +3968,7 @@ abstract class Model
 
 class ModelRequiresPdoInstanceException extends \Exception{}
 class ModelMustImplementMethodException extends \Exception{}
+class ModelInvalidInsertValueSuppliedException extends \Exception{}
 class ModelBadWhereOrHavingParamSuppliedException extends \Exception{}
 class ModelTableNameNotSetDuringConstructionException extends \Exception {}
 class ModelPrimaryColNameNotSetDuringConstructionException extends \Exception {}
