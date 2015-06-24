@@ -622,8 +622,9 @@ abstract class Model
      * @param string $username
      * @param string $passwd
      * @param array $pdo_driver_opts
-     * @param array $extra_opts an array of other parameters that may be needed 
-     *                          in creating an instance of this class
+     * @param array $extra_opts an array that may be used to pass initialization 
+     *                          value(s) for protected and / or private properties
+     *                          of this class
      * 
      * @see \PDO::__construct(...) for definition of first four parameters
      * 
@@ -639,9 +640,22 @@ abstract class Model
         $this->_username = $username;
         $this->_passwd = $passwd;
         $this->_pdo_driver_opts = $pdo_driver_opts;
-        $this->_extra_opts = $extra_opts; //values here could be used to populate
-                                          //$this->_table_name and other protected
-                                          //properties
+        
+        if(count($extra_opts) > 0) {
+            
+            //set properties of this class specified in $extra_opts
+            foreach($extra_opts as $e_opt_key => $e_opt_val) {
+  
+                if ( property_exists($this, $e_opt_key) ) {
+                    
+                    $this->$e_opt_key = $e_opt_val;
+
+                } elseif ( property_exists($this, '_'.$e_opt_key) ) {
+
+                    $this->{"_$e_opt_key"} = $e_opt_val;
+                }
+            }
+        }
         
         if( empty($this->_primary_col) || strlen($this->_primary_col) <= 0 ) {
             
