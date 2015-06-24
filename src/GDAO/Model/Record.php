@@ -53,19 +53,7 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      * @var \GDAO\Model
      */
     protected $_model;
-    
-    /**
-     *
-     * An array that can be used to pass other parameters specific to a child 
-     * class extending this class.
-     * 
-     * Eg. this array may be used to pass initialization value(s) for protected
-     * and / or private properties that are defined in this class' subclasses but
-     * not defined in this class.
-     * 
-     * @var array
-     */
-    protected $_extra_opts = array();
+
 
     /**
      * 
@@ -76,14 +64,30 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      *                      .............................,
      *                      'col_nameN'=>'value_for_colN'
      *                    ]
-     * @param array $extra_opts an array of other parameters that may be needed 
-     *                          in creating an instance of this class
      * 
+     * @param array $extra_opts an array that may be used to pass initialization 
+     *                          value(s) for protected and / or private properties
+     *                          of this class
      */
 	public function __construct(array $data=array(), array $extra_opts=array()) {
         
         $this->loadData($data);
-        $this->_extra_opts = $extra_opts;
+        
+        if(count($extra_opts) > 0) {
+            
+            //set properties of this class specified in $extra_opts
+            foreach($extra_opts as $e_opt_key => $e_opt_val) {
+  
+                if ( property_exists($this, $e_opt_key) ) {
+                    
+                    $this->$e_opt_key = $e_opt_val;
+
+                } elseif ( property_exists($this, '_'.$e_opt_key) ) {
+
+                    $this->{"_$e_opt_key"} = $e_opt_val;
+                }
+            }
+        }
     }
 	
     /**

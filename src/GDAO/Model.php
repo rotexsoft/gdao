@@ -774,8 +774,9 @@ abstract class Model
      *                             ['id'=>[5,6,7], 'title'=>'yipeedoo'] should generate the sql below:
      *                             DELETE FROM `x` WHERE id IN (5,6,7)  AND title = 'yipeedoo'
      *
-     * @return bool true for a successful deletion, false for a failed deletion 
-     *              OR null if nothing was deleted (no matching records).
+     * @return bool|int|null the number of rows deleted if deletion was successful, 
+     *                       false for a failed deletion OR null if nothing was 
+     *                       deleted (no matching records).
      * 
      */
     public abstract function deleteRecordsMatchingSpecifiedColsNValues(array $cols_n_vals);
@@ -789,9 +790,9 @@ abstract class Model
      * 
      * @param \GDAO\Model\Record $record
      * 
-     * @return bool true for a successful deletion, false for a failed deletion 
-     *              OR null if supplied record is a record that has never been
-     *              saved to the db.
+     * @return bool|null true for a successful deletion, false for a failed 
+     *                   deletion OR null if supplied record is a record  
+     *                   that has never been saved to the db.
      * 
      */
     public abstract function deleteSpecifiedRecord(\GDAO\Model\Record $record);
@@ -3870,8 +3871,8 @@ abstract class Model
      *                                          ['id'=>[5,6,7], 'title'=>'yipeedoo'] should generate the sql below:
      *                                          UPDATE `x` SET ...  WHERE id IN (5,6,7)  AND title = 'yipeedoo'
      * 
-     * @return bool|array false if update failed, or return an array of the 
-     *                    updated data if the update was successful or return
+     * @return bool|array false if update failed, or return the number of rows
+     *                    updated if the update was successful or return
      *                    null if there were no matching records.
      * 
      * @throws \GDAO\ModelInvalidUpdateValueSuppliedException
