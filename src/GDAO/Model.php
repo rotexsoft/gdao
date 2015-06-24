@@ -587,20 +587,6 @@ abstract class Model
      */
     protected $_pdo_driver_opts = array();
     
-    /**
-     *
-     * An array that can be used to pass other parameters specific to a child 
-     * class extending this class.
-     * 
-     * Eg. this array may be used to pass initialization value(s) for protected
-     * and / or private properties that are defined in this class' subclasses but
-     * not defined in this class.
-     * 
-     * @var array
-     * 
-     */
-    protected $_extra_opts = array();   
-    
     protected static $_where_or_having_ops_2_dbms_ops = array(
         '='         => '=', 
         '>'         => '>', 
