@@ -289,16 +289,19 @@ abstract class Model
      * 
      * \GDAO\Model->_has_one_relationships['summary'] = 
      *      [
-     *          'my_models_table' => 'posts',
      *          'foreign_key_col_in_my_models_table' => 'post_id',
      *          
      *          'foreign_models_table' => 'summaries',
      *          'foreign_key_col_in_foreign_models_table' => 's_post_id'
+     * 
+     *          'primary_key_col_in_foreign_models_table' => 'summary_id'
      *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
+     *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
+     *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
      *      ]
      * 
      * NOTE: the array key value 'summary' is a relation name that can be used to 
-     *       later access this particular relationship definiton. Any value can 
+     *       later access this particular relationship definition. Any value can 
      *       be used to name a relationship (but it is recommended that it should
      *       not be a name of an existing column in the current model's db table).
      * 
@@ -357,16 +360,19 @@ abstract class Model
      * 
      * \GDAO\Model->_has_many_relationships['comments'] = 
      *      [
-     *          'my_models_table' => 'posts',
      *          'foreign_key_col_in_my_models_table' => 'post_id',
      *          
      *          'foreign_models_table' => 'comments',
      *          'foreign_key_col_in_foreign_models_table' => 'c_post_id'
+     * 
+     *          'primary_key_col_in_foreign_models_table' => 'comment_id'
      *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
+     *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
+     *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
      *      ]
      * 
      * NOTE: the array key value 'comments' is a relation name that can be used to
-     *       later access this particular relationship definiton. Any value can be
+     *       later access this particular relationship definition. Any value can be
      *       used to name a relationship (but it is recommended that it should not
      *       be a name of an existing column in the current model's db table).
      * 
@@ -425,16 +431,19 @@ abstract class Model
      * 
      * \GDAO\Model->_belongs_to_relationships['author'] = 
      *      [
-     *          'my_models_table' => 'posts',
      *          'foreign_key_col_in_my_models_table' => 'p_author_id',
      *          
      *          'foreign_models_table' => 'authors',
      *          'foreign_key_col_in_foreign_models_table' => 'author_id',
+     * 
+     *          'primary_key_col_in_foreign_models_table' => 'post_id'
      *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
+     *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
+     *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
      *      ]
      * 
      * NOTE: the array key value 'author' is a relation name that can be used to 
-     *       later access this particular relationship definiton. Any value can 
+     *       later access this particular relationship definition. Any value can 
      *       be used to name a relationship (but it is recommended that it should 
      *       not be a name of an existing column in the current model's db table).
      * 
@@ -497,21 +506,23 @@ abstract class Model
      * 
      * \GDAO\Model->_has_many_through_relationships['tags'] = 
      *      [
-     *          'my_models_table' => 'posts',
      *          'col_in_my_models_table_linked_to_join_table' => 'post_id',
      *
      *          'join_table_name' => 'posts_tags',
      *          'col_in_join_table_linked_to_my_models_table' => 'psts_post_id',
      *          'col_in_join_table_linked_to_foreign_models_table' => 'psts_tag_id',
-     *          'join_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
      * 
      *          'foreign_models_table' => 'tags',
      *          'col_in_foreign_models_table_linked_to_join_table' => 'tag_id',
+     *          
+     *          'primary_key_col_in_foreign_models_table' => 'tag_id'
      *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
+     *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
+     *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
      *      ]
      * 
      * NOTE: the array key value 'tags' is a relation name that can be used to 
-     *       later access this particular relationship definiton. Any value can 
+     *       later access this particular relationship definition. Any value can 
      *       be used to name a relationship (but it is recommended that it should
      *       not be a name of an existing column in the current model's db table).
      * 
@@ -775,8 +786,9 @@ abstract class Model
      *                             DELETE FROM `x` WHERE id IN (5,6,7)  AND title = 'yipeedoo'
      *
      * @return bool|int|null the number of rows deleted if deletion was successful, 
-     *                       false for a failed deletion OR null if nothing was 
-     *                       deleted (no matching records).
+     *                       OR null if nothing was deleted (no matching records).
+     * 
+     * @throws \PDOException
      * 
      */
     public abstract function deleteRecordsMatchingSpecifiedColsNValues(array $cols_n_vals);
@@ -790,9 +802,10 @@ abstract class Model
      * 
      * @param \GDAO\Model\Record $record
      * 
-     * @return bool|null true for a successful deletion, false for a failed 
-     *                   deletion OR null if supplied record is a record  
-     *                   that has never been saved to the db.
+     * @return bool|null true for a successful deletion OR null if supplied record 
+     *                   is a record that has never been saved to the db.
+     * 
+     * @throws \PDOException
      * 
      */
     public abstract function deleteSpecifiedRecord(\GDAO\Model\Record $record);
