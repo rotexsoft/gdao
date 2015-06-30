@@ -27,11 +27,8 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * 
-     * Holds relationship data retreieved based on definitions in the arrays below.
-     * \GDAO\Model::$_has_one_relationships
-     * \GDAO\Model::$_has_many_relationships
-     * \GDAO\Model::$_belongs_to_relationships
-     * \GDAO\Model::$_has_many_through_relationships
+     * Holds relationship data retreieved based on definitions in the array below.
+     * \GDAO\Model::$_relations
      *
      * @var array 
      */

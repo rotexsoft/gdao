@@ -198,7 +198,7 @@ abstract class Model
      * @var string
      * 
      */
-    protected $_created_timestamp_column_name = null;   //string
+    protected $_created_timestamp_column_name = null; //string
 
     /**
      *
@@ -222,7 +222,7 @@ abstract class Model
      * @var string
      * 
      */
-    protected $_updated_timestamp_column_name = null;   //string
+    protected $_updated_timestamp_column_name = null; //string
     
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -242,19 +242,24 @@ abstract class Model
     //* these relationship definitions.                                      *//
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    
+  
     /**
-     *
-     * 2-dimensional array defining Has-One relationships
+     * 
+     * A 2-dimensional array meant to hold definitions of Belongs-To, Has-One,
+     * Has-Many and Has-Many-Through relationships that the table associated  
+     * with the current model has with other tables in the database.
      * 
      * The Implementers of this class can use the definition(s) in 
-     * \GDAO\Model->_has_one_relationships to implement retrieval of data from
+     * \GDAO\Model->_relations to implement retrieval of data from
      * db tables associated with other models related to this model.
      * 
-     * This is an OPTIONAL field & may be set by consumers of this class if they
-     * want to define Has-One relationship(s) between the current model's db 
-     * table and other models' db table(s) in their application using the 
-     * format described below.
+     * This is an OPTIONAL field & may be set by consumers of this class if 
+     * they want to define Belongs-To, Has-One, Has-Many or Has-Many-Through 
+     * relationship(s) between the current model's db table and other models' db 
+     * table(s) in their application using the any of the formats described below.
+     * 
+     * Example Schema for a `Has-One` relationship
+     * ============================================
      * 
      *      --------------------------
      *      |         posts          |
@@ -285,10 +290,12 @@ abstract class Model
      * 
      * To specify that a model with a \GDAO\Model->_table_name value of 
      * 'posts' has one summary for each post record (based on the schema above),
-     * modify \GDAO\Model->_has_one_relationships like below:
+     * modify \GDAO\Model->_relations like below:
      * 
-     * \GDAO\Model->_has_one_relationships['summary'] = 
+     * \GDAO\Model->_relations['summary'] = 
      *      [
+     *          'relation_type' => \GDAO\Model::RELATION_TYPE_HAS_ONE,
+     *  
      *          'foreign_key_col_in_my_models_table' => 'post_id',
      *          
      *          'foreign_models_table' => 'summaries',
@@ -307,97 +314,12 @@ abstract class Model
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model
      *       class whose _table_name property has the same value as
-     *       \GDAO\Model->_has_one_relationships['relation_name']['foreign_models_table'].
-     *       In the example above 'relation_name' is substituted with 'summary'.
+     *       \GDAO\Model->_relations['relation_name']['foreign_models_table'].
+     *       In the example above 'relation_name' should be substituted with 
+     *       'summary'.
      * 
-     * @var array
-     * 
-     */
-    protected $_has_one_relationships = array();
-    
-    /**
-     *
-     * 2-dimensional array defining Has-Many relationships
-     * 
-     * The Implementers of this class can use the definition(s) in 
-     * \GDAO\Model->_has_many_relationships to implement retrieval of data from
-     * db tables associated with other models related to this model.
-     * 
-     * This is an OPTIONAL field & may be set by consumers of this class if they
-     * want to define Has-Many relationship(s) between the current model's db 
-     * table and other models' db table(s) in their application using the 
-     * format described below.
-     * 
-     *      --------------------------
-     *      |         posts          |
-     *      --------------------------
-     *      ||=======||--------|-----|
-     *      ||post_id||........|title|
-     *      ||=======||--------|-----|
-     *      --------------------------
-     *          ||
-     *          ||
-     *          ==============
-     *                      ||
-     *                     VVVV
-     *      --------------------------------------------
-     *      |                comments                  |
-     *      --------------------------------------------
-     *      |----------||=========||--------|----------|
-     *      |comment_id||c_post_id||........|   body   |
-     *      |----------||=========||--------|----------|
-     *      --------------------------------------------
-     *     
-     *      NOTE: the post_id column in the posts table is an
-     *            auto-incrementing integer primary key.
-     *     
-     *      NOTE: the comment_id column in the comments table is an
-     *            auto-incrementing integer primary key.
-     *
-     * To specify that a model with a \GDAO\Model->_table_name value of 
-     * 'posts' has many comments for each post record (based on the schema above),
-     * modify \GDAO\Model->_has_many_relationships like below:
-     * 
-     * \GDAO\Model->_has_many_relationships['comments'] = 
-     *      [
-     *          'foreign_key_col_in_my_models_table' => 'post_id',
-     *          
-     *          'foreign_models_table' => 'comments',
-     *          'foreign_key_col_in_foreign_models_table' => 'c_post_id'
-     * 
-     *          'primary_key_col_in_foreign_models_table' => 'comment_id'
-     *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
-     *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
-     *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
-     *      ]
-     * 
-     * NOTE: the array key value 'comments' is a relation name that can be used to
-     *       later access this particular relationship definition. Any value can be
-     *       used to name a relationship (but it is recommended that it should not
-     *       be a name of an existing column in the current model's db table).
-     * 
-     * NOTE: 'foreign_models_class_name' should contain the name of a Model class
-     *       whose _table_name property has the same value as
-     *       \GDAO\Model->_has_many_relationships['relation_name']['foreign_models_table'].
-     *       In the example above 'relation_name' is substituted with 'comments'.
-     * 
-     * @var array
-     * 
-     */
-    protected $_has_many_relationships = array();
-    
-    /**
-     *
-     * 2-dimensional array defining Belongs-To relationships
-     * 
-     * The Implementers of this class can use the definition(s) in 
-     * \GDAO\Model->_belongs_to_relationships to implement retrieval of data 
-     * from db tables associated with other models related to this model.
-     * 
-     * This is an OPTIONAL field & may be set by consumers of this class if they
-     * want to define Belongs-To relationship(s) between the current model's db 
-     * table and other models' db table(s) in their application using the format 
-     * described below.
+     * Example Schema for a `Belongs-To` relationship
+     * ===============================================
      * 
      *      ---------------------------
      *      |         authors         |
@@ -427,10 +349,12 @@ abstract class Model
      * 
      * To specify that a model with a \GDAO\Model->_table_name value of 
      * 'posts' has each of its post records belonging to one author (based on 
-     * the schema above), modify \GDAO\Model->_belongs_to_relationships like below:
+     * the schema above), modify \GDAO\Model->_relations like below:
      * 
-     * \GDAO\Model->_belongs_to_relationships['author'] = 
+     * \GDAO\Model->_relations['author'] = 
      *      [
+     *          'relation_type' => \GDAO\Model::RELATION_TYPE_BELONGS_TO,
+     * 
      *          'foreign_key_col_in_my_models_table' => 'p_author_id',
      *          
      *          'foreign_models_table' => 'authors',
@@ -449,27 +373,72 @@ abstract class Model
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model
      *       class whose _table_name property has the same value as
-     *       \GDAO\Model->_belongs_to_relationships['relation_name']['foreign_models_table'].
-     *       In the example above 'relation_name' is substituted with 'author'.
+     *       \GDAO\Model->_relations['relation_name']['foreign_models_table'].
+     *       In the example above 'relation_name' should be substituted with 
+     *       'author'.
      * 
-     * @var array
+     * Example Schema for a `Has-Many` relationship
+     * =============================================
      * 
-     */
-    protected $_belongs_to_relationships = array();
-    
-    /**
-     *
-     * 2-dimensional array defining Has-Many-Through relationships
-     * 
-     * The Implementers of this class can use the definition(s) in 
-     * \GDAO\Model->_has_many_through_relationships to implement retrieval of 
-     * data from db tables associated with other models related to this model.
-     * 
-     * This is an OPTIONAL field & may be set by consumers of this class if they
-     * want to define Has-Many-Through relationship(s) between the current model's 
-     * db table and other models' db table(s) in their application using the format 
-     * described below.
+     *      --------------------------
+     *      |         posts          |
+     *      --------------------------
+     *      ||=======||--------|-----|
+     *      ||post_id||........|title|
+     *      ||=======||--------|-----|
+     *      --------------------------
+     *          ||
+     *          ||
+     *          ==============
+     *                      ||
+     *                     VVVV
+     *      --------------------------------------------
+     *      |                comments                  |
+     *      --------------------------------------------
+     *      |----------||=========||--------|----------|
+     *      |comment_id||c_post_id||........|   body   |
+     *      |----------||=========||--------|----------|
+     *      --------------------------------------------
      *     
+     *      NOTE: the post_id column in the posts table is an
+     *            auto-incrementing integer primary key.
+     *     
+     *      NOTE: the comment_id column in the comments table is an
+     *            auto-incrementing integer primary key.
+     *
+     * To specify that a model with a \GDAO\Model->_table_name value of 
+     * 'posts' has many comments for each post record (based on the schema above),
+     * modify \GDAO\Model->_relations like below:
+     * 
+     * \GDAO\Model->_relations['comments'] = 
+     *      [
+     *          'relation_type' => \GDAO\Model::RELATION_TYPE_HAS_MANY,
+     * 
+     *          'foreign_key_col_in_my_models_table' => 'post_id',
+     *          
+     *          'foreign_models_table' => 'comments',
+     *          'foreign_key_col_in_foreign_models_table' => 'c_post_id'
+     * 
+     *          'primary_key_col_in_foreign_models_table' => 'comment_id'
+     *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
+     *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
+     *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
+     *      ]
+     * 
+     * NOTE: the array key value 'comments' is a relation name that can be used to
+     *       later access this particular relationship definition. Any value can be
+     *       used to name a relationship (but it is recommended that it should not
+     *       be a name of an existing column in the current model's db table).
+     * 
+     * NOTE: 'foreign_models_class_name' should contain the name of a Model class
+     *       whose _table_name property has the same value as
+     *       \GDAO\Model->_relations['relation_name']['foreign_models_table'].
+     *       In the example above 'relation_name' should be substituted with 
+     *       'comments'.
+     * 
+     * Example Schema for a `Has-Many-Through` relationship
+     * =====================================================
+     * 
      *      --------------------------  ------------------------
      *      |         posts          |  |         tags         |
      *      --------------------------  ------------------------
@@ -502,10 +471,12 @@ abstract class Model
      * To specify that a model with a \GDAO\Model->_table_name value of 
      * 'posts' has many tags for each post record through a join table called
      * posts_tags (based on the schema above), modify 
-     * \GDAO\Model->_has_many_through_relationships like below:
+     * \GDAO\Model->_relations like below:
      * 
-     * \GDAO\Model->_has_many_through_relationships['tags'] = 
+     * \GDAO\Model->_relations['tags'] = 
      *      [
+     *          'relation_type' => \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH,
+     * 
      *          'col_in_my_models_table_linked_to_join_table' => 'post_id',
      *
      *          'join_table_name' => 'posts_tags',
@@ -528,21 +499,28 @@ abstract class Model
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model class
      *       whose _table_name property has the same value as
-     *       \GDAO\Model->_belongs_to_relationships['relation_name']['foreign_models_table'].
-     *       In the example above 'relation_name' is substituted with 'author'.
+     *       \GDAO\Model->_relations['relation_name']['foreign_models_table'].
+     *       In the example above 'relation_name' should be substituted with 
+     *       'author'.
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model class 
      *       whose _table_name property has the same value as
-     *       \GDAO\Model->_has_many_through_relationships['relation_name']['foreign_models_table'].
+     *       \GDAO\Model->_relations['relation_name']['foreign_models_table'].
      *       'join_models_class_name' should contain the name of a Model class 
      *       whose _table_name property has the same value as
-     *       \GDAO\Model->_has_many_through_relationships['relation_name']['join_table_name'].
-     *       In the example above 'relation_name' is substituted with 'tags'.
+     *       \GDAO\Model->_relations['relation_name']['join_table_name'].
+     *       In the example above 'relation_name' should be substituted with 'tags'.
+     * 
      * 
      * @var array
      * 
      */
-    protected $_has_many_through_relationships = array();
+    protected $_relations = array();
+    
+    const RELATION_TYPE_HAS_ONE = 'rt_ho';
+    const RELATION_TYPE_HAS_MANY = 'rt_hm';
+    const RELATION_TYPE_BELONGS_TO = 'rt_bt';
+    const RELATION_TYPE_HAS_MANY_THROUGH = 'rt_hmt';
 
     /**
      * 
@@ -1494,21 +1472,18 @@ abstract class Model
      * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      * 
      *  `relations_to_include`
-     *      : (array) An array of relation names as defined in any or all of 
-     *        \GDAO\Model->_has_one_relationships, 
-     *        \GDAO\Model->_has_many_relationships,
-     *        \GDAO\Model->_belongs_to_relationships and 
-     *        \GDAO\Model->_has_many_through_relationships. 
+     *      : (array) An array of relation names as defined in  
+     *        \GDAO\Model->_relations. 
      *        Eager-fetch related rows of data for each relation name.
      * 
-     *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
-     *              relation name. Eg. array_keys($this->_has_one_relationships)
-     *              returns an array of Has-One relation name(s) for a model.
+     *        NOTE: each key in the \GDAO\Model->_relations array is a 
+     *              relation name. Eg. array_keys($this->_relations)
+     *              returns an array of relation name(s) for a model.
      * 
      *        NOTE: Implementers of this class should make the retreived related
      *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_has_one_relationships['comments'], the retreived 
+     *              $this->_relations['comments'], the retreived 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
@@ -1844,20 +1819,17 @@ abstract class Model
      * 
      *  `relations_to_include`
      *      : (array) An array of relation names as defined in any or all of 
-     *        \GDAO\Model->_has_one_relationships, 
-     *        \GDAO\Model->_has_many_relationships,
-     *        \GDAO\Model->_belongs_to_relationships and 
-     *        \GDAO\Model->_has_many_through_relationships. 
+     *        \GDAO\Model->_relations. 
      *        Eager-fetch related rows of data for each relation name.
      * 
      *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
-     *              relation name. Eg. array_keys($this->_has_one_relationships)
-     *              returns an array of Has-One relation name(s) for a model.
+     *              relation name. Eg. array_keys($this->_relations)
+     *              returns an array of relation name(s) for a model.
      * 
      *        NOTE: Implementers of this class should make the retreived related
      *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_has_one_relationships['comments'], the retreived 
+     *              $this->_relations['comments'], the retreived 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
@@ -2190,20 +2162,17 @@ abstract class Model
      * 
      *  `relations_to_include`
      *      : (array) An array of relation names as defined in any or all of 
-     *        \GDAO\Model->_has_one_relationships, 
-     *        \GDAO\Model->_has_many_relationships,
-     *        \GDAO\Model->_belongs_to_relationships and 
-     *        \GDAO\Model->_has_many_through_relationships. 
+     *        \GDAO\Model->_relations. 
      *        Eager-fetch related rows of data for each relation name.
      * 
      *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
-     *              relation name. Eg. array_keys($this->_has_one_relationships)
-     *              returns an array of Has-One relation name(s) for a model.
+     *              relation name. Eg. array_keys($this->_relations)
+     *              returns an array of relation name(s) for a model.
      * 
      *        NOTE: Implementers of this class should make the retreived related
      *              data accessible in each record via an array key named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_has_one_relationships['comments'], the retreived 
+     *              $this->_relations['comments'], the retreived 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record['comments']. Where $record is a 
      *              reference to one of the records returned by this method.
@@ -2866,20 +2835,17 @@ abstract class Model
      * 
      *  `relations_to_include`
      *      : (array) An array of relation names as defined in any or all of 
-     *        \GDAO\Model->_has_one_relationships, 
-     *        \GDAO\Model->_has_many_relationships,
-     *        \GDAO\Model->_belongs_to_relationships and 
-     *        \GDAO\Model->_has_many_through_relationships. 
+     *        \GDAO\Model->_relations. 
      *        Eager-fetch related rows of data for each relation name.
      * 
      *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
-     *              relation name. Eg. array_keys($this->_has_one_relationships)
-     *              returns an array of Has-One relation name(s) for a model.
+     *              relation name. Eg. array_keys($this->_relations)
+     *              returns an array of relation name(s) for a model.
      * 
      *        NOTE: Implementers of this class should make the retreived related
      *              data accessible in the returned record via a property named 
      *              with the same name as the relation name. For example, if 
-     *              there exists $this->_has_one_relationships['comments'], the 
+     *              there exists $this->_relations['comments'], the 
      *              retreived comments for the record returned by this fetch 
      *              method should be accessible via $record->comments. Where 
      *              $record is a reference to the record returned by this method.
