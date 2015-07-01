@@ -258,6 +258,124 @@ abstract class Model
      * relationship(s) between the current model's db table and other models' db 
      * table(s) in their application using the any of the formats described below.
      * 
+     * =====================================
+     * // GENERAL STRUCTURE OF THIS ARRAY //
+     * =====================================
+     * 
+     * NOTE: 'relation_name1' and 'relation_nameN' are just placeholders for 
+     *       illustration purposes. Consumers of any implementation of this class
+     *       are free to name their relations with any name they so desire, as long
+     *       as each name is a valid name that can be used for naming the property of
+     *       any php class.
+     * 
+     * \GDAO\Model->_relations = 
+     *  [
+     *      'relation_name1' => 
+     *       [
+     *          //the entry below's value must be one of 
+     *          //\GDAO\Model::RELATION_TYPE_HAS_ONE, 
+     *          //\GDAO\Model::RELATION_TYPE_HAS_MANY,
+     *          //\GDAO\Model::RELATION_TYPE_BELONGS_TO or
+     *          //\GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH.
+     *          'relation_type' => \GDAO\Model::RELATION_TYPE_BELONGS_TO, 
+     * 
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          //the entry below is not needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
+     * 
+     *          'foreign_key_col_in_my_models_table' => 'p_author_id',
+     *          /////////////////////////////////////////////////////////////////////////////////
+     * 
+     *          'foreign_models_table' => 'authors',
+     * 
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          //the entry below is not needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
+     * 
+     *          'foreign_key_col_in_foreign_models_table' => 'author_id',
+     *          /////////////////////////////////////////////////////////////////////////////////
+     * 
+     * 
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          //the entry below is only needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
+     * 
+     *          'col_in_my_models_table_linked_to_join_table' => 'post_id',
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          //the entry below is only needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
+     *          
+     *          'join_table_name' => 'posts_tags',
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          //the entry below is only needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
+     *          
+     *          'col_in_join_table_linked_to_my_models_table' => 'psts_post_id',
+     *          /////////////////////////////////////////////////////////////////////////////////        
+     *      
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          //the entry below is only needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
+     * 
+     *          'col_in_join_table_linked_to_foreign_models_table' => 'psts_tag_id',
+     *          /////////////////////////////////////////////////////////////////////////////////        
+     *  
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          //the entry below is only needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
+     * 
+     *          'col_in_foreign_models_table_linked_to_join_table' => 'tag_id',
+     *          /////////////////////////////////////////////////////////////////////////////////
+     * 
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          // The values below are used for instantiating classes needed for
+     *          // returning related data.
+     *          //
+     *          // They must ALL BE SET or ALL NOT BE SET.
+     *          // If they ALL NOT SET, then the related records should be returned 
+     *          // using arrays.
+     *          //
+     *          // Each related record will be stored in an instance of 
+     *          // $this->_relations['relation_name1']['foreign_models_record_class_name']
+     *          // if set.
+     *          //
+     *          // The related records for each record of this model will be stored in
+     *          // an instance of 
+     *          // $this->_relations['relation_name1']['foreign_models_collection_class_name']
+     *          // if set.
+     *          //
+     *          // The records and collections will have their corresponding model set to
+     *          // an instance of
+     *          // $this->_relations['relation_name1']['foreign_models_class_name']
+     *          // if set.
+     *          //
+     *          // 'primary_key_col_in_foreign_models_table' must be set in order to
+     *          // be able to create a model instance for the related records.
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          
+     *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
+     *          'primary_key_col_in_foreign_models_table' => 'post_id'
+     *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
+     *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
+     * 
+     * 
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          //the entry below can be used to modify the sql query for retrieving data from
+     *          //$this->_relations['relation_name1']['foreign_models_table'].
+     *          //See the documentation for the $params parameter for $this->fetchAll(..) 
+     *          //in order to understand the expected value(s) that should be set for 
+     *          //$this->_relations['relation_name1']['foreign_models_table']
+     *          //NOTE: that the `relations_to_include`, `limit_offset` and
+     *          //      `limit_size` entries acceptable in the $params parameter 
+     *          //      for $this->fetchAll(..) should not be included in the  
+     *          //      value to be set for $this->_relations['relation_name1']['foreign_models_table']
+     *          'foreign_models_table_sql_params'=> [....]
+     * 
+     *          'col_in_foreign_models_table_linked_to_join_table' => 'tag_id',
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *       ],
+     *      ......,
+     *      ......,
+     *      'relation_nameN'=>[ ...]
+     *  ]
+     * 
      * Example Schema for a `Has-One` relationship
      * ============================================
      * 
