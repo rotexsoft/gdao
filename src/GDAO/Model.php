@@ -1416,9 +1416,9 @@ abstract class Model
                                 }
                             }
                             
-                            $bind_params_index++;
-                            
                             if( !$operator_is_in_or_not_in ) {
+                                
+                                $bind_params_index++;
                                 
                                 $result_sql .= str_repeat("\t", ($indent_level + 1) )
                                          . "{$value['col']} $db_specific_operator :_{$bind_params_index}_ " 
