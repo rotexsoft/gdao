@@ -1,4 +1,5 @@
 * Strive for 100% Unit Test Coverage
+* Add License
 
 * Look into the possibility of refactoring the Record class to have connected and disconnected records
 > Connected records will contain a reference to the Model object that created them while disconnected records will have no reference to the model that created them 
