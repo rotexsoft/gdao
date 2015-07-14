@@ -355,7 +355,6 @@ abstract class Model
      *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
      *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
      * 
-     * 
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //the entry below can be used to modify the sql query for retrieving data from
      *          //$this->_relations['relation_name1']['foreign_models_table'].
@@ -368,7 +367,6 @@ abstract class Model
      *          //      value to be set for $this->_relations['relation_name1']['foreign_models_table']
      *          'foreign_models_table_sql_params'=> [....]
      * 
-     *          'col_in_foreign_models_table_linked_to_join_table' => 'tag_id',
      *          /////////////////////////////////////////////////////////////////////////////////
      *       ],
      *      ......,
