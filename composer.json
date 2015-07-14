@@ -30,6 +30,6 @@
         "classmap": ["src/", "tests/"]
     },
     "suggest": {
-        "rotexsoft/idiorm-gdao": "A Concrete Implementation of the Abstract Classes in rotexsoft/gdao based on idiorm. Light weight data access library."
+        "rotexsoft/leanorm": "A Concrete Implementation of the Abstract Classes in rotexsoft/gdao based on a stripped down version of idiorm (\\LeanOrm\\DBConnector). Light weight data access library."
     }
 }
