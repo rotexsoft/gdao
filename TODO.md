@@ -30,3 +30,5 @@
 
 * Lower testing requirement to allow for PHP 5.3 (the only downside is the loss of the convenient use of the short array syntax)
 > This is to make sure this package really works for PHP 5.3, since the short array syntax is only used in test files and not in the actual source (src) files
+
+* Find a way using git hooks or something to update the year in the license during a commit, push or something.
