@@ -17,6 +17,7 @@ namespace GDAO;
  */
 abstract class Model
 {
+    
     /**
      * 
      * Name of the primary key column in the db table associated with this model
