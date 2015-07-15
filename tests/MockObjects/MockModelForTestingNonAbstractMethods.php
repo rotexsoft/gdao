@@ -24,7 +24,7 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
         }
     }
 
-    public function createRecord( 
+    public function createNewRecord( 
         array $col_names_and_values = [], array $extra_opts = []
     ) {
         

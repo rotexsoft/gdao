@@ -767,7 +767,7 @@ abstract class Model
      * Implementers of this class can implement magic methods by overriding this method.
      * 
      * For example $this->fetchOneByIdAndTitle(1, 'A title!') will lead to this 
-     * method being called (since fetchOneByIdAndTitle() doen't exist in this
+     * method being called (since fetchOneByIdAndTitle() doesn't exist in this
      * class) with the following values:
      *      $method === 'fetchOneByIdAndTitle'
      *      $params === [0 => 1, 1 => 'A title!']
@@ -844,7 +844,7 @@ abstract class Model
      * @return \GDAO\Model\Collection a collection of instances of \GDAO\Model\Record.
      * 
      */
-    public function createCollection(\GDAO\Model\GDAORecordsList $list_of_records, array $extra_opts=array()) {
+    public function createNewCollection(\GDAO\Model\GDAORecordsList $list_of_records, array $extra_opts=array()) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new ModelMustImplementMethodException($msg);
@@ -861,7 +861,7 @@ abstract class Model
      * @return \GDAO\Model\Record new record with specified values.
      * 
      */
-    public abstract function createRecord(array $col_names_and_values = array(), array $extra_opts=array());
+    public abstract function createNewRecord(array $col_names_and_values = array(), array $extra_opts=array());
 
     /**
      * 
@@ -3883,7 +3883,8 @@ abstract class Model
      * 
      * @return mixed A single value either from a column in a row of the db table 
      *               associated with this model or the result of a sql aggregate
-     *               function (eg. MAX(col_name)).
+     *               function (eg. MAX(col_name)), or null if no matching record 
+     *               was found.
      * 
      */
     public abstract function fetchValue(array $params = array());
@@ -4013,12 +4014,16 @@ abstract class Model
      * 
      * Get the value of $this->_primary_col.
      * 
+     * @param bool $prepend_table_name true to return "{$this->_table_name}.{$this->_primary_col}"
+     *                                 or false to return "{$this->_primary_col}"
+     * 
      * @return string the value of $this->_primary_col.
      * 
      */
-    public function getPrimaryColName() {
+    public function getPrimaryColName($prepend_table_name=false) {
 
-        return $this->_primary_col;
+        return $prepend_table_name ?
+                "{$this->_table_name}.{$this->_primary_col}" : $this->_primary_col;
     }
 
     /**
