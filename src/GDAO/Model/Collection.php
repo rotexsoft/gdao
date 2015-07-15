@@ -58,11 +58,18 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
         }
     }
     
+    /**
+     * 
+     * Deletes each record in the collection from the database, but leaves the
+     * record objects with their data inside the collection.
+     * 
+     * Call $this->removeAll() to empty the collection of the records.
+     * 
+     */
 	public abstract function deleteAll();
-    // Deletes each record in the collection one-by-one.
     
-	public abstract function getColVals($col);
     // Returns an array of all values for a single column in the collection.
+	public abstract function getColVals($col);
     
     /**
      * 
@@ -73,10 +80,23 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
         return $this->_model;
     }
     
+    // Are there any records in the collection?
 	public abstract function isEmpty();
-    // Are there any records in the collection?}
     
-	public abstract function loadData(\GDAO\Model\GDAORecordsList $data_2_load, $cols_2_load = null);
+    
+    
+    /**
+     * 
+     * Load the collection with a list of records.
+     * 
+     * \GDAO\Model\GDAORecordsList is used instead of an array because
+     * \GDAO\Model\GDAORecordsList can only contain instances of \GDAO\Model\Record
+     * or its descendants. We only ever want instances of \GDAO\Model\Record or
+     * its descendants inside a collection.
+     * 
+     * @param \GDAO\Model\GDAORecordsList $data_2_load
+     */
+	public abstract function loadData(\GDAO\Model\GDAORecordsList $data_2_load);
     
 	public abstract function removeAll();
     //Removes all records from the collection but **does not** delete them 

@@ -4,7 +4,7 @@
     "description": "A package containing abstract class definitions that can be used as a basis for a Table Data Gateway-ish (http://bit.ly/1F8Zjfc) implementation of a DB access library that performs data manipulation (DM) tasks.",
     "keywords": [ "orm", "db", "pdo", "mysql", "postgresql", "sqlite", "database", "sql", "table","data", "gateway", "table data gateway"],
     "homepage": "https://github.com/rotexsoft/gdao",
-    "license": "MIT",
+    "license": "BSD-2-Clause",
     "authors": [
         {
             "name": "Rotimi Adegbamigbe",
