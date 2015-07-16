@@ -892,7 +892,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function deleteMatchingRecords(array $cols_n_vals);
+    public abstract function deleteMatchingDbTableRows(array $cols_n_vals);
 
     /**
      * Delete the specified record from the database.
@@ -3986,7 +3986,7 @@ abstract class Model
      * @throws \GDAO\ModelInvalidUpdateValueSuppliedException
      * 
      */
-    public abstract function updateMatchingRecords(
+    public abstract function updateMatchingDbTableRows(
         array $col_names_n_values_2_save = array(), 
         array $col_names_n_values_2_match = array()
     );
