@@ -88,6 +88,10 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
         
     }
 
+    public function insertMany($col_names_n_vals = array()) {
+        
+    }
+    
     public function updateMatchingDbTableRows(
         array $col_names_n_values_2_save = [],
         array $col_names_n_values_2_match = []
