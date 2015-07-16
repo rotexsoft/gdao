@@ -89,10 +89,21 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
 	
     /**
      * 
-     * delete the record from the db
+     * Delete the record from the db. 
+     * 
+     * If deletion was successful and the primary key column for the record's db
+     * table is auto-incrementing, then unset the primary key field in the data 
+     * contained in the record object.
+     * 
+     * NOTE: data contained in the record include $this->_data, $this->_related_data
+     *       and $this->_initial_data.
+     * 
+     * @param bool $set_record_objects_data_to_empty_array true to reset the record object's data to an empty array if db deletion was successful, false to keep record object's data
+     * 
+     * @return bool true if record was successfully deleted from db or false if not
      * 
      */
-    public abstract function delete();
+    public abstract function delete($set_record_objects_data_to_empty_array=false);
     
     /**
      * 
@@ -248,7 +259,7 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @param \GDAO\Model\Record|array $data_2_save
      * 
-     * @return void|bool true: successful save, false: failed save, null: no changed data to save
+     * @return null|bool true: successful save, false: failed save, null: no changed data to save
      * 
      */
 	public abstract function save($data_2_save = null);

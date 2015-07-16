@@ -719,7 +719,7 @@ abstract class Model
      * @param string $dsn
      * @param string $username
      * @param string $passwd
-     * @param array $pdo_driver_opts
+     * @param array $pdo_driver_opts see \PDO::setAttribute(..) documentation
      * @param array $extra_opts an array that may be used to pass initialization 
      *                          value(s) for protected and / or private properties
      *                          of this class
