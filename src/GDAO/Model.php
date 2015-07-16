@@ -346,6 +346,12 @@ abstract class Model
      *          // an instance of
      *          // $this->_relations['relation_name1']['foreign_models_class_name']
      *          // if set.
+     *          // 
+     *          // Values associated with 'foreign_models_class_name',
+     *          // 'foreign_models_collection_class_name' and 
+     *          // 'foreign_models_record_class_name' must be names of classes 
+     *          // that are sub-classes of \GDAO\Model, \GDAO\Model\Collection
+     *          // and \GDAO\Model\Record 
      *          //
      *          // 'primary_key_col_in_foreign_models_table' must be set in order to
      *          // be able to create a model instance for the related records.
@@ -366,8 +372,8 @@ abstract class Model
      *          //      `limit_size` entries acceptable in the $params parameter 
      *          //      for $this->fetchAll(..) should not be included in the  
      *          //      value to be set for $this->_relations['relation_name1']['foreign_models_table']
-     *          'foreign_models_table_sql_params'=> [....]
      * 
+     *          'foreign_models_table_sql_params'=> [....]
      *          /////////////////////////////////////////////////////////////////////////////////
      *       ],
      *      ......,
@@ -837,7 +843,7 @@ abstract class Model
      * 
      * Create and return a new collection of zero or more records (instances of \GDAO\Model\Record).
      * 
-     * @param \GDAO\Model\GDAORecordsList $list_of_records.
+     * @param \GDAO\Model\GDAORecordsList $list_of_records 
      * @param array $extra_opts an array of other parameters that may be needed 
      *                          in creating an instance of \GDAO\Model\Collection
      * 
@@ -880,20 +886,21 @@ abstract class Model
      *                             ['id'=>[5,6,7], 'title'=>'yipeedoo'] should generate the sql below:
      *                             DELETE FROM `x` WHERE id IN (5,6,7)  AND title = 'yipeedoo'
      *
-     * @return bool|int|null the number of rows deleted if deletion was successful, 
-     *                       OR null if nothing was deleted (no matching records).
+     * @return int|null the number of rows deleted if deletion was successful, 
+     *                  OR null if nothing was deleted (no matching records).
      * 
      * @throws \PDOException
      * 
      */
-    public abstract function deleteRecordsMatchingSpecifiedColsNValues(array $cols_n_vals);
+    public abstract function deleteMatchingRecords(array $cols_n_vals);
 
     /**
      * Delete the specified record from the database.
      * 
      * NOTE: Implementers of this class must set the record object to a new state 
      *       by a call to $record->setStateToNew() after a successful deletion 
-     *       via this method.
+     *       via this method. The record data will still be inside the record 
+     *       object.
      * 
      * @param \GDAO\Model\Record $record
      * 
@@ -3906,9 +3913,9 @@ abstract class Model
      * Insert one row to the model table with the specified values.
      * 
      * An exception (\GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException)
-     * should be thrown if auto-incremented primary-key value of the inserted 
-     * record could not be retrieved (in this case the insert could have still
-     * been successful).
+     * should be thrown if the primary key col is auto-incrementing and the 
+     * auto-incremented primary-key value of the inserted record could not be 
+     * retrieved (in this case the insert could have still been successful).
      * 
      * An exception (\GDAO\ModelInvalidInsertValueSuppliedException) should be
      * thrown if any of the values supplied for insertion is not a boolean, NULL,
@@ -3925,10 +3932,14 @@ abstract class Model
      *                                type, else they should throw the following
      *                                exception: \GDAO\ModelInvalidInsertValueSuppliedException
      * 
-     * @return bool|array false if insert failed, else return an array of the 
-     *                    inserted data including auto-incremented primary-key 
-     *                    value if the insert succeeded.
+     * @return bool|array false if insert failed, else if the insert succeeded 
+     *                    return an array of the inserted data including 
+     *                    auto-incremented primary-key value (if the 
+     *                    primary key col is auto-incrementing). 
+     *                    A \PDOException will be automatically thrown if things 
+     *                    fail at the PDO level.
      * 
+     * @throws \PDOException
      * @throws \GDAO\ModelInvalidInsertValueSuppliedException
      * @throws \GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException
      * 
@@ -3975,7 +3986,7 @@ abstract class Model
      * @throws \GDAO\ModelInvalidUpdateValueSuppliedException
      * 
      */
-    public abstract function updateRecordsMatchingSpecifiedColsNValues(
+    public abstract function updateMatchingRecords(
         array $col_names_n_values_2_save = array(), 
         array $col_names_n_values_2_match = array()
     );

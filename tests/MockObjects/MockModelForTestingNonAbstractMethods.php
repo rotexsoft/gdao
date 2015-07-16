@@ -30,7 +30,7 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
         
     }
 
-    public function deleteRecordsMatchingSpecifiedColsNValues(array $cols_n_vals) {
+    public function deleteMatchingRecords(array $cols_n_vals) {
         
     }
 
@@ -88,7 +88,7 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
         
     }
 
-    public function updateRecordsMatchingSpecifiedColsNValues(
+    public function updateMatchingRecords(
         array $col_names_n_values_2_save = [],
         array $col_names_n_values_2_match = []
     ) {
