@@ -843,6 +843,11 @@ abstract class Model
      * 
      * Create and return a new collection of zero or more records (instances of \GDAO\Model\Record).
      * 
+     * This method is not declared abstract in order to allow both implementers
+     * and consumers of this API to be able to implement or use this API without
+     * collections. The Model and Record classes are mandatory, the collection 
+     * class is optional(php arrays are a good & natively available alternative).
+     * 
      * @param \GDAO\Model\GDAORecordsList $list_of_records 
      * @param array $extra_opts an array of other parameters that may be needed 
      *                          in creating an instance of \GDAO\Model\Collection
@@ -1593,6 +1598,11 @@ abstract class Model
      * sub-classes) of records (instances of \GDAO\Model\Record or any of its 
      * sub-classes) [Eager Loading should be implemented here].
      * 
+     * This method is not declared abstract in order to allow both implementers
+     * and consumers of this API to be able to implement or use this API without
+     * collections. The Model and Record classes are mandatory, the collection 
+     * class is optional(php arrays are a good & natively available alternative).
+     * 
      * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      * 
      *  `relations_to_include`
@@ -1928,7 +1938,7 @@ abstract class Model
      * @return GDAO\Model\Collection 
      * 
      */
-    public function fetchAll(array $params = array()) {
+    public function fetchRecordsIntoCollection(array $params = array()) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new ModelMustImplementMethodException($msg);
@@ -2275,7 +2285,7 @@ abstract class Model
      *               sub-classes).
      * 
      */
-    public abstract function fetchAllAsArray(array $params = array());
+    public abstract function fetchRecordsIntoArray(array $params = array());
 
     /**
      * 
@@ -2617,7 +2627,7 @@ abstract class Model
      * @return array
      * 
      */
-    public abstract function fetchArray(array $params = array());
+    public abstract function fetchRowsIntoArray(array $params = array());
 
     /**
      * 
@@ -3262,7 +3272,7 @@ abstract class Model
      * @return \GDAO\Model\Record
      * 
      */
-    public abstract function fetchOne(array $params = array());
+    public abstract function fetchOneRecord(array $params = array());
 
     /**
      * 
@@ -3945,6 +3955,58 @@ abstract class Model
      * 
      */
     public abstract function insert($col_names_n_vals=array());
+
+    /**
+     * 
+     * Insert one or more rows to the model table with the specified values.
+     * It is meant to batch all the data to be inserted into one sql query. 
+     * Eg:
+     *   $this->insertMany(
+     *             [ 
+     *               ['a'=>1, 'b'=>2, 'c'=>3],
+     *               ['a'=>4, 'b'=>5, 'c'=>6],
+     *               ['a'=>7, 'b'=>8, 'c'=>9]
+     *             ]
+     *          );
+     * 
+     *   Should generate the following kind of sql statement:
+     * 
+     *      INSERT INTO tbl_name 
+     *                  (a,b,c)
+     *           VALUES (1,2,3),
+     *                  (4,5,6),
+     *                  (7,8,9);
+     * 
+     * NOTE: Implementers of this API SHOULD NOT use multiple sql statements or
+     *       repeated calls to $this->insert() to implement this functionality.
+     * 
+     * An exception (\GDAO\ModelInvalidInsertValueSuppliedException) should be
+     * thrown if any of the values supplied for insertion is not a boolean, NULL,
+     * number or string value (this should happen before even attempting to 
+     * perform the insert).
+     * 
+     * @param array $col_names_n_vals an array of arrays where each subarray 
+     *                                holds data for a new row to be inserted 
+     *                                into the db table. Each subarray's keys 
+     *                                are the names of columns in the database 
+     *                                and the corresponding values are the values 
+     *                                to be inserted in each column.
+     *                                The values must be one of these types:
+     *                                boolean, numeric, NULL or string.
+     *                                Implementers of this class should check
+     *                                that the supplied values are of the expected 
+     *                                type, else they should throw the following
+     *                                exception: \GDAO\ModelInvalidInsertValueSuppliedException
+     * 
+     * @return bool|array false if insert failed, true if the insert succeeded. 
+     *                    A \PDOException will be automatically thrown if things 
+     *                    fail at the PDO level.
+     * 
+     * @throws \PDOException
+     * @throws \GDAO\ModelInvalidInsertValueSuppliedException
+     * 
+     */
+    public abstract function insertMany($col_names_n_vals=array());
 
     /**
      * 
