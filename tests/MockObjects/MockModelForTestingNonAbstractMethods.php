@@ -34,7 +34,7 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
         
     }
 
-    public function fetchAllAsArray(array $params = []) {
+    public function fetchRecordsIntoArray(array $params = []) {
         
     }
 
@@ -64,7 +64,7 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
         
     }
 
-    public function fetchArray(array $params = []) {
+    public function fetchRowsIntoArray(array $params = []) {
         
     }
 
@@ -72,7 +72,7 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
         
     }
 
-    public function fetchOne(array $params = []) {
+    public function fetchOneRecord(array $params = []) {
         
     }
 
