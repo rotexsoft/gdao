@@ -4106,7 +4106,7 @@ abstract class Model
      * @return array an array of table column names.
      * 
      */
-    public function getTableCols() {
+    public function getTableColNames() {
 
         $keys = array_keys($this->_table_cols);
         
@@ -4131,6 +4131,18 @@ abstract class Model
 
             return ($keys_are_strings)? array_keys($this->_table_cols): array();
         }
+    }
+
+    /**
+     * 
+     * Get an array of relation names defined in $this->_relations.
+     * 
+     * @return array an array of relation names defined in $this->_relations.
+     * 
+     */
+    public function getRelationNames() {
+
+        return array_keys($this->_relations);
     }
 
     /**

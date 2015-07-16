@@ -129,6 +129,19 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
         return $this->_initial_data;
     }
     
+    
+    /**
+     * 
+     * Get all the related data loaded into this record.
+     * Modifying the returned data will not affect the related data inside this record.
+     * 
+     * @return array a reference to all the related data loaded into this record.
+     */
+    public function getRelatedData() {
+        
+        return $this->_related_data;
+    }
+    
     /**
      * 
      * Get a reference to the data for this record.
@@ -151,6 +164,52 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
     public function &getInitialDataByRef() {
         
         return $this->_initial_data;
+    }
+    
+    /**
+     * 
+     * Get a reference to all the related data loaded into this record.
+     * Modifying the returned data will affect the related data inside this record.
+     * 
+     * @return array a reference to all the related data loaded into this record.
+     */
+    public function &getRelatedDataByRef() {
+        
+        return $this->_related_data;
+    }
+    
+    /**
+     * 
+     * Set relation data for this record.
+     * 
+     * @param string $key relation name
+     * @param mixed $value an array or record or collection containing related data
+     * 
+     * @throws \GDAO\Model\RecordRelationWithSameNameAsAnExistingDBTableColumnNameException
+     * 
+     */
+    public function setRelatedData($key, $value) {
+        
+        $my_model = $this->getModel();
+        $table_cols = $my_model->getTableColNames();
+        
+        if( in_array($key, $table_cols) ) {
+            
+            //Error trying to add a relation whose name collides with an actual
+            //name of a column in the db table associated with this record's model.
+            $msg = "ERROR: You cannont add a relationship with the name '$key' "
+                 . " to the record (".get_class($this)."). The database table "
+                 . " '{$my_model->getTableName()}' associated with the "
+                 . " record's model (".get_class($my_model).") already contains"
+                 . " a column with the same name."
+                 . PHP_EOL . get_class($this) . '::' . __FUNCTION__ . '(...).' 
+                 . PHP_EOL;
+                 
+            throw new RecordRelationWithSameNameAsAnExistingDBTableColumnNameException($msg);
+        }
+        
+        //We're safe, set the related data.
+        $this->_related_data[$key] = $value;
     }
     
     /**
@@ -205,10 +264,26 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      * \GDAO\Model\Record::$_initial_data should be set here only if it has the 
      * initial value of -1.
      * 
-     * This method wipes out pre-existing data and replaces it with the new data.
+     * This method partially or completely overwrites pre-existing data and 
+     * replaces it with the new data. Related data should also be loaded if 
+     * $data_2_load is an instance of \GDAO\Model\Record. 
+     * 
+     * Note if $cols_2_load === null all data should be replaced, else only
+     * replace data for the cols in $cols_2_load.
+     * 
+     * If $data_2_load is an instance of \GDAO\Model\Record and is also an instance 
+     * of a sub-class of the Record class in a package that implements this API and
+     * if $data_2_load->getModel()->getTableName() !== $this->getModel()->getTableName(), 
+     * then the exception below should be thrown:
+     * 
+     *      \GDAO\Model\RecordLoadingDataFromRecordWithDifferentTableException
      * 
      * @param \GDAO\Model\Record|array $data_2_load
-     * @param array $cols_2_load
+     * @param array $cols_2_load name of field to load from $data_2_load. If null, 
+     *                           load all fields in $data_2_load.
+     * 
+     * @throws \GDAO\Model\RecordLoadingDataFromRecordWithDifferentTableException
+     * 
      */
 	public abstract function loadData($data_2_load, $cols_2_load = null);
     
@@ -415,3 +490,5 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
 }
 
 class RecordMustImplementMethodException extends \Exception{}
+class RecordLoadingDataFromRecordWithDifferentTableException extends \Exception{}
+class RecordRelationWithSameNameAsAnExistingDBTableColumnNameException extends \Exception{}
