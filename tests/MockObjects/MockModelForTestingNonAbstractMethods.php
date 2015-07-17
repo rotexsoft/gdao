@@ -30,7 +30,7 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
         
     }
 
-    public function deleteMatchingDbTableRows(array $cols_n_vals) {
+    public function deleteMatchingDbTableRows(array $cols_n_vals=[]) {
         
     }
 
@@ -84,11 +84,11 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
         
     }
 
-    public function insert($col_names_n_vals = []) {
+    public function insert(array $col_names_n_vals = []) {
         
     }
 
-    public function insertMany($col_names_n_vals = array()) {
+    public function insertMany(array $col_names_n_vals = array()) {
         
     }
     
