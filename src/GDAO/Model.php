@@ -897,7 +897,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function deleteMatchingDbTableRows(array $cols_n_vals);
+    public abstract function deleteMatchingDbTableRows(array $cols_n_vals=array());
 
     /**
      * Delete the specified record from the database.
@@ -3954,7 +3954,7 @@ abstract class Model
      * @throws \GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException
      * 
      */
-    public abstract function insert($col_names_n_vals=array());
+    public abstract function insert(array $col_names_n_vals=array());
 
     /**
      * 
@@ -3985,18 +3985,18 @@ abstract class Model
      * number or string value (this should happen before even attempting to 
      * perform the insert).
      * 
-     * @param array $col_names_n_vals an array of arrays where each subarray 
-     *                                holds data for a new row to be inserted 
-     *                                into the db table. Each subarray's keys 
-     *                                are the names of columns in the database 
-     *                                and the corresponding values are the values 
-     *                                to be inserted in each column.
-     *                                The values must be one of these types:
-     *                                boolean, numeric, NULL or string.
-     *                                Implementers of this class should check
-     *                                that the supplied values are of the expected 
-     *                                type, else they should throw the following
-     *                                exception: \GDAO\ModelInvalidInsertValueSuppliedException
+     * @param array $rows_of_data_2_insert an array of arrays where each subarray 
+     *                                     holds data for a new row to be inserted 
+     *                                     into the db table. Each subarray's keys 
+     *                                     are the names of columns in the database 
+     *                                     and the corresponding values are the values 
+     *                                     to be inserted in each column.
+     *                                     The values must be one of these types:
+     *                                     boolean, numeric, NULL or string.
+     *                                     Implementers of this class should check
+     *                                     that the supplied values are of the expected 
+     *                                     type, else they should throw the following
+     *                                     exception: \GDAO\ModelInvalidInsertValueSuppliedException
      * 
      * @return bool|array false if insert failed, true if the insert succeeded. 
      *                    A \PDOException will be automatically thrown if things 
@@ -4006,7 +4006,7 @@ abstract class Model
      * @throws \GDAO\ModelInvalidInsertValueSuppliedException
      * 
      */
-    public abstract function insertMany($col_names_n_vals=array());
+    public abstract function insertMany(array $rows_of_data_2_insert=array());
 
     /**
      * 

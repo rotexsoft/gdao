@@ -419,35 +419,6 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
     
     /**
      * 
-     * User-defined pre-delete logic.
-     * 
-     * Implementers of this class should add a call to this method as the 
-     * first line of code in their implementation of $this->deleteOne()
-     * 
-     * @return void
-     * 
-     */
-    protected function _preDeleteOne()
-    {
-    }
-    
-    /**
-     * 
-     * User-defined post-delete logic.
-     * 
-     * Implementers of this class should add a call to this method as the 
-     * last line of code in their implementation of $this->deleteOne()
-     * 
-     * @return void
-     * 
-     */
-    protected function _postDeleteOne()
-    {
-    }
-    
-    
-    /**
-     * 
      * User-defined pre-save logic for the collection.
      * 
      * Implementers of this class should add a call to this method as the 
