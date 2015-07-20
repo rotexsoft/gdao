@@ -68,10 +68,10 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      */
 	public function __construct(
         array $data, \GDAO\Model $model, array $extra_opts=array()
-    ) {    
-        $this->loadData($data);
+    ) {
         $this->setModel($model);
-        
+        $this->loadData($data);
+
         if(count($extra_opts) > 0) {
             
             //set properties of this class specified in $extra_opts

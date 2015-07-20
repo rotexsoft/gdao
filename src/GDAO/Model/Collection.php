@@ -43,8 +43,8 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
 	public function __construct(
         GDAORecordsList $data, \GDAO\Model $model, array $extra_opts=array()
     ) {    
-        $this->_data = $data->toArray();
         $this->setModel($model);
+        $this->_data = $data->toArray();
         
         if(count($extra_opts) > 0) {
             
