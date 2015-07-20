@@ -1937,6 +1937,8 @@ abstract class Model
      * 
      * @return GDAO\Model\Collection 
      * 
+     * @throws \PDOException
+     * 
      */
     public function fetchRecordsIntoCollection(array $params = array()) {
         
@@ -2284,6 +2286,8 @@ abstract class Model
      * @return array of records (instances of \GDAO\Model\Record or any of its 
      *               sub-classes).
      * 
+     * @throws \PDOException
+     * 
      */
     public abstract function fetchRecordsIntoArray(array $params = array());
 
@@ -2626,6 +2630,8 @@ abstract class Model
      * 
      * @return array
      * 
+     * @throws \PDOException
+     * 
      */
     public abstract function fetchRowsIntoArray(array $params = array());
 
@@ -2958,6 +2964,8 @@ abstract class Model
      * 
      * @return array
      * 
+     * @throws \PDOException
+     * 
      */
     public abstract function fetchCol(array $params = array());
 
@@ -3270,6 +3278,8 @@ abstract class Model
      *          ]
      * 
      * @return \GDAO\Model\Record
+     * 
+     * @throws \PDOException
      * 
      */
     public abstract function fetchOneRecord(array $params = array());
@@ -3600,6 +3610,8 @@ abstract class Model
      * 
      * @return array
      * 
+     * @throws \PDOException
+     * 
      */
     public abstract function fetchPairs(array $params = array());
 
@@ -3903,6 +3915,8 @@ abstract class Model
      *               function (eg. MAX(col_name)), or null if no matching record 
      *               was found.
      * 
+     * @throws \PDOException
+     * 
      */
     public abstract function fetchValue(array $params = array());
 
@@ -4045,6 +4059,7 @@ abstract class Model
      *                    updated if the update was successful or return
      *                    null if there were no matching records.
      * 
+     * @throws \PDOException
      * @throws \GDAO\ModelInvalidUpdateValueSuppliedException
      * 
      */
@@ -4063,6 +4078,8 @@ abstract class Model
      * @return bool true for a successful update, false for a failed update 
      *              OR null if supplied record is a record that has never been
      *              saved to the db.
+     * 
+     * @throws \PDOException
      * 
      */
     public abstract function updateSpecifiedRecord(\GDAO\Model\Record $record);

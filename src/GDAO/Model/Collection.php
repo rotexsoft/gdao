@@ -40,9 +40,11 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      *                          value(s) for protected and / or private properties
      *                          of this class
      */
-	public function __construct(\GDAO\Model\GDAORecordsList $data, array $extra_opts=array()) {
-        
+	public function __construct(
+        GDAORecordsList $data, \GDAO\Model $model, array $extra_opts=array()
+    ) {    
         $this->_data = $data->toArray();
+        $this->setModel($model);
         
         if(count($extra_opts) > 0) {
             
@@ -66,12 +68,79 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * Deletes each record in the collection from the database, but leaves the
      * record objects with their data inside the collection object.
      * 
-     * Call $this->removeAll() to empty the collection of the records.
+     * Call $this->removeAll() to empty the collection of the record objects.
      * 
-     * @return void
+     * @return bool|array true if all records were successfully deleted or an
+     *                    array of keys in the collection for the records that 
+     *                    couldn't be successfully deleted. It's most likely a 
+     *                    PDOException would be thrown if the deletion failed.
+     * 
+     * @throws \PDOException 
      * 
      */
-	public abstract function deleteAll();
+	public function deleteAll() {
+        
+        $this->_preDeleteAll();
+        
+        $result = true;
+        
+        try {
+            
+            $model = $this->getModel();
+
+            if( $model instanceof \GDAO\Model && $this->count() > 0 ) {
+
+                $pri_col_name = $model->getPrimaryColName();
+                $pri_key_vals = $this->getColVals($pri_col_name);
+
+                if( count($pri_key_vals) > 0 ) {
+
+                    //where pri_key in (.....)
+                    $where_params = array($pri_col_name => $pri_key_vals);
+                    $result = $model->deleteMatchingDbTableRows($where_params);
+                    
+                    if( is_int($result) && $this->count() !== $result) {
+                        
+                        //records were not deleted
+                        $params = array(
+                            'cols' => array($pri_col_name),
+                            'where' => array(
+                                array( 'col' => $pri_col_name, 'operator' => 'in', 'val' => $pri_key_vals ),
+                            )
+                        );
+                        
+                        $pkeys_of_recs_not_deleted = $model->fetchCol($params);
+                        
+                        $result = array();
+                        
+                        //generate list of keys of records in this collection
+                        //that were not successfully saved.
+                        
+                        foreach($pkeys_of_recs_not_deleted as $pkey) {
+                            
+                            foreach( $this->_data as $coll_key=>$record ) {
+                                
+                                if( $record->getPrimaryVal() == $pkey) {
+                                    
+                                    //record still exists in the db table
+                                    //it wasn't successfully deleted.
+                                    $result[] = $coll_key;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }  catch(\Exception $e) {
+
+            throw $e;
+        }
+        
+        $this->_postDeleteAll();
+        
+        return $result;
+    }
     
     /**
      * 
@@ -84,7 +153,17 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      *               element.
      * 
      */
-	public abstract function getColVals($col);
+	public function getColVals($col) {
+        
+        $list = array();
+        
+        foreach ($this->_data as $key => $record) {
+            
+            $list[$key] = $record->$col;
+        }
+        
+        return $list;
+    }
     
     /**
      * 
@@ -93,7 +172,10 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * @return array
      * 
      */
-    public abstract function getKeys();
+    public function getKeys() {
+        
+        return array_keys($this->_data);
+    }
     
     /**
      * 
@@ -114,7 +196,10 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * @return bool True if empty, false if not.
      * 
      */
-	public abstract function isEmpty();
+	public function isEmpty() {
+        
+        return empty($this->_data);
+    }
     
     /**
      * 
@@ -130,7 +215,11 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * @return void
      * 
      */
-	public abstract function loadData(\GDAO\Model\GDAORecordsList $data_2_load);
+	public function loadData(GDAORecordsList $data_2_load){
+        
+        $this->_data = $data_2_load->getData();
+    }
+    
     
     /**
      * 
@@ -140,7 +229,17 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * @return void
      * 
      */
-	public abstract function removeAll();
+	public function removeAll() {
+        
+        $keys =  array_keys($this->_data);
+        
+        foreach( $keys as $key ) {
+            
+            unset($this->_data[$key]);
+        }
+        
+        $this->_data = array();
+    }
 
     /**
      * 
@@ -174,7 +273,68 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * @throws \PDOException
      * 
      */
-	public abstract function save($group_inserts_together=false);
+    public function save($group_inserts_together=false) {
+        
+        $this->_preSave();
+        
+        $result = true;
+        $keys_4_unsuccessfully_saved_records = array();
+        
+        if ( $group_inserts_together ) {
+            
+            $data_2_save_4_new_records = array();
+
+            foreach ( $this->_data as $key => $record ) {
+                
+                if( $record->isNew()) {
+                    
+                    //The record is new and must be inserted into the db.
+                    //Get the data to insert, whilst preserving its 
+                    //association with its key in this collection.
+                    $data_2_save_4_new_records[$key] = $record->getData();
+                    
+                } else if( $record->save() === false ) {
+
+                    //The record is not new, but the attempt to update it failed.
+                    //Store its key in this collection into the array of keys
+                    //of records that could not be successfully saved.
+                    $keys_4_unsuccessfully_saved_records[] = $key;
+                }
+            }
+            
+            //Try bulk insertion of new records
+            if( 
+                count($data_2_save_4_new_records) > 0
+                && !$this->getModel()->insertMany($data_2_save_4_new_records) 
+            ) {
+                //bulk insert failed, none of the new records got saved
+                //gather all their keys in this collection and add them
+                //to the keys to be returned.
+                $keys_4_unsuccessfully_saved_records = array_merge(
+                                        $keys_4_unsuccessfully_saved_records, 
+                                        array_keys($data_2_save_4_new_records)
+                                    );
+            }
+        } else {
+            
+            foreach ( $this->_data as $key=>$record ) {
+                
+                if( $record->save() === false ) {
+                    
+                    $keys_4_unsuccessfully_saved_records[] = $key;
+                }
+            }
+        }
+        
+        if( count($keys_4_unsuccessfully_saved_records) > 0 ) {
+            
+            $result = $keys_4_unsuccessfully_saved_records;
+        }
+        
+        $this->_postSave();
+
+        return $result;
+    }
     
     /**
      * 
@@ -217,8 +377,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     public function offsetExists($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new CollectionMustImplementMethodException($msg);
+        return $this->__isset($key);
     }
 
     /**
@@ -232,8 +391,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     public function offsetGet($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new CollectionMustImplementMethodException($msg);
+        return $this->__get($key);
     }
 
     /**
@@ -256,8 +414,19 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     public function offsetSet($key, $val) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new CollectionMustImplementMethodException($msg);
+        if ($key === null) {
+            
+            //support for $this[] = $record; syntax
+            
+            $key = $this->count();
+            
+            if (! $key) {
+                
+                $key = 0;
+            }
+        }
+        
+        $this->__set($key, $val);
     }
 
     /**
@@ -272,8 +441,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     public function offsetUnset($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new CollectionMustImplementMethodException($msg);
+        $this->__unset($key);
     }
 
     /**
@@ -285,8 +453,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     public function count() {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new CollectionMustImplementMethodException($msg);
+        return count($this->_data);
     }
 
     /**
@@ -298,8 +465,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     public function getIterator() {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new CollectionMustImplementMethodException($msg);
+        return new \ArrayIterator($this->_data);
     }
 
     /////////////////////
@@ -318,8 +484,17 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     public function __get($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new CollectionMustImplementMethodException($msg);
+        if (array_key_exists($key, $this->_data)) {
+
+            return $this->_data[$key];
+            
+        } else {
+
+            $msg = "ERROR: Item with key '$key' does not exist in " 
+                   . get_class($this) .'.'. PHP_EOL . $this->__toString();
+            
+            throw new ItemNotFoundInCollectionException($msg);
+        }
     }
 
     /**
@@ -333,8 +508,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     public function __isset($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new CollectionMustImplementMethodException($msg);
+        return array_key_exists($key, $this->_data);
     }
 
     /**
@@ -346,7 +520,6 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      *       \GDAO\Model\CollectionCanOnlyContainGDAORecordsException exception.
      * 
      * @param string $key The requested key.
-     * 
      * @param \GDAO\Model\Record $val The value to set it to.
      * 
      * @return void
@@ -356,8 +529,18 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     public function __set($key, $val) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new CollectionMustImplementMethodException($msg);
+        if( !($val instanceof Record) ) {
+            
+            $msg = "ERROR: Only instances of \\GDAO\\Model\\Record or its"
+                   . " sub-classes can be added to a Collection. You tried to"
+                   . " insert the following item: " 
+                   . PHP_EOL . var_export($val, true) . PHP_EOL;
+            
+            throw new \GDAO\Model\CollectionCanOnlyContainGDAORecordsException($msg);
+        }
+        
+        // set the value
+        $this->_data[$key] = $val;
     }
 
     /**
@@ -383,8 +566,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     public function __unset($key) {
         
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new CollectionMustImplementMethodException($msg);
+        unset($this->_data[$key]);
     }
     
     //Hooks
@@ -399,9 +581,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * @return void
      * 
      */
-    protected function _preDeleteAll()
-    {
-    }
+    protected function _preDeleteAll() { }
     
     /**
      * 
@@ -413,9 +593,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * @return void
      * 
      */
-    protected function _postDeleteAll()
-    {
-    }
+    protected function _postDeleteAll() { }
     
     /**
      * 
@@ -427,9 +605,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * @return void
      * 
      */
-    protected function _preSave()
-    {
-    }
+    protected function _preSave() { }
     
     /**
      * 
@@ -441,10 +617,9 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * @return void
      * 
      */
-    protected function _postSave()
-    {
-    }
+    protected function _postSave() { }
 }
 
+class ItemNotFoundInCollectionException extends \Exception {}
 class CollectionMustImplementMethodException extends \Exception{}
 class CollectionCanOnlyContainGDAORecordsException extends \Exception{}

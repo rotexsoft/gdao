@@ -66,9 +66,11 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      *                          value(s) for protected and / or private properties
      *                          of this class
      */
-	public function __construct(array $data=array(), array $extra_opts=array()) {
-        
+	public function __construct(
+        array $data, \GDAO\Model $model, array $extra_opts=array()
+    ) {    
         $this->loadData($data);
+        $this->setModel($model);
         
         if(count($extra_opts) > 0) {
             
@@ -276,16 +278,16 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      * if $data_2_load->getModel()->getTableName() !== $this->getModel()->getTableName(), 
      * then the exception below should be thrown:
      * 
-     *      \GDAO\Model\RecordLoadingDataFromRecordWithDifferentTableException
+     *      \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
      * @param \GDAO\Model\Record|array $data_2_load
      * @param array $cols_2_load name of field to load from $data_2_load. If null, 
      *                           load all fields in $data_2_load.
      * 
-     * @throws \GDAO\Model\RecordLoadingDataFromRecordWithDifferentTableException
+     * @throws \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
      */
-	public abstract function loadData($data_2_load, $cols_2_load = null);
+	public abstract function loadData($data_2_load, array $cols_2_load = null);
     
     /**
      * 
@@ -490,5 +492,5 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
 }
 
 class RecordMustImplementMethodException extends \Exception{}
-class RecordLoadingDataFromRecordWithDifferentTableException extends \Exception{}
+class LoadingDataFromInvalidSourceIntoRecordException extends \Exception{}
 class RecordRelationWithSameNameAsAnExistingDBTableColumnNameException extends \Exception{}
