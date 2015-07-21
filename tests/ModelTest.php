@@ -526,7 +526,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-in' contains an item with a key named 'val' whose value Closure::__set_state(array(";
+        
+        $closure_label = 'Closure::__set_state(array(';
+                 
+        if($this->_isHhvm()){
+            
+            $closure_label = 'Closure$ModelTest::';
+        }
+                 
+        $substr = "A sub-array containing a key named 'operator' with a value of 'not-in' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
@@ -611,7 +619,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of 'in' contains an item with a key named 'val' whose value Closure::__set_state(array(";
+                 
+        $closure_label = 'Closure::__set_state(array(';
+                 
+        if($this->_isHhvm()){
+            
+            $closure_label = 'Closure$ModelTest::';
+        }
+                 
+        $substr = "A sub-array containing a key named 'operator' with a value of 'in' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
@@ -758,7 +774,14 @@ class ModelTest extends \PHPUnit_Framework_TestCase
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'like' contains an item with a key named 'val' whose value Closure::__set_state(array(";
+        $closure_label = 'Closure::__set_state(array(';
+                 
+        if($this->_isHhvm()){
+            
+            $closure_label = 'Closure$ModelTest::';
+        }
+                 
+        $substr = "A sub-array containing a key named 'operator' with a value of 'like' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
@@ -902,7 +925,14 @@ class ModelTest extends \PHPUnit_Framework_TestCase
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-like' contains an item with a key named 'val' whose value Closure::__set_state(array(";
+        $closure_label = 'Closure::__set_state(array(';
+                 
+        if($this->_isHhvm()){
+            
+            $closure_label = 'Closure$ModelTest::';
+        }   
+                 
+        $substr = "A sub-array containing a key named 'operator' with a value of 'not-like' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
@@ -1004,7 +1034,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '>' contains an item with a key named 'val' whose value Closure::__set_state(array(";
+                 
+        $closure_label = 'Closure::__set_state(array(';
+                 
+        if($this->_isHhvm()){
+            
+            $closure_label = 'Closure$ModelTest::';
+        }
+                 
+        $substr = "A sub-array containing a key named 'operator' with a value of '>' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1102,7 +1140,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '=' contains an item with a key named 'val' whose value Closure::__set_state(array(";
+                 
+        $closure_label = 'Closure::__set_state(array(';
+                 
+        if($this->_isHhvm()){
+            
+            $closure_label = 'Closure$ModelTest::';
+        }
+                 
+        $substr = "A sub-array containing a key named 'operator' with a value of '=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1200,7 +1246,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '>=' contains an item with a key named 'val' whose value Closure::__set_state(array(";
+                 
+        $closure_label = 'Closure::__set_state(array(';
+                 
+        if($this->_isHhvm()){
+            
+            $closure_label = 'Closure$ModelTest::';
+        }
+                 
+        $substr = "A sub-array containing a key named 'operator' with a value of '>=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1298,7 +1352,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                  [ 'col'=>'column_name_3', 'operator'=>'<', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '<' contains an item with a key named 'val' whose value Closure::__set_state(array(";
+                 
+        $closure_label = 'Closure::__set_state(array(';
+                 
+        if($this->_isHhvm()){
+            
+            $closure_label = 'Closure$ModelTest::';
+        }
+                 
+        $substr = "A sub-array containing a key named 'operator' with a value of '<' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1396,7 +1458,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                  [ 'col'=>'column_name_3', 'operator'=>'<=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '<=' contains an item with a key named 'val' whose value Closure::__set_state(array(";
+                 
+        $closure_label = 'Closure::__set_state(array(';
+                 
+        if($this->_isHhvm()){
+            
+            $closure_label = 'Closure$ModelTest::';
+        }
+                 
+        $substr = "A sub-array containing a key named 'operator' with a value of '<=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1494,7 +1564,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                  [ 'col'=>'column_name_3', 'operator'=>'!=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '!=' contains an item with a key named 'val' whose value Closure::__set_state(array(";
+                 
+        $closure_label = 'Closure::__set_state(array(';
+                 
+        if($this->_isHhvm()){
+            
+            $closure_label = 'Closure$ModelTest::';
+        }
+                 
+        $substr = "A sub-array containing a key named 'operator' with a value of '!=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1611,5 +1689,9 @@ EOT;
         ];
 
         $this->assertEquals($expected_params, $result[1]);
+    }
+    
+    protected function _isHhvm() {
+        return defined('HHVM_VERSION');
     }
 }
