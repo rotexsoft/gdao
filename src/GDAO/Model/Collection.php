@@ -105,7 +105,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
                         $params = array(
                             'cols' => array($pri_col_name),
                             'where' => array(
-                                array( 'col' => $pri_col_name, 'operator' => 'in', 'val' => $pri_key_vals ),
+                                array( 'col' => $pri_col_name, 'op' => 'in', 'val' => $pri_key_vals ),
                             )
                         );
                         
