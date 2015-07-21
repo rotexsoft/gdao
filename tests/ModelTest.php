@@ -205,7 +205,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsMustHaveOneOfTheExpectedValuesForKeysNamedop() {
+    public function testValidateWhereOrHavnParamsMustHaveOneOfTheExpectedValuesForKeysNamedOp() {
         
         $data = [
             'where' =>
@@ -218,7 +218,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
               ]
         ];
         
-        $msg = "Test 4: array with a key named 'op' with a value that is not amongst the expected op values.";
+        $msg = "Test 4: array with a key named 'op' with a value that is not amongst the expected operator values.";
         $substr = "ERROR: Bad where param array having an entry with a key named"
                 . " 'op' with a non-expected value of";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
@@ -336,7 +336,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsMustOnlyHaveTheKeysNamedColAndopAndValInTheSameSubArray() {
+    public function testValidateWhereOrHavnParamsMustOnlyHaveTheKeysNamedColAndOpAndValInTheSameSubArray() {
         
         $data = [
             'where' =>
@@ -360,7 +360,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsCanHaveKeysNamedColAndopWithNoKeyNamedValInASubArray() {
+    public function testValidateWhereOrHavnParamsCanHaveKeysNamedColAndOpWithNoKeyNamedValInASubArray() {
         
         $data = [
             'where' =>
@@ -375,14 +375,14 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         ];
         
         $msg = "Test 9: a sub-array like this ('col'=>'..', 'op'=>'..') is"
-             . " allowed only if op has either the value 'is-null' or 'not-null'.";
+             . " allowed only if operator has either the value 'is-null' or 'not-null'.";
         $substr = "A sub-array containing keys named 'col' and 'op' without"
                 . " a key named 'val' is valid if and only if the entry with a key"
                 . " named 'op' has either a value of 'is-null' or 'not-null'";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsMustOnlyHaveKeysNamedColAndopInASubArrayWhenopHasExpectedValues() {
+    public function testValidateWhereOrHavnParamsMustOnlyHaveKeysNamedColAndOpInASubArrayWhenOpHasExpectedValues() {
         
         $data = [
             'where' =>
@@ -424,7 +424,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsMustHaveKeysNamedColAndopIfKeyNamedValIsInASubArray() {
+    public function testValidateWhereOrHavnParamsMustHaveKeysNamedColAndOpIfKeyNamedValIsInASubArray() {
         
         $data = [
             'where' =>
@@ -443,7 +443,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsKeyNamedValHasOnlyNumericOrStringOrArrayValueIfopIsInOrNotIn() {
+    public function testValidateWhereOrHavnParamsKeyNamedValHasOnlyNumericOrStringOrArrayValueIfOpIsInOrNotIn() {
         
         $data = [
             'where' =>
@@ -634,7 +634,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsKeyNamedValHasOnlyStringValueIfopIsLikeOrNotLike() {
+    public function testValidateWhereOrHavnParamsKeyNamedValHasOnlyStringValueIfOpIsLikeOrNotLike() {
         
         $data = [
             'where' =>
@@ -939,7 +939,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsopsEqLtGtLteGteNeqHaveCorrespondingNumericOrStringValues() {
+    public function testValidateWhereOrHavnParamsOpsEqLtGtLteGteNeqHaveCorrespondingNumericOrStringValues() {
 
         $data = [
             'where' =>
