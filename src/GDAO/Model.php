@@ -1071,7 +1071,7 @@ abstract class Model
                 $has_a_val_key = 
                         (is_array($value)) && array_key_exists('val', $value);
 
-                $has_a_col_and_an_operator_key = 
+                $has_a_col_and_an_op_key = 
                                     (is_array($value)) 
                                         && array_key_exists('col', $value) 
                                         && array_key_exists('op', $value);
@@ -1118,7 +1118,7 @@ abstract class Model
                     throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
-                        ( $has_a_col_and_an_operator_key || $has_a_val_key ) 
+                        ( $has_a_col_and_an_op_key || $has_a_val_key ) 
                         &&
                         count(
                             array_filter(
@@ -1154,7 +1154,7 @@ abstract class Model
                     throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
-                        $has_a_col_and_an_operator_key 
+                        $has_a_col_and_an_op_key 
                         && !$has_a_val_key 
                         && !in_array($value['op'], array('is-null', 'not-null'))
                 ) {
@@ -1175,7 +1175,7 @@ abstract class Model
                     throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
-                        $has_a_col_and_an_operator_key 
+                        $has_a_col_and_an_op_key 
                         && $has_a_val_key 
                         && in_array($value['op'], array('is-null', 'not-null'))
                 ) {
@@ -1198,7 +1198,7 @@ abstract class Model
 
                     throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
-                } elseif ( !$has_a_col_and_an_operator_key && $has_a_val_key ) {
+                } elseif ( !$has_a_col_and_an_op_key && $has_a_val_key ) {
 
                     //Failed Requirement below
                     //Missing keys ('col' & 'op') when key named 'val' 
@@ -1216,7 +1216,7 @@ abstract class Model
                     throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
-                        $has_a_col_and_an_operator_key 
+                        $has_a_col_and_an_op_key 
                         && $has_a_val_key 
                         && in_array($value['op'], array('in', 'not-in'))
                         && !is_array($value['val'])
@@ -1246,7 +1246,7 @@ abstract class Model
                     throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
-                        $has_a_col_and_an_operator_key 
+                        $has_a_col_and_an_op_key 
                         && $has_a_val_key 
                         && in_array( $value['op'], array('like', 'not-like') )
                         && !is_string($value['val'])
@@ -1273,7 +1273,7 @@ abstract class Model
                     throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
-                        $has_a_col_and_an_operator_key 
+                        $has_a_col_and_an_op_key 
                         && $has_a_val_key 
                         && in_array( $value['op'], array('=', '>', '>=', '<', '<=', '!=') )
                         && !is_string($value['val'])
@@ -1475,18 +1475,18 @@ abstract class Model
                     $has_a_val_key = 
                         (is_array($value)) && array_key_exists('val', $value);
 
-                    $has_a_col_and_an_operator_key = 
+                    $has_a_col_and_an_op_key = 
                         (is_array($value)) 
                         && array_key_exists('col', $value) 
                         && array_key_exists('op', $value);
 
-                    if( $has_a_col_and_an_operator_key ) {
+                    if( $has_a_col_and_an_op_key ) {
                         
-                        $operator_is_in_or_not_in = 
+                        $op_is_in_or_not_in = 
                             in_array($value['op'], array('not-in', 'in'));
 
                         //quote $value['col'] and $value['val'] as needed
-                        $db_specific_operator = 
+                        $db_specific_op = 
                             static::$_where_or_having_ops_2_dbms_ops[$value['op']];
 
                         if( 
@@ -1494,7 +1494,7 @@ abstract class Model
                             ||  in_array( $value['op'], array('not-null', 'is-null') ) 
                         ) {
                             $result_sql .= str_repeat("\t", ($indent_level + 1) )
-                                     . "{$value['col']} $db_specific_operator" . PHP_EOL;
+                                     . "{$value['col']} $db_specific_op" . PHP_EOL;
 
                         } else if( $has_a_val_key ) {
 
@@ -1523,13 +1523,13 @@ abstract class Model
 
                                 $quoted_val = 
                                     (
-                                        !$operator_is_in_or_not_in 
+                                        !$op_is_in_or_not_in 
                                         && is_string($value['val'])
                                     ) ? 
                                         $this->getPDO()->quote($value['val']) 
                                                                 : $value['val'];
                                 
-                                if($operator_is_in_or_not_in) {
+                                if($op_is_in_or_not_in) {
                                     
                                     if(
                                         is_numeric($value['val'])
@@ -1545,12 +1545,12 @@ abstract class Model
                                 }
                             }
                             
-                            if( !$operator_is_in_or_not_in ) {
+                            if( !$op_is_in_or_not_in ) {
                                 
                                 $bind_params_index++;
                                 
                                 $result_sql .= str_repeat("\t", ($indent_level + 1) )
-                                         . "{$value['col']} $db_specific_operator :_{$bind_params_index}_ " 
+                                         . "{$value['col']} $db_specific_op :_{$bind_params_index}_ " 
                                          . PHP_EOL;
                                 $result_bind_params["_{$bind_params_index}_"] = $quoted_val;
                                 
@@ -1558,7 +1558,7 @@ abstract class Model
                                 //no need for named place holder just place the
                                 //quoted val directly.
                                 $result_sql .= str_repeat("\t", ($indent_level + 1) )
-                                         . "{$value['col']} $db_specific_operator $quoted_val " 
+                                         . "{$value['col']} $db_specific_op $quoted_val " 
                                          . PHP_EOL;
                             }
                         }
