@@ -1011,15 +1011,15 @@ abstract class Model
                 throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                 
             } else if (
-                    $key === 'operator' 
+                    $key === 'op' 
                     && !in_array( 
                             $value, array_keys(static::$_where_or_having_ops_2_dbms_ops)
                         )
             ) {
-                //$key === 'operator' then $value must be in valid expected
+                //$key === 'op' then $value must be in valid expected
                 // operators
                 $msg = "ERROR: Bad where param array having an entry with a key"
-                        . " named 'operator' with a non-expected value of "
+                        . " named 'op' with a non-expected value of "
                         . PHP_EOL . var_export($value, true) . PHP_EOL
                         . "inside the array passed to " 
                         . get_class($this) . '::' . __FUNCTION__ . '(...).' 
@@ -1074,7 +1074,7 @@ abstract class Model
                 $has_a_col_and_an_operator_key = 
                                     (is_array($value)) 
                                         && array_key_exists('col', $value) 
-                                        && array_key_exists('operator', $value);
+                                        && array_key_exists('op', $value);
                                         
                 if ( 
                 	!is_array($value) 
@@ -1086,7 +1086,7 @@ abstract class Model
                     //is inside a sub-array referenced by a key named 'val' 
                     //ie. if this key is numeric and is inside an array referenced by a 
                     //key named 'val' 
-                    //( 'val'=>array(...) is allowed when 'operator'=>'in' & 'operator'=>'not-in' )
+                    //( 'val'=>array(...) is allowed when 'op'=>'in' & 'op'=>'not-in' )
                     $msg = "ERROR: Bad where param array having an entry with a"
                             . " key named '{$key}' with a non-expected value of"
                             . PHP_EOL . var_export($value, true) . PHP_EOL
@@ -1129,7 +1129,7 @@ abstract class Model
                                             || 
                                             (
                                             	is_string($v)
-                                            	&& !in_array( $v, array('col', 'operator', 'val') )
+                                            	&& !in_array( $v, array('col', 'op', 'val') )
                                             )
                                             ;
                                     }
@@ -1137,7 +1137,7 @@ abstract class Model
                         ) > 0
                 ) {
                     //Failed Requirement below
-                    //If any of the expected keys ('col', 'operator' or 'val') 
+                    //If any of the expected keys ('col', 'op' or 'val') 
                     //is present, then no other type of key is allowed in the 
                     //particular sub-array
                     $msg = "ERROR: Incorect where condition definition in a"
@@ -1147,7 +1147,7 @@ abstract class Model
                             . "inside the array passed to "
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . "Because one or more of these keys"
-                            . " ('col', 'operator' or 'val') are present," 
+                            . " ('col', 'op' or 'val') are present," 
                             . PHP_EOL . "no other type of key is allowed in the"
                             . " array in which they are present.". PHP_EOL;
 
@@ -1156,10 +1156,10 @@ abstract class Model
                 } else if (
                         $has_a_col_and_an_operator_key 
                         && !$has_a_val_key 
-                        && !in_array($value['operator'], array('is-null', 'not-null'))
+                        && !in_array($value['op'], array('is-null', 'not-null'))
                 ) {
                     //Failed Requirement below
-                    //If the $value array is has these 2 keys 'col' & 'operator' 
+                    //If the $value array is has these 2 keys 'col' & 'op' 
                     //the operator's value must be either 'is-null' or 'not-null'
                     $msg = "ERROR: Incorect where condition definition in a"
                             . " sub-array referenced via a key named '{$key}'. "
@@ -1177,10 +1177,10 @@ abstract class Model
                 } else if (
                         $has_a_col_and_an_operator_key 
                         && $has_a_val_key 
-                        && in_array($value['operator'], array('is-null', 'not-null'))
+                        && in_array($value['op'], array('is-null', 'not-null'))
                 ) {
                     //Failed Requirement below
-                    //For any sub-array containing an item with a key named 'operator' 
+                    //For any sub-array containing an item with a key named 'op' 
                     //with a value of either 'not-null' or 'is-null', there must not be
                     //any item in that sub-array with a key named 'val', but there must
                     //be a corresponding item with a key named 'col' with a string value.
@@ -1191,7 +1191,7 @@ abstract class Model
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing a key named'
                             . ' \'operator\' with a value of \''
-                            . $value['operator'].'\' cannot also contain a'
+                            . $value['op'].'\' cannot also contain a'
                             . ' key named \'val\'. Please remove the item'
                             . ' with the key named \'val\' from the sub-array.'
                             . PHP_EOL;
@@ -1201,7 +1201,7 @@ abstract class Model
                 } elseif ( !$has_a_col_and_an_operator_key && $has_a_val_key ) {
 
                     //Failed Requirement below
-                    //Missing keys ('col' & 'operator') when key named 'val' 
+                    //Missing keys ('col' & 'op') when key named 'val' 
                     //is present
                     $msg = "ERROR: Incorect where condition definition in a"
                             . " sub-array referenced via a key named '{$key}'. "
@@ -1218,13 +1218,13 @@ abstract class Model
                 } else if (
                         $has_a_col_and_an_operator_key 
                         && $has_a_val_key 
-                        && in_array($value['operator'], array('in', 'not-in'))
+                        && in_array($value['op'], array('in', 'not-in'))
                         && !is_array($value['val'])
                         && !is_string($value['val'])
                         && !is_numeric($value['val'])
                 ) {
                     //Failed Requirement below
-                    //For any sub-array containing an item with a key named 'operator' 
+                    //For any sub-array containing an item with a key named 'op' 
                     //with a value of either 'in' or 'not-in', there must be another
                     //item in that sub-array with a key named 'val' with either a 
                     //numeric, string or an array value.
@@ -1235,7 +1235,7 @@ abstract class Model
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing a key named'
                             . ' \'operator\' with a value of \''
-                            . $value['operator'].'\' contains an item with'
+                            . $value['op'].'\' contains an item with'
                             . ' a key named \'val\' whose value '
                             . var_export($value['val'], true)
                             . ' is not numeric or a string or an array. Please supply a'
@@ -1248,11 +1248,11 @@ abstract class Model
                 } else if (
                         $has_a_col_and_an_operator_key 
                         && $has_a_val_key 
-                        && in_array( $value['operator'], array('like', 'not-like') )
+                        && in_array( $value['op'], array('like', 'not-like') )
                         && !is_string($value['val'])
                 ) {
                     //Failed Requirement below
-                    //For any sub-array containing an item with a key named 'operator' 
+                    //For any sub-array containing an item with a key named 'op' 
                     //with a value of either 'like' or 'not-like', there must be another
                     //item in that sub-array with a key named 'val' with a string value.
                     $msg = "ERROR: Incorect where condition definition in a"
@@ -1262,7 +1262,7 @@ abstract class Model
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing a key named'
                             . ' \'operator\' with a value of \''
-                            . $value['operator'].'\' contains an item with'
+                            . $value['op'].'\' contains an item with'
                             . ' a key named \'val\' whose value '
                             . var_export($value['val'], true)
                             . ' is not a string. Please supply a'
@@ -1275,12 +1275,12 @@ abstract class Model
                 } else if (
                         $has_a_col_and_an_operator_key 
                         && $has_a_val_key 
-                        && in_array( $value['operator'], array('=', '>', '>=', '<', '<=', '!=') )
+                        && in_array( $value['op'], array('=', '>', '>=', '<', '<=', '!=') )
                         && !is_string($value['val'])
                         && !is_numeric($value['val'])
                 ) {
                     //Failed Requirement below
-                    //For any sub-array containing an item with a key named 'operator' 
+                    //For any sub-array containing an item with a key named 'op' 
                     //with any of the following values: '=', '>', '>=', '<', '<=' or '!=', 
                     //there must be another item in that sub-array with a key named 'val' 
                     //with either a numeric or string value.
@@ -1291,7 +1291,7 @@ abstract class Model
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing a key named'
                             . ' \'operator\' with a value of \''
-                            . $value['operator'].'\' contains an item with'
+                            . $value['op'].'\' contains an item with'
                             . ' a key named \'val\' whose value '
                             . var_export($value['val'], true)
                             . ' is not a string or numeric. Please supply a'
@@ -1304,7 +1304,7 @@ abstract class Model
                 
             } else if (
                     !is_numeric($key) 
-                    && !in_array($key, array('col', 'operator', 'val', 'OR')) 
+                    && !in_array($key, array('col', 'op', 'val', 'OR')) 
                     && substr($key, 0, 3) !== "OR#"
             ) {
                 //The key is not in the range of allowable values
@@ -1314,7 +1314,7 @@ abstract class Model
                         . "inside the array passed to "
                         . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                         . PHP_EOL . "Allowed keys are as follows:" . PHP_EOL
-                        . "Any of these keys ('col', 'operator', 'val' or 'OR')"
+                        . "Any of these keys ('col', 'op', 'val' or 'OR')"
                         . " or the key must be a numeric key or a string that"
                         . " starts with 'OR#'.". PHP_EOL;
 
@@ -1345,23 +1345,23 @@ abstract class Model
      * $data = [
      *     'where' => 
      *         [
-     *             0 => [ 'col' => 'col_1', 'operator' => '<', 'val' => 58],
-     *             1 => [ 'col' => 'col_2', 'operator' => '<', 'val' => 68],
+     *             0 => [ 'col' => 'col_1', 'op' => '<', 'val' => 58],
+     *             1 => [ 'col' => 'col_2', 'op' => '<', 'val' => 68],
      *             [
-     *                 0 => [ 'col' => 'col_11', 'operator' => '>', 'val' => 581],
-     *                 1 => [ 'col' => 'col_21', 'operator' => '>', 'val' => 681],
+     *                 0 => [ 'col' => 'col_11', 'op' => '>', 'val' => 581],
+     *                 1 => [ 'col' => 'col_21', 'op' => '>', 'val' => 681],
      *                 'OR#3' => [
-     *                     0 => [ 'col' => 'col_12', 'operator' => '<', 'val' => 582],
-     *                     1 => [ 'col' => 'col_22', 'operator' => '<', 'val' => 682]
+     *                     0 => [ 'col' => 'col_12', 'op' => '<', 'val' => 582],
+     *                     1 => [ 'col' => 'col_22', 'op' => '<', 'val' => 682]
      *                 ],
-     *                 2 => [ 'col' => 'col_31', 'operator' => '>=', 'val' => 583],
+     *                 2 => [ 'col' => 'col_31', 'op' => '>=', 'val' => 583],
      *                 'OR#4' => [
-     *                     0 => [ 'col' => 'col_4', 'operator' => '=', 'val' => 584],
-     *                     1 => [ 'col' => 'col_5', 'operator' => '=', 'val' => 684],
+     *                     0 => [ 'col' => 'col_4', 'op' => '=', 'val' => 584],
+     *                     1 => [ 'col' => 'col_5', 'op' => '=', 'val' => 684],
      *                 ]
      *             ],
-     *             3 => [ 'col' => 'column_name_44', 'operator' => '<', 'val' => 777],
-     *             4 => [ 'col' => 'column_name_55', 'operator' => 'is-null'],
+     *             3 => [ 'col' => 'column_name_44', 'op' => '<', 'val' => 777],
+     *             4 => [ 'col' => 'column_name_55', 'op' => 'is-null'],
      *         ]
      * ];
      * 
@@ -1478,20 +1478,20 @@ abstract class Model
                     $has_a_col_and_an_operator_key = 
                         (is_array($value)) 
                         && array_key_exists('col', $value) 
-                        && array_key_exists('operator', $value);
+                        && array_key_exists('op', $value);
 
                     if( $has_a_col_and_an_operator_key ) {
                         
                         $operator_is_in_or_not_in = 
-                            in_array($value['operator'], array('not-in', 'in'));
+                            in_array($value['op'], array('not-in', 'in'));
 
                         //quote $value['col'] and $value['val'] as needed
                         $db_specific_operator = 
-                            static::$_where_or_having_ops_2_dbms_ops[$value['operator']];
+                            static::$_where_or_having_ops_2_dbms_ops[$value['op']];
 
                         if( 
                             !$has_a_val_key 
-                            ||  in_array( $value['operator'], array('not-null', 'is-null') ) 
+                            ||  in_array( $value['op'], array('not-null', 'is-null') ) 
                         ) {
                             $result_sql .= str_repeat("\t", ($indent_level + 1) )
                                      . "{$value['col']} $db_specific_operator" . PHP_EOL;
@@ -1655,21 +1655,21 @@ abstract class Model
      *          [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -1692,10 +1692,10 @@ abstract class Model
      *              'where' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -1704,10 +1704,10 @@ abstract class Model
      *          $array = [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -1716,17 +1716,17 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -1735,24 +1735,24 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -1787,21 +1787,21 @@ abstract class Model
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -1824,10 +1824,10 @@ abstract class Model
      *              'having' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -1836,10 +1836,10 @@ abstract class Model
      *          $array = [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -1848,17 +1848,17 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -1867,24 +1867,24 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -2003,21 +2003,21 @@ abstract class Model
      *          [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -2040,10 +2040,10 @@ abstract class Model
      *              'where' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -2052,10 +2052,10 @@ abstract class Model
      *          $array = [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -2064,17 +2064,17 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -2083,24 +2083,24 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -2135,21 +2135,21 @@ abstract class Model
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -2172,10 +2172,10 @@ abstract class Model
      *              'having' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -2184,10 +2184,10 @@ abstract class Model
      *          $array = [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -2196,17 +2196,17 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -2215,24 +2215,24 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -2348,21 +2348,21 @@ abstract class Model
      *          [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -2385,10 +2385,10 @@ abstract class Model
      *              'where' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -2397,10 +2397,10 @@ abstract class Model
      *          $array = [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -2409,17 +2409,17 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -2428,24 +2428,24 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -2480,21 +2480,21 @@ abstract class Model
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -2517,10 +2517,10 @@ abstract class Model
      *              'having' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -2529,10 +2529,10 @@ abstract class Model
      *          $array = [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -2541,17 +2541,17 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -2560,24 +2560,24 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -2682,21 +2682,21 @@ abstract class Model
      *          [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -2719,10 +2719,10 @@ abstract class Model
      *              'where' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -2731,10 +2731,10 @@ abstract class Model
      *          $array = [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -2743,17 +2743,17 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -2762,24 +2762,24 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -2814,21 +2814,21 @@ abstract class Model
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -2851,10 +2851,10 @@ abstract class Model
      *              'having' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -2863,10 +2863,10 @@ abstract class Model
      *          $array = [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -2875,17 +2875,17 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -2894,24 +2894,24 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -3025,21 +3025,21 @@ abstract class Model
      *          [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -3062,10 +3062,10 @@ abstract class Model
      *              'where' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -3074,10 +3074,10 @@ abstract class Model
      *          $array = [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -3086,17 +3086,17 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -3105,24 +3105,24 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -3157,21 +3157,21 @@ abstract class Model
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -3194,10 +3194,10 @@ abstract class Model
      *              'having' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -3206,10 +3206,10 @@ abstract class Model
      *          $array = [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -3218,17 +3218,17 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -3237,24 +3237,24 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -3328,21 +3328,21 @@ abstract class Model
      *          [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -3365,10 +3365,10 @@ abstract class Model
      *              'where' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -3377,10 +3377,10 @@ abstract class Model
      *          $array = [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -3389,17 +3389,17 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -3408,24 +3408,24 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -3460,21 +3460,21 @@ abstract class Model
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -3497,10 +3497,10 @@ abstract class Model
      *              'having' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -3509,10 +3509,10 @@ abstract class Model
      *          $array = [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -3521,17 +3521,17 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -3540,24 +3540,24 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -3658,21 +3658,21 @@ abstract class Model
      *          [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -3695,10 +3695,10 @@ abstract class Model
      *              'where' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -3707,10 +3707,10 @@ abstract class Model
      *          $array = [
      *              'where' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -3719,17 +3719,17 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -3738,24 +3738,24 @@ abstract class Model
      *          $array = [
      *             'where' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
@@ -3790,21 +3790,21 @@ abstract class Model
      *          [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
      *                          ]
      *                ]
      *          ]
      * 
-     *        The 'operator' could be assigned any one of these values:
+     *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null'
@@ -3827,10 +3827,10 @@ abstract class Model
      *              'having' => 
      *                [
      *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
      * 
@@ -3839,10 +3839,10 @@ abstract class Model
      *          $array = [
      *              'having' => 
      *                [
-     *                   [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ]
+     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
      *                          ],
      *                ]
      *          ]
@@ -3851,17 +3851,17 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
      *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *          
@@ -3870,24 +3870,24 @@ abstract class Model
      *          $array = [
      *             'having' => 
      *               [
-     *                  [ 'col'=>'column_name_1', 'operator'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'operator'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
      *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'operator'=>'=', 'val'=>58 ],
+     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
      *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'operator'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
      *                                    ],
-     *                             [ 'col'=>'column_name_5', 'operator'=>'=', 'val'=>58 ]
+     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
      *                         ],
-     *                  [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
      *              
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'operator' 
+     *        NOTE: For any sub-array containing an item with a key named 'op' 
      *              with a value of either 'not-null' or 'is-null', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
