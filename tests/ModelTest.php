@@ -537,7 +537,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $substr = "A sub-array containing a key named 'operator' with a value of 'not-in' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
-        $substr = ")) is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
+        $substr = " is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
@@ -630,7 +630,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $substr = "A sub-array containing a key named 'operator' with a value of 'in' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
-        $substr = ")) is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
+        $substr = " is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
@@ -784,7 +784,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $substr = "A sub-array containing a key named 'operator' with a value of 'like' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
-        $substr = ")) is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
+        $substr = " is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
@@ -935,7 +935,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $substr = "A sub-array containing a key named 'operator' with a value of 'not-like' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
-        $substr = ")) is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
+        $substr = " is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
@@ -1045,7 +1045,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $substr = "A sub-array containing a key named 'operator' with a value of '>' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
-        $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
@@ -1151,7 +1151,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $substr = "A sub-array containing a key named 'operator' with a value of '=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
-        $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
@@ -1257,7 +1257,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $substr = "A sub-array containing a key named 'operator' with a value of '>=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
-        $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
@@ -1363,7 +1363,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $substr = "A sub-array containing a key named 'operator' with a value of '<' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
-        $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
@@ -1469,7 +1469,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $substr = "A sub-array containing a key named 'operator' with a value of '<=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
-        $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
@@ -1575,7 +1575,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $substr = "A sub-array containing a key named 'operator' with a value of '!=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
-        $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
