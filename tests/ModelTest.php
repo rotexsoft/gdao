@@ -34,10 +34,10 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
             [
-                'OR' => [ 'col' => 'column_name_4', 'operator' => 'not-null'],
+                'OR' => [ 'col' => 'column_name_4', 'op' => 'not-null'],
                 [
-                    [ 'col' => 'column_name_4', 'operator' => 'in', 'val' => [1, 2] ],
-                    'OR#21' => [ 'col' => 'column_name_4', 'operator' => 'not-null'],
+                    [ 'col' => 'column_name_4', 'op' => 'in', 'val' => [1, 2] ],
+                    'OR#21' => [ 'col' => 'column_name_4', 'op' => 'not-null'],
                 ]
             ]
         ];
@@ -53,11 +53,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
             [
-                [ 'col'=>[], 'operator'=>'>', 'val'=>58 ],
+                [ 'col'=>[], 'op'=>'>', 'val'=>58 ],
                 'OR'=> [
-                           [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                           [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                        ],
-                [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
             ]
         ];
         
@@ -72,11 +72,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>12, 'operator'=>'>', 'val'=>58 ],
+                 [ 'col'=>12, 'op'=>'>', 'val'=>58 ],
                  'OR'=> [
-                            ['col'=>'column_name_1', 'operator'=>'<', 'val'=>58],
+                            ['col'=>'column_name_1', 'op'=>'<', 'val'=>58],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -89,11 +89,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>12.1, 'operator'=>'>', 'val'=>58 ],
+                 [ 'col'=>12.1, 'op'=>'>', 'val'=>58 ],
                  'OR'=> [
-                            ['col'=>'column_name_1', 'operator'=>'<', 'val'=>58],
+                            ['col'=>'column_name_1', 'op'=>'<', 'val'=>58],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -106,11 +106,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>true, 'operator'=>'>', 'val'=>58 ],
+                 [ 'col'=>true, 'op'=>'>', 'val'=>58 ],
                  'OR'=> [
-                            ['col'=>'column_name_1', 'operator'=>'<', 'val'=>58],
+                            ['col'=>'column_name_1', 'op'=>'<', 'val'=>58],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -123,11 +123,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>[12.1], 'operator'=>'>', 'val'=>58 ],
+                 [ 'col'=>[12.1], 'op'=>'>', 'val'=>58 ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -140,11 +140,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>(new stdclass()), 'operator'=>'>', 'val'=>58 ],
+                 [ 'col'=>(new stdclass()), 'op'=>'>', 'val'=>58 ],
                  'OR'=> [
-                            ['col'=>'column_name_1', 'operator'=>'<', 'val'=>58],
+                            ['col'=>'column_name_1', 'op'=>'<', 'val'=>58],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -157,11 +157,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data =  [
             'where' =>
               [
-                 [ 'col'=> null, 'operator'=>'>', 'val'=>58 ],
+                 [ 'col'=> null, 'op'=>'>', 'val'=>58 ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -174,11 +174,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> tmpfile(), 'operator'=>'>', 'val'=>58 ],
+                 [ 'col'=> tmpfile(), 'op'=>'>', 'val'=>58 ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -191,11 +191,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> function() { echo 'blah'; }, 'operator'=>'>', 'val'=>58 ],
+                 [ 'col'=> function() { echo 'blah'; }, 'op'=>'>', 'val'=>58 ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -205,22 +205,22 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsMustHaveOneOfTheExpectedValuesForKeysNamedOperator() {
+    public function testValidateWhereOrHavnParamsMustHaveOneOfTheExpectedValuesForKeysNamedop() {
         
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'<===>', 'val'=>58 ],
+                 [ 'col'=> 'yay', 'op'=>'<===>', 'val'=>58 ],
                  'OR'=> [
-                            ['col'=>'column_name_1', 'operator'=>'<', 'val'=>58],
+                            ['col'=>'column_name_1', 'op'=>'<', 'val'=>58],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $msg = "Test 4: array with a key named 'operator' with a value that is not amongst the expected operator values.";
+        $msg = "Test 4: array with a key named 'op' with a value that is not amongst the expected op values.";
         $substr = "ERROR: Bad where param array having an entry with a key named"
-                . " 'operator' with a non-expected value of";
+                . " 'op' with a non-expected value of";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
@@ -228,7 +228,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         
         $data = [
             'where' =>
-              [ 'col'=> 'yay', 'operator'=>'>', 'val'=>tmpfile(), ]
+              [ 'col'=> 'yay', 'op'=>'>', 'val'=>tmpfile(), ]
         ];
         
         $msg = "Test 5: array with a key named 'val' must only have a numeric, "
@@ -240,7 +240,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         ///////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
-              [ 'col'=> 'yay', 'operator'=>'>', 'val'=>function() { echo 'blah'; }, ]
+              [ 'col'=> 'yay', 'op'=>'>', 'val'=>function() { echo 'blah'; }, ]
         ];
         
         $msg = "Test 5: array with a key named 'val' must only have a numeric, "
@@ -252,7 +252,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         ///////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
-              [ 'col'=> 'yay', 'operator'=>'>', 'val'=>(new stdclass()), ]
+              [ 'col'=> 'yay', 'op'=>'>', 'val'=>(new stdclass()), ]
         ];
         
         $msg = "Test 5: array with a key named 'val' must only have a numeric, "
@@ -264,7 +264,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         ///////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
-              [ 'col'=> 'yay', 'operator'=>'>', 'val'=>null, ]
+              [ 'col'=> 'yay', 'op'=>'>', 'val'=>null, ]
         ];
         
         $msg = "Test 5: array with a key named 'val' must only have a numeric, "
@@ -279,18 +279,18 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'>', 'val'=>'yikes!' ],
+                 [ 'col'=> 'yay', 'op'=>'>', 'val'=>'yikes!' ],
                  'OR'=> [
-                            ['col'=>'column_name_1', 'operator'=>'<', 'val'=>58],
+                            ['col'=>'column_name_1', 'op'=>'<', 'val'=>58],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>'roy' ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>'roy' ],
                  [1,2,3,4],
               ]
         ];
         
         //Test 6: an array key named 'OR' or starts with 'OR#' or is numeric must have a non-empty array value.
         //	  An exception to this rule is if this key is numeric and is inside an array referenced by a
-        //	  key named 'val' ('val'=>array(...) is allowed for 'operator'=>'in' & 'operator'=>'not-in')
+        //	  key named 'val' ('val'=>array(...) is allowed for 'op'=>'in' & 'op'=>'not-in')
         $msg = "Test 6: Any array entry with a numeric key or a key named 'OR' "
              . "or a key that starts with 'OR#' must have a value that is an array.";
         $substr = "Any array entry with a numeric key or a key named 'OR' or a "
@@ -303,12 +303,12 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data =  [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'>', 'val'=> 'yay' ],
+                 [ 'col'=> 'yay', 'op'=>'>', 'val'=> 'yay' ],
                  'OR'=> [
-                            'OR'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            'OR'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -325,82 +325,82 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'>', 'val'=> 'yay' ],
+                 [ 'col'=> 'yay', 'op'=>'>', 'val'=> 'yay' ],
                  'OR'=> [
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsMustOnlyHaveTheKeysNamedColAndOperatorAndValInTheSameSubArray() {
+    public function testValidateWhereOrHavnParamsMustOnlyHaveTheKeysNamedColAndopAndValInTheSameSubArray() {
         
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'>', 'val'=> 'yay', 'yab'=>'doo' ],
+                 [ 'col'=> 'yay', 'op'=>'>', 'val'=> 'yay', 'yab'=>'doo' ],
                  'OR'=> [
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $msg = "Test 8: If any of the expected keys ('col', 'operator' or 'val')"
+        $msg = "Test 8: If any of the expected keys ('col', 'op' or 'val')"
              . " is present, then no other type of key is allowed in the particular sub-array.";
         
-        $substr = "Because one or more of these keys ('col', 'operator' or 'val') are present,";
+        $substr = "Because one or more of these keys ('col', 'op' or 'val') are present,";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = "no other type of key is allowed in the array in which they are present.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsCanHaveKeysNamedColAndOperatorWithNoKeyNamedValInASubArray() {
+    public function testValidateWhereOrHavnParamsCanHaveKeysNamedColAndopWithNoKeyNamedValInASubArray() {
         
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'>' ],
+                 [ 'col'=> 'yay', 'op'=>'>' ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $msg = "Test 9: a sub-array like this ('col'=>'..', 'operator'=>'..') is"
-             . " allowed only if operator has either the value 'is-null' or 'not-null'.";
-        $substr = "A sub-array containing keys named 'col' and 'operator' without"
+        $msg = "Test 9: a sub-array like this ('col'=>'..', 'op'=>'..') is"
+             . " allowed only if op has either the value 'is-null' or 'not-null'.";
+        $substr = "A sub-array containing keys named 'col' and 'op' without"
                 . " a key named 'val' is valid if and only if the entry with a key"
-                . " named 'operator' has either a value of 'is-null' or 'not-null'";
+                . " named 'op' has either a value of 'is-null' or 'not-null'";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsMustOnlyHaveKeysNamedColAndOperatorInASubArrayWhenOperatorHasExpectedValues() {
+    public function testValidateWhereOrHavnParamsMustOnlyHaveKeysNamedColAndopInASubArrayWhenopHasExpectedValues() {
         
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'is-null', 'val'=>'yooo!' ],
+                 [ 'col'=> 'yay', 'op'=>'is-null', 'val'=>'yooo!' ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $msg = "Test 10: For any sub-array containing an item with a key named 'operator'"
+        $msg = "Test 10: For any sub-array containing an item with a key named 'op'"
              . " with a value of either 'not-null' or 'is-null', there must not "
              . "be any item in that sub-array with a key named 'val', but there "
              . "must be a corresponding item with a key named 'col' with a string value.";
-        $substr = "A sub-array containing a key named 'operator' with a value of"
+        $substr = "A sub-array containing a key named 'op' with a value of"
                 . " 'is-null' cannot also contain a key named 'val'. Please remove"
                 . " the item with the key named 'val' from the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
@@ -409,89 +409,89 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-null', 'val'=>'yooo!' ],
+                 [ 'col'=> 'yay', 'op'=>'not-null', 'val'=>'yooo!' ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of"
+        $substr = "A sub-array containing a key named 'op' with a value of"
                 . " 'not-null' cannot also contain a key named 'val'. Please remove"
                 . " the item with the key named 'val' from the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsMustHaveKeysNamedColAndOperatorIfKeyNamedValIsInASubArray() {
+    public function testValidateWhereOrHavnParamsMustHaveKeysNamedColAndopIfKeyNamedValIsInASubArray() {
         
         $data = [
             'where' =>
               [
                  [ 'val'=>'yooo!' ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $msg = "Test 11: Missing keys ('col' & 'operator') when key named 'val' is present";
-        $substr = "A sub-array containing key named 'val' without two other entries with keys named 'col' and 'operator'";
+        $msg = "Test 11: Missing keys ('col' & 'op') when key named 'val' is present";
+        $substr = "A sub-array containing key named 'val' without two other entries with keys named 'col' and 'op'";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsKeyNamedValHasOnlyNumericOrStringOrArrayValueIfOperatorIsInOrNotIn() {
+    public function testValidateWhereOrHavnParamsKeyNamedValHasOnlyNumericOrStringOrArrayValueIfopIsInOrNotIn() {
         
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-in', 'val'=>null ],
+                 [ 'col'=> 'yay', 'op'=>'not-in', 'val'=>null ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
         $msg = "Test 12: For any sub-array containing an item with a key named "
-             . "'operator' with a value of either 'in' or 'not-in', there must "
+             . "'op' with a value of either 'in' or 'not-in', there must "
              . "be an item in that sub-array with a key named 'val' with a string"
              . " or array value.";
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-in' contains an item with a key named 'val' whose value NULL is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-in' contains an item with a key named 'val' whose value NULL is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-in', 'val'=>true ],
+                 [ 'col'=> 'yay', 'op'=>'not-in', 'val'=>true ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-in' contains an item with a key named 'val' whose value true is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-in' contains an item with a key named 'val' whose value true is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-in', 'val'=>(new stdclass()) ],
+                 [ 'col'=> 'yay', 'op'=>'not-in', 'val'=>(new stdclass()) ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-in' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-in' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
@@ -501,15 +501,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-in', 'val'=>tmpfile() ],
+                 [ 'col'=> 'yay', 'op'=>'not-in', 'val'=>tmpfile() ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-in' contains an item with a key named 'val' whose value ";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-in' contains an item with a key named 'val' whose value ";
         $substr2 = " is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         $this->_testParamsArray4Exception($data['where'], $msg, $substr2);
@@ -518,12 +518,12 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-in', 'val'=>function() { echo 'blah'; } ],
+                 [ 'col'=> 'yay', 'op'=>'not-in', 'val'=>function() { echo 'blah'; } ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -534,7 +534,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             $closure_label = '\'Closure$ModelTest::';
         }
                  
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-in' contains an item with a key named 'val' whose value $closure_label";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-in' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = " is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
@@ -546,45 +546,45 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'in', 'val'=>null ],
+                 [ 'col'=> 'yay', 'op'=>'in', 'val'=>null ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of 'in' contains an item with a key named 'val' whose value NULL is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'in' contains an item with a key named 'val' whose value NULL is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'in', 'val'=>true ],
+                 [ 'col'=> 'yay', 'op'=>'in', 'val'=>true ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of 'in' contains an item with a key named 'val' whose value true is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'in' contains an item with a key named 'val' whose value true is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'in', 'val'=>(new stdclass()) ],
+                 [ 'col'=> 'yay', 'op'=>'in', 'val'=>(new stdclass()) ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of 'in' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
+        $substr = "A sub-array containing a key named 'op' with a value of 'in' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
@@ -594,15 +594,15 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'in', 'val'=>tmpfile() ],
+                 [ 'col'=> 'yay', 'op'=>'in', 'val'=>tmpfile() ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of 'in' contains an item with a key named 'val' whose value";
+        $substr = "A sub-array containing a key named 'op' with a value of 'in' contains an item with a key named 'val' whose value";
         $substr2 = "is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         $this->_testParamsArray4Exception($data['where'], $msg, $substr2);
@@ -611,12 +611,12 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'in', 'val'=>function() { echo 'blah'; } ],
+                 [ 'col'=> 'yay', 'op'=>'in', 'val'=>function() { echo 'blah'; } ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
                  
@@ -627,47 +627,47 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             $closure_label = '\'Closure$ModelTest::';
         }
                  
-        $substr = "A sub-array containing a key named 'operator' with a value of 'in' contains an item with a key named 'val' whose value $closure_label";
+        $substr = "A sub-array containing a key named 'op' with a value of 'in' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = " is not numeric or a string or an array. Please supply a numeric or an array or a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsKeyNamedValHasOnlyStringValueIfOperatorIsLikeOrNotLike() {
+    public function testValidateWhereOrHavnParamsKeyNamedValHasOnlyStringValueIfopIsLikeOrNotLike() {
         
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'like', 'val'=>911 ],
+                 [ 'col'=> 'yay', 'op'=>'like', 'val'=>911 ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
         $msg = "Test 13: For any sub-array containing an item with a key named "
-             . "'operator' with a value of either 'like' or 'not-like', there must"
+             . "'op' with a value of either 'like' or 'not-like', there must"
              . " be an item in that sub-array with a key named 'val' with a string value.";
-        $substr = "A sub-array containing a key named 'operator' with a value of 'like' contains an item with a key named 'val' whose value 911 is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'like' contains an item with a key named 'val' whose value 911 is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'like', 'val'=>911.198 ],
+                 [ 'col'=> 'yay', 'op'=>'like', 'val'=>911.198 ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'like' contains an item with a key named 'val' whose value 911.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'like' contains an item with a key named 'val' whose value 911.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = "is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
@@ -677,32 +677,32 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'like', 'val'=>null ],
+                 [ 'col'=> 'yay', 'op'=>'like', 'val'=>null ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'like' contains an item with a key named 'val' whose value NULL is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'like' contains an item with a key named 'val' whose value NULL is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'like', 'val'=>[911, null] ],
+                 [ 'col'=> 'yay', 'op'=>'like', 'val'=>[911, null] ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'like' contains an item with a key named 'val' whose value array (";
+        $substr = "A sub-array containing a key named 'op' with a value of 'like' contains an item with a key named 'val' whose value array (";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ") is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
@@ -712,32 +712,32 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'like', 'val'=>true ],
+                 [ 'col'=> 'yay', 'op'=>'like', 'val'=>true ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'like' contains an item with a key named 'val' whose value true is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'like' contains an item with a key named 'val' whose value true is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'like', 'val'=>(new stdclass()) ],
+                 [ 'col'=> 'yay', 'op'=>'like', 'val'=>(new stdclass()) ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'like' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
+        $substr = "A sub-array containing a key named 'op' with a value of 'like' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
@@ -747,16 +747,16 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'like', 'val'=>tmpfile() ],
+                 [ 'col'=> 'yay', 'op'=>'like', 'val'=>tmpfile() ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'like' contains an item with a key named 'val' whose value";
+        $substr = "A sub-array containing a key named 'op' with a value of 'like' contains an item with a key named 'val' whose value";
         $substr2 = " is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         $this->_testParamsArray4Exception($data['where'], $msg, $substr2);
@@ -765,12 +765,12 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'like', 'val'=>function() { echo 'blah'; } ],
+                 [ 'col'=> 'yay', 'op'=>'like', 'val'=>function() { echo 'blah'; } ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -781,7 +781,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             $closure_label = '\'Closure$ModelTest::';
         }
                  
-        $substr = "A sub-array containing a key named 'operator' with a value of 'like' contains an item with a key named 'val' whose value $closure_label";
+        $substr = "A sub-array containing a key named 'op' with a value of 'like' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = " is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
@@ -793,32 +793,32 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-like', 'val'=>911 ],
+                 [ 'col'=> 'yay', 'op'=>'not-like', 'val'=>911 ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-like' contains an item with a key named 'val' whose value 911 is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-like' contains an item with a key named 'val' whose value 911 is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-like', 'val'=>911.198 ],
+                 [ 'col'=> 'yay', 'op'=>'not-like', 'val'=>911.198 ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-like' contains an item with a key named 'val' whose value 911.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-like' contains an item with a key named 'val' whose value 911.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = "is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
@@ -828,32 +828,32 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-like', 'val'=>null ],
+                 [ 'col'=> 'yay', 'op'=>'not-like', 'val'=>null ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-like' contains an item with a key named 'val' whose value NULL is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-like' contains an item with a key named 'val' whose value NULL is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-like', 'val'=>[911, null] ],
+                 [ 'col'=> 'yay', 'op'=>'not-like', 'val'=>[911, null] ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-like' contains an item with a key named 'val' whose value array (";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-like' contains an item with a key named 'val' whose value array (";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ") is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
@@ -863,32 +863,32 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-like', 'val'=>true ],
+                 [ 'col'=> 'yay', 'op'=>'not-like', 'val'=>true ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-like' contains an item with a key named 'val' whose value true is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-like' contains an item with a key named 'val' whose value true is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-like', 'val'=>(new stdclass()) ],
+                 [ 'col'=> 'yay', 'op'=>'not-like', 'val'=>(new stdclass()) ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-like' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-like' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
@@ -898,16 +898,16 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-like', 'val'=>tmpfile() ],
+                 [ 'col'=> 'yay', 'op'=>'not-like', 'val'=>tmpfile() ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-like' contains an item with a key named 'val' whose value";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-like' contains an item with a key named 'val' whose value";
         $substr2 = " is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         $this->_testParamsArray4Exception($data['where'], $msg, $substr2);
@@ -916,12 +916,12 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=> 'yay', 'operator'=>'not-like', 'val'=>function() { echo 'blah'; } ],
+                 [ 'col'=> 'yay', 'op'=>'not-like', 'val'=>function() { echo 'blah'; } ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
-                            'OR#2'=>[ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
+                            'OR#2'=>[ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
@@ -932,45 +932,45 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             $closure_label = '\'Closure$ModelTest::';
         }   
                  
-        $substr = "A sub-array containing a key named 'operator' with a value of 'not-like' contains an item with a key named 'val' whose value $closure_label";
+        $substr = "A sub-array containing a key named 'op' with a value of 'not-like' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = " is not a string. Please supply a string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    public function testValidateWhereOrHavnParamsOperatorsEqLtGtLteGteNeqHaveCorrespondingNumericOrStringValues() {
+    public function testValidateWhereOrHavnParamsopsEqLtGtLteGteNeqHaveCorrespondingNumericOrStringValues() {
 
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>', 'val'=>true ],
+                 [ 'col'=>'col_name', 'op'=>'>', 'val'=>true ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
         $msg = "Test 14 - For any sub-array containing an item with a key named "
-             . "'operator' with any of the following values: '=', '>', '>=', '<', '<=' or '!=',"
+             . "'op' with any of the following values: '=', '>', '>=', '<', '<=' or '!=',"
              . " there must be another item in that sub-array with a key named 'val' with either"
              . " a numeric or string value.";
-        $substr = "A sub-array containing a key named 'operator' with a value of '>' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '>' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>', 'val'=>[12.1] ],
+                 [ 'col'=>'col_name', 'op'=>'>', 'val'=>[12.1] ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '>' contains an item with a key named 'val' whose value array (";
+        $substr = "A sub-array containing a key named 'op' with a value of '>' contains an item with a key named 'val' whose value array (";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ") is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -980,14 +980,14 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>', 'val'=>(new stdclass()) ],
+                 [ 'col'=>'col_name', 'op'=>'>', 'val'=>(new stdclass()) ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '>' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
+        $substr = "A sub-array containing a key named 'op' with a value of '>' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -997,28 +997,28 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>', 'val'=>null ],
+                 [ 'col'=>'col_name', 'op'=>'>', 'val'=>null ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '>' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '>' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>', 'val'=>tmpfile() ],
+                 [ 'col'=>'col_name', 'op'=>'>', 'val'=>tmpfile() ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '>' contains an item with a key named 'val' whose value";
+        $substr = "A sub-array containing a key named 'op' with a value of '>' contains an item with a key named 'val' whose value";
         $substr2 = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         $this->_testParamsArray4Exception($data['where'], $msg, $substr2);
@@ -1027,11 +1027,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>', 'val'=>function() { echo 'blah'; } ],
+                 [ 'col'=>'col_name', 'op'=>'>', 'val'=>function() { echo 'blah'; } ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
                  
@@ -1042,7 +1042,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             $closure_label = '\'Closure$ModelTest::';
         }
                  
-        $substr = "A sub-array containing a key named 'operator' with a value of '>' contains an item with a key named 'val' whose value $closure_label";
+        $substr = "A sub-array containing a key named 'op' with a value of '>' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1054,29 +1054,29 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'=', 'val'=>true ],
+                 [ 'col'=>'col_name', 'op'=>'=', 'val'=>true ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of '=' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '=' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'=', 'val'=>[12.1] ],
+                 [ 'col'=>'col_name', 'op'=>'=', 'val'=>[12.1] ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '=' contains an item with a key named 'val' whose value array (";
+        $substr = "A sub-array containing a key named 'op' with a value of '=' contains an item with a key named 'val' whose value array (";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ") is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1086,14 +1086,14 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'=', 'val'=>(new stdclass()) ],
+                 [ 'col'=>'col_name', 'op'=>'=', 'val'=>(new stdclass()) ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '=' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
+        $substr = "A sub-array containing a key named 'op' with a value of '=' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1103,28 +1103,28 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'=', 'val'=>null ],
+                 [ 'col'=>'col_name', 'op'=>'=', 'val'=>null ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '=' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '=' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'=', 'val'=>tmpfile() ],
+                 [ 'col'=>'col_name', 'op'=>'=', 'val'=>tmpfile() ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '=' contains an item with a key named 'val' whose value";
+        $substr = "A sub-array containing a key named 'op' with a value of '=' contains an item with a key named 'val' whose value";
         $substr2 = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         $this->_testParamsArray4Exception($data['where'], $msg, $substr2);
@@ -1133,11 +1133,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'=', 'val'=>function() { echo 'blah'; } ],
+                 [ 'col'=>'col_name', 'op'=>'=', 'val'=>function() { echo 'blah'; } ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
                  
@@ -1148,7 +1148,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             $closure_label = '\'Closure$ModelTest::';
         }
                  
-        $substr = "A sub-array containing a key named 'operator' with a value of '=' contains an item with a key named 'val' whose value $closure_label";
+        $substr = "A sub-array containing a key named 'op' with a value of '=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1160,29 +1160,29 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>=', 'val'=>true ],
+                 [ 'col'=>'col_name', 'op'=>'>=', 'val'=>true ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of '>=' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '>=' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>=', 'val'=>[12.1] ],
+                 [ 'col'=>'col_name', 'op'=>'>=', 'val'=>[12.1] ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '>=' contains an item with a key named 'val' whose value array (";
+        $substr = "A sub-array containing a key named 'op' with a value of '>=' contains an item with a key named 'val' whose value array (";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ") is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1192,14 +1192,14 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>=', 'val'=>(new stdclass()) ],
+                 [ 'col'=>'col_name', 'op'=>'>=', 'val'=>(new stdclass()) ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '>=' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
+        $substr = "A sub-array containing a key named 'op' with a value of '>=' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1209,28 +1209,28 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>=', 'val'=>null ],
+                 [ 'col'=>'col_name', 'op'=>'>=', 'val'=>null ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '>=' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '>=' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>=', 'val'=>tmpfile() ],
+                 [ 'col'=>'col_name', 'op'=>'>=', 'val'=>tmpfile() ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '>=' contains an item with a key named 'val' whose value";
+        $substr = "A sub-array containing a key named 'op' with a value of '>=' contains an item with a key named 'val' whose value";
         $substr2 = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         $this->_testParamsArray4Exception($data['where'], $msg, $substr2);
@@ -1239,11 +1239,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'>=', 'val'=>function() { echo 'blah'; } ],
+                 [ 'col'=>'col_name', 'op'=>'>=', 'val'=>function() { echo 'blah'; } ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
                  
@@ -1254,7 +1254,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             $closure_label = '\'Closure$ModelTest::';
         }
                  
-        $substr = "A sub-array containing a key named 'operator' with a value of '>=' contains an item with a key named 'val' whose value $closure_label";
+        $substr = "A sub-array containing a key named 'op' with a value of '>=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1266,29 +1266,29 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<', 'val'=>true ],
+                 [ 'col'=>'col_name', 'op'=>'<', 'val'=>true ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of '<' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '<' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<', 'val'=>[12.1] ],
+                 [ 'col'=>'col_name', 'op'=>'<', 'val'=>[12.1] ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '<' contains an item with a key named 'val' whose value array (";
+        $substr = "A sub-array containing a key named 'op' with a value of '<' contains an item with a key named 'val' whose value array (";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ") is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1298,14 +1298,14 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<', 'val'=>(new stdclass()) ],
+                 [ 'col'=>'col_name', 'op'=>'<', 'val'=>(new stdclass()) ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '<' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
+        $substr = "A sub-array containing a key named 'op' with a value of '<' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1315,28 +1315,28 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<', 'val'=>null ],
+                 [ 'col'=>'col_name', 'op'=>'<', 'val'=>null ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '<' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '<' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<', 'val'=>tmpfile() ],
+                 [ 'col'=>'col_name', 'op'=>'<', 'val'=>tmpfile() ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '<' contains an item with a key named 'val' whose value";
+        $substr = "A sub-array containing a key named 'op' with a value of '<' contains an item with a key named 'val' whose value";
         $substr2 = "is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         $this->_testParamsArray4Exception($data['where'], $msg, $substr2);
@@ -1345,11 +1345,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<', 'val'=>function() { echo 'blah'; } ],
+                 [ 'col'=>'col_name', 'op'=>'<', 'val'=>function() { echo 'blah'; } ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<', 'val'=>58 ],
               ]
         ];
                  
@@ -1360,7 +1360,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             $closure_label = '\'Closure$ModelTest::';
         }
                  
-        $substr = "A sub-array containing a key named 'operator' with a value of '<' contains an item with a key named 'val' whose value $closure_label";
+        $substr = "A sub-array containing a key named 'op' with a value of '<' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1372,29 +1372,29 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<=', 'val'=>true ],
+                 [ 'col'=>'col_name', 'op'=>'<=', 'val'=>true ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of '<=' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '<=' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<=', 'val'=>[12.1] ],
+                 [ 'col'=>'col_name', 'op'=>'<=', 'val'=>[12.1] ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '<=' contains an item with a key named 'val' whose value array (";
+        $substr = "A sub-array containing a key named 'op' with a value of '<=' contains an item with a key named 'val' whose value array (";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ") is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1404,14 +1404,14 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<=', 'val'=>(new stdclass()) ],
+                 [ 'col'=>'col_name', 'op'=>'<=', 'val'=>(new stdclass()) ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '<=' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
+        $substr = "A sub-array containing a key named 'op' with a value of '<=' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1421,28 +1421,28 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<=', 'val'=>null ],
+                 [ 'col'=>'col_name', 'op'=>'<=', 'val'=>null ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '<=' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '<=' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<=', 'val'=>tmpfile() ],
+                 [ 'col'=>'col_name', 'op'=>'<=', 'val'=>tmpfile() ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '<=' contains an item with a key named 'val' whose value ";
+        $substr = "A sub-array containing a key named 'op' with a value of '<=' contains an item with a key named 'val' whose value ";
         $substr2 = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         $this->_testParamsArray4Exception($data['where'], $msg, $substr2);
@@ -1451,11 +1451,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'<=', 'val'=>function() { echo 'blah'; } ],
+                 [ 'col'=>'col_name', 'op'=>'<=', 'val'=>function() { echo 'blah'; } ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'<=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'<=', 'val'=>58 ],
               ]
         ];
                  
@@ -1466,7 +1466,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             $closure_label = '\'Closure$ModelTest::';
         }
                  
-        $substr = "A sub-array containing a key named 'operator' with a value of '<=' contains an item with a key named 'val' whose value $closure_label";
+        $substr = "A sub-array containing a key named 'op' with a value of '<=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1478,29 +1478,29 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'!=', 'val'=>true ],
+                 [ 'col'=>'col_name', 'op'=>'!=', 'val'=>true ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'!=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'!=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'!=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'!=', 'val'=>58 ],
               ]
         ];
         
-        $substr = "A sub-array containing a key named 'operator' with a value of '!=' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '!=' contains an item with a key named 'val' whose value true is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'!=', 'val'=>[12.1] ],
+                 [ 'col'=>'col_name', 'op'=>'!=', 'val'=>[12.1] ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'!=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'!=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'!=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'!=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '!=' contains an item with a key named 'val' whose value array (";
+        $substr = "A sub-array containing a key named 'op' with a value of '!=' contains an item with a key named 'val' whose value array (";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ") is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1510,14 +1510,14 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'!=', 'val'=>(new stdclass()) ],
+                 [ 'col'=>'col_name', 'op'=>'!=', 'val'=>(new stdclass()) ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'!=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'!=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'!=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'!=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '!=' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
+        $substr = "A sub-array containing a key named 'op' with a value of '!=' contains an item with a key named 'val' whose value stdClass::__set_state(array(";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = ")) is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1527,28 +1527,28 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'!=', 'val'=>null ],
+                 [ 'col'=>'col_name', 'op'=>'!=', 'val'=>null ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'!=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'!=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'!=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'!=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '!=' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
+        $substr = "A sub-array containing a key named 'op' with a value of '!=' contains an item with a key named 'val' whose value NULL is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
         ////////////////////////////////////////////////////////////////////////
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'!=', 'val'=>tmpfile() ],
+                 [ 'col'=>'col_name', 'op'=>'!=', 'val'=>tmpfile() ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'!=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'!=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'!=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'!=', 'val'=>58 ],
               ]
         ];
-        $substr = "A sub-array containing a key named 'operator' with a value of '!=' contains an item with a key named 'val' whose value ";
+        $substr = "A sub-array containing a key named 'op' with a value of '!=' contains an item with a key named 'val' whose value ";
         $substr2 = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         $this->_testParamsArray4Exception($data['where'], $msg, $substr2);
@@ -1557,11 +1557,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 [ 'col'=>'col_name', 'operator'=>'!=', 'val'=>function() { echo 'blah'; } ],
+                 [ 'col'=>'col_name', 'op'=>'!=', 'val'=>function() { echo 'blah'; } ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'!=', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'!=', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'!=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'!=', 'val'=>58 ],
               ]
         ];
                  
@@ -1572,7 +1572,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             $closure_label = '\'Closure$ModelTest::';
         }
                  
-        $substr = "A sub-array containing a key named 'operator' with a value of '!=' contains an item with a key named 'val' whose value $closure_label";
+        $substr = "A sub-array containing a key named 'op' with a value of '!=' contains an item with a key named 'val' whose value $closure_label";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
         
         $substr = " is not a string or numeric. Please supply a numeric or string value for the item with the key named 'val' in the sub-array.";
@@ -1585,19 +1585,19 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' =>
               [
-                 'yay'=>[ 'col'=> 'col_name', 'operator'=>'>', 'val'=>function() { echo 'blah'; } ],
+                 'yay'=>[ 'col'=> 'col_name', 'op'=>'>', 'val'=>function() { echo 'blah'; } ],
                  'OR'=> [
-                            [ 'col'=>'column_name_1', 'operator'=>'<', 'val'=>58 ],
+                            [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
                         ],
-                 [ 'col'=>'column_name_3', 'operator'=>'>=', 'val'=>58 ],
+                 [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
               ]
         ];
         
-        $msg = "Test 15 - an array key must be numeric or any of ('col', 'operator', 'val', 'OR') or start with 'OR#'";
+        $msg = "Test 15 - an array key must be numeric or any of ('col', 'op', 'val', 'OR') or start with 'OR#'";
         $substr = "Allowed keys are as follows:";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
 
-        $substr = "Any of these keys ('col', 'operator', 'val' or 'OR') or the key must be a numeric key or a string that starts with 'OR#'.";
+        $substr = "Any of these keys ('col', 'op', 'val' or 'OR') or the key must be a numeric key or a string that starts with 'OR#'.";
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
@@ -1624,23 +1624,23 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $data = [
             'where' => 
                 [
-                    0 => [ 'col' => 'col_1', 'operator' => '<', 'val' => 58],
-                    1 => [ 'col' => 'col_2', 'operator' => '<', 'val' => 68],
+                    0 => [ 'col' => 'col_1', 'op' => '<', 'val' => 58],
+                    1 => [ 'col' => 'col_2', 'op' => '<', 'val' => 68],
                     [
-                        0 => [ 'col' => 'col_11', 'operator' => '>', 'val' => 581],
-                        1 => [ 'col' => 'col_21', 'operator' => '>', 'val' => 681],
+                        0 => [ 'col' => 'col_11', 'op' => '>', 'val' => 581],
+                        1 => [ 'col' => 'col_21', 'op' => '>', 'val' => 681],
                         'OR#3' => [
-                            0 => [ 'col' => 'col_12', 'operator' => '<', 'val' => 582],
-                            1 => [ 'col' => 'col_22', 'operator' => '<', 'val' => 682]
+                            0 => [ 'col' => 'col_12', 'op' => '<', 'val' => 582],
+                            1 => [ 'col' => 'col_22', 'op' => '<', 'val' => 682]
                         ],
-                        2 => [ 'col' => 'col_31', 'operator' => '>=', 'val' => 583],
+                        2 => [ 'col' => 'col_31', 'op' => '>=', 'val' => 583],
                         'OR#4' => [
-                            0 => [ 'col' => 'col_4', 'operator' => '=', 'val' => 584],
-                            1 => [ 'col' => 'col_5', 'operator' => '=', 'val' => 684],
+                            0 => [ 'col' => 'col_4', 'op' => '=', 'val' => 584],
+                            1 => [ 'col' => 'col_5', 'op' => '=', 'val' => 684],
                         ]
                     ],
-                    3 => [ 'col' => 'column_name_44', 'operator' => '<', 'val' => 777],
-                    4 => [ 'col' => 'column_name_55', 'operator' => 'is-null'],
+                    3 => [ 'col' => 'column_name_44', 'op' => '<', 'val' => 777],
+                    4 => [ 'col' => 'column_name_55', 'op' => 'is-null'],
                 ]
         ];
         
