@@ -1024,7 +1024,7 @@ abstract class Model
                         . "inside the array passed to " 
                         . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                         . PHP_EOL . 'Below are the expected values for an array'
-                        . ' entry with a key named \'operator\' ' . PHP_EOL 
+                        . ' entry with a key named \'op\' ' . PHP_EOL 
                         . var_export(
                                  array_keys(static::$_where_or_having_ops_2_dbms_ops),
                                 true
@@ -1167,9 +1167,9 @@ abstract class Model
                             . "inside the array passed to "
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing keys named'
-                            . ' \'col\' and \'operator\' without a key named'
+                            . ' \'col\' and \'op\' without a key named'
                             . ' \'val\' is valid if and only if the entry with'
-                            . ' a key named \'operator\' has either a value of'
+                            . ' a key named \'op\' has either a value of'
                             . ' \'is-null\' or \'not-null\' '. PHP_EOL;
 
                     throw new ModelBadWhereOrHavingParamSuppliedException($msg);
@@ -1190,7 +1190,7 @@ abstract class Model
                             . "inside the array passed to "
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing a key named'
-                            . ' \'operator\' with a value of \''
+                            . ' \'op\' with a value of \''
                             . $value['op'].'\' cannot also contain a'
                             . ' key named \'val\'. Please remove the item'
                             . ' with the key named \'val\' from the sub-array.'
@@ -1210,7 +1210,7 @@ abstract class Model
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing key named'
                             . ' \'val\' without two other entries with keys'
-                            . ' named \'col\' and \'operator\' '
+                            . ' named \'col\' and \'op\' '
                             . PHP_EOL;
 
                     throw new ModelBadWhereOrHavingParamSuppliedException($msg);
@@ -1234,7 +1234,7 @@ abstract class Model
                             . "inside the array passed to "
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing a key named'
-                            . ' \'operator\' with a value of \''
+                            . ' \'op\' with a value of \''
                             . $value['op'].'\' contains an item with'
                             . ' a key named \'val\' whose value '
                             . var_export($value['val'], true)
@@ -1261,7 +1261,7 @@ abstract class Model
                             . "inside the array passed to "
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing a key named'
-                            . ' \'operator\' with a value of \''
+                            . ' \'op\' with a value of \''
                             . $value['op'].'\' contains an item with'
                             . ' a key named \'val\' whose value '
                             . var_export($value['val'], true)
@@ -1290,7 +1290,7 @@ abstract class Model
                             . "inside the array passed to "
                             . get_class($this) . '::' . __FUNCTION__ . '(...).' 
                             . PHP_EOL . 'A sub-array containing a key named'
-                            . ' \'operator\' with a value of \''
+                            . ' \'op\' with a value of \''
                             . $value['op'].'\' contains an item with'
                             . ' a key named \'val\' whose value '
                             . var_export($value['val'], true)
