@@ -15,7 +15,7 @@ namespace GDAO\Model;
  * @copyright (c) 2015, Rotimi Adegbamigbe
  * 
  */
-abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggregate
+abstract class ReadOnlyRecord implements RecordInterface
 {
     /**
      * 
@@ -236,13 +236,21 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
      * 
      * @return string name of the primary-key column of the db table this record belongs to
      */
-    public abstract function getPrimaryCol();
+    public function getPrimaryCol() {
+        
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
+    }
     
     /**
      * 
      * @return mixed the value stored in the primary-key column for this record.
      */
-    public abstract function getPrimaryVal();
+    public function getPrimaryVal() {
+        
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
+    }
     
     /**
      * 
@@ -265,31 +273,32 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
     }
     
     /**
-     * \GDAO\Model\Record::$_initial_data should be set here only if it has the 
-     * initial value of -1.
      * 
      * This method partially or completely overwrites pre-existing data and 
-     * replaces it with the new data. Related data should also be loaded if 
-     * $data_2_load is an instance of \GDAO\Model\Record. 
+     * replaces it with the new data.
      * 
      * Note if $cols_2_load === null all data should be replaced, else only
      * replace data for the cols in $cols_2_load.
      * 
-     * If $data_2_load is an instance of \GDAO\Model\Record and is also an instance 
+     * If $data_2_load is an instance of \GDAO\Model\RecordInterface and is also an instance 
      * of a sub-class of the Record class in a package that implements this API and
      * if $data_2_load->getModel()->getTableName() !== $this->getModel()->getTableName(), 
      * then the exception below should be thrown:
      * 
      *      \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
-     * @param \GDAO\Model\Record|array $data_2_load
+     * @param array $data_2_load
      * @param array $cols_2_load name of field to load from $data_2_load. If null, 
      *                           load all fields in $data_2_load.
      * 
      * @throws \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
      */
-    public abstract function loadData($data_2_load, array $cols_2_load = array());
+    public function loadData(array $data_2_load, array $cols_2_load = array()) {
+        
+        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        throw new RecordMustImplementMethodException($msg);
+    }
     
     /**
      * 
@@ -532,5 +541,3 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
         $this->_throwNotSupportedException(__FUNCTION__);
     }
 }
-
-class RecordOperationNotSupportedException extends \Exception{}

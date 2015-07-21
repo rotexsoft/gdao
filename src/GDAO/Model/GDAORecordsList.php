@@ -4,7 +4,7 @@ namespace GDAO\Model;
 
 /**
  * This class is an implementation that guarantees that all the items in this
- * list are instances of \GDAO\Model\Record or any of its sub-classes.
+ * list are instances of \GDAO\Model\RecordInterface or any of its sub-classes.
  * 
  * It depends on https://github.com/danielgsims/php-collections / 
  * https://packagist.org/packages/danielgsims/php-collections
@@ -22,12 +22,12 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
 
     /**
      * 
-     * @param array $gdao_records an array of instances of \GDAO\Model\Record or 
+     * @param array $gdao_records an array of instances of \GDAO\Model\RecordInterface or 
      *                            any of its sub-classes
      */
     public function __construct(array $gdao_records = null) {
 
-        $this->_data = new \Collections\Collection('\\GDAO\\Model\\Record');
+        $this->_data = new \Collections\Collection('\\GDAO\\Model\\RecordInterface');
 
         if (is_array($gdao_records) && count($gdao_records) > 0) {
 
@@ -48,20 +48,20 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
 
     /**
      * 
-     * Add a \GDAO\Model\Record to the collection
+     * Add a \GDAO\Model\RecordInterface to the collection
      *
-     * @param \GDAO\Model\Record $item A \GDAO\Model\Record to be added
+     * @param \GDAO\Model\RecordInterface $item A \GDAO\Model\RecordInterface to be added
      */
-    public function add(\GDAO\Model\Record $item) {
+    public function add(\GDAO\Model\RecordInterface $item) {
 
         $this->_data->add($item);
     }
 
     /**
      * 
-     * An array of instances of \GDAO\Model\Record to add to the collection
+     * An array of instances of \GDAO\Model\RecordInterface to add to the collection
      *
-     * @param array $items An array of instances of \GDAO\Model\Record to be added
+     * @param array $items An array of instances of \GDAO\Model\RecordInterface to be added
      */
     public function addRange(array $items) {
 
@@ -70,12 +70,12 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
 
     /**
      * 
-     * Fetches the \GDAO\Model\Record at the specified index
+     * Fetches the \GDAO\Model\RecordInterface at the specified index
      *
-     * @param integer $index The index of the \GDAO\Model\Record to fetch
+     * @param integer $index The index of the \GDAO\Model\RecordInterface to fetch
      * @throws InvalidArgumentException
      * @throws OutOfRangeException
-     * @return mixed The \GDAO\Model\Record at the specified index
+     * @return mixed The \GDAO\Model\RecordInterface at the specified index
      */
     public function at($index) {
 
@@ -84,12 +84,12 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
 
     /**
      * 
-     * Determines whether the specified \GDAO\Model\Record is in the Collection
+     * Determines whether the specified \GDAO\Model\RecordInterface is in the Collection
      *
-     * @param \GDAO\Model\Record $needle The record to search for in the collection
-     * @return bool Whether the specified \GDAO\Model\Record was in the array or not
+     * @param \GDAO\Model\RecordInterface $needle The record to search for in the collection
+     * @return bool Whether the specified \GDAO\Model\RecordInterface was in the array or not
      */
-    public function contains(\GDAO\Model\Record $needle) {
+    public function contains(\GDAO\Model\RecordInterface $needle) {
         
         return $this->_data->contains($needle);
     }
@@ -176,13 +176,13 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
     }
 
     /**
-     * Insert the \GDAO\Model\Record at index
+     * Insert the \GDAO\Model\RecordInterface at index
      *
      * @throws InvalidArgumentException
      * @param integer $index The index where to insert the item
-     * @param \GDAO\Model\Record $item The \GDAO\Model\Record to insert
+     * @param \GDAO\Model\RecordInterface $item The \GDAO\Model\RecordInterface to insert
      */
-    public function insert($index, \GDAO\Model\Record $item) {
+    public function insert($index, \GDAO\Model\RecordInterface $item) {
         
         $this->_data->insert($index, $item);
     }
@@ -191,7 +191,7 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
      * Inset a range at the index
      *
      * @param integer $index Index where to insert the range
-     * @param array items An array of instances of \GDAO\Model\Record to insert
+     * @param array items An array of instances of \GDAO\Model\RecordInterface to insert
      */
     public function insertRange($index, array $items) {
         

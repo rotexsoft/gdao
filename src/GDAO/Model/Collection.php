@@ -4,13 +4,13 @@ namespace GDAO\Model;
 
 /**
  * 
- * Represents a collection of \GDAO\Model\Record objects.
+ * Represents a collection of \GDAO\Model\RecordInterface objects.
  *
  * @author Rotimi Adegbamigbe
  * @copyright (c) 2015, Rotimi Adegbamigbe
  * 
  */
-abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregate
+abstract class Collection implements CollectionInterface
 {
     /**
      *
@@ -21,7 +21,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
 
     /**
      * 
-     * @var array of \GDAO\Model\Record records
+     * @var array of \GDAO\Model\RecordInterface records
      * 
      */
     protected $_data = array();
@@ -29,13 +29,13 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
     /**
      * 
      * \GDAO\Model\GDAORecordsList is only used to enforce strict typing.
-     * Ie. all the records in the collection are of type \GDAO\Model\Record
+     * Ie. all the records in the collection are of type \GDAO\Model\RecordInterface
      * or any of its sub-classes.
      * 
      * $this->_data should be assigned the value of 
      * \GDAO\Model\GDAORecordsList->toArray(). In this case $data->toArray().
      * 
-     * @param \GDAO\Model\GDAORecordsList $data list of instances of \GDAO\Model\Record
+     * @param \GDAO\Model\GDAORecordsList $data list of instances of \GDAO\Model\RecordInterface
      * @param \GDAO\Model $model The model object that transfers data between the db and this collection.
      * @param array $extra_opts an array that may be used to pass initialization 
      *                          value(s) for protected and / or private properties
@@ -207,8 +207,8 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * Load the collection with a list of records.
      * 
      * \GDAO\Model\GDAORecordsList is used instead of an array because
-     * \GDAO\Model\GDAORecordsList can only contain instances of \GDAO\Model\Record
-     * or its descendants. We only ever want instances of \GDAO\Model\Record or
+     * \GDAO\Model\GDAORecordsList can only contain instances of \GDAO\Model\RecordInterface
+     * or its descendants. We only ever want instances of \GDAO\Model\RecordInterface or
      * its descendants inside a collection.
      * 
      * @param \GDAO\Model\GDAORecordsList $data_2_load
@@ -401,12 +401,12 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * notation.
      * 
      * NOTE: Implementers of this class must make sure that $val is an instance 
-     *       of \GDAO\Model\Record else throw a 
+     *       of \GDAO\Model\RecordInterface else throw a 
      *       \GDAO\Model\CollectionCanOnlyContainGDAORecordsException exception.
      * 
      * @param string $key The requested key.
      * 
-     * @param \GDAO\Model\Record $val The value to set it to.
+     * @param \GDAO\Model\RecordInterface $val The value to set it to.
      * 
      * @return void
      * 
@@ -480,7 +480,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * @param int|string $key The sequential or associative key value for the
      *                        record.
      * 
-     * @return \GDAO\Model\Record
+     * @return \GDAO\Model\RecordInterface
      * 
      */
     public function __get($key) {
@@ -517,11 +517,11 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * Set a key value.
      * 
      * NOTE: Implementers of this class must make sure that $val is an instance 
-     *       of \GDAO\Model\Record else throw a 
+     *       of \GDAO\Model\RecordInterface else throw a 
      *       \GDAO\Model\CollectionCanOnlyContainGDAORecordsException exception.
      * 
      * @param string $key The requested key.
-     * @param \GDAO\Model\Record $val The value to set it to.
+     * @param \GDAO\Model\RecordInterface $val The value to set it to.
      * 
      * @return void
      * 
@@ -530,9 +530,9 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     public function __set($key, $val) {
         
-        if( !($val instanceof Record) ) {
+        if( !($val instanceof RecordInterface) ) {
             
-            $msg = "ERROR: Only instances of \\GDAO\\Model\\Record or its"
+            $msg = "ERROR: Only instances of \\GDAO\\Model\\RecordInterface or its"
                    . " sub-classes can be added to a Collection. You tried to"
                    . " insert the following item: " 
                    . PHP_EOL . var_export($val, true) . PHP_EOL;
@@ -620,7 +620,3 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      */
     protected function _postSave() { }
 }
-
-class ItemNotFoundInCollectionException extends \Exception {}
-class CollectionMustImplementMethodException extends \Exception{}
-class CollectionCanOnlyContainGDAORecordsException extends \Exception{}

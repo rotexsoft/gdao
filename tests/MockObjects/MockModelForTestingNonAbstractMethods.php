@@ -60,7 +60,7 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
         return $this->_getWhereOrHavingClauseWithParams($array, $indent_level);
     }
 
-    public function deleteSpecifiedRecord(\GDAO\Model\Record $record) {
+    public function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record) {
         
     }
 
@@ -99,7 +99,7 @@ class MockModelForTestingNonAbstractMethods extends \GDAO\Model
         
     }
 
-    public function updateSpecifiedRecord(\GDAO\Model\Record $record) {
+    public function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record) {
         
     }
 }

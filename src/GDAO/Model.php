@@ -167,7 +167,7 @@ abstract class Model
     /**
      * 
      * Name of the record class for this model. 
-     * Must be a descendant of \GDAO\Model\Record
+     * Must be a descendant of \GDAO\Model\RecordInterface
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
@@ -350,7 +350,7 @@ abstract class Model
      *          // 'foreign_models_collection_class_name' and 
      *          // 'foreign_models_record_class_name' must be names of classes 
      *          // that are sub-classes of \GDAO\Model, \GDAO\Model\Collection
-     *          // and \GDAO\Model\Record 
+     *          // and \GDAO\Model\RecordInterface
      *          //
      *          // 'primary_key_col_in_foreign_table' must be set in order to
      *          // be able to create a model instance for the related records.
@@ -840,7 +840,7 @@ abstract class Model
     
     /**
      * 
-     * Create and return a new collection of zero or more records (instances of \GDAO\Model\Record).
+     * Create and return a new collection of zero or more records (instances of \GDAO\Model\RecordInterface).
      * 
      * This method is not declared abstract in order to allow both implementers
      * and consumers of this API to be able to implement or use this API without
@@ -851,7 +851,7 @@ abstract class Model
      * @param array $extra_opts an array of other parameters that may be needed 
      *                          in creating an instance of \GDAO\Model\Collection
      * 
-     * @return \GDAO\Model\Collection a collection of instances of \GDAO\Model\Record.
+     * @return \GDAO\Model\Collection a collection of instances of \GDAO\Model\RecordInterface.
      * 
      */
     public function createNewCollection(\GDAO\Model\GDAORecordsList $list_of_records, array $extra_opts=array()) {
@@ -866,9 +866,9 @@ abstract class Model
      * 
      * @param array $col_names_and_values
      * @param array $extra_opts an array of other parameters that may be needed 
-     *                          in creating an instance of \GDAO\Model\Record
+     *                          in creating an instance of \GDAO\Model\RecordInterface
      * 
-     * @return \GDAO\Model\Record new record with specified values.
+     * @return \GDAO\Model\RecordInterface new record with specified values.
      * 
      */
     public abstract function createNewRecord(array $col_names_and_values = array(), array $extra_opts=array());
@@ -906,7 +906,7 @@ abstract class Model
      *       via this method. The record data will still be inside the record 
      *       object.
      * 
-     * @param \GDAO\Model\Record $record
+     * @param \GDAO\Model\RecordInterface $record
      * 
      * @return bool|null true for a successful deletion OR null if supplied record 
      *                   is a record that has never been saved to the db.
@@ -914,7 +914,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function deleteSpecifiedRecord(\GDAO\Model\Record $record);
+    public abstract function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record);
 
     /**
      * 
@@ -1584,7 +1584,7 @@ abstract class Model
             }
             $i++;
         }
-
+        
         return array( 
                     $result_sql.str_repeat("\t", $indent_level) . ')' . PHP_EOL,
                     $result_bind_params
@@ -1594,8 +1594,8 @@ abstract class Model
     /**
      * 
      * Fetch a collection (an instance of GDAO\Model\Collection or any of its 
-     * sub-classes) of records (instances of \GDAO\Model\Record or any of its 
-     * sub-classes) [Eager Loading should be implemented here].
+     * sub-classes) of records (instances of \GDAO\Model\RecordInterface or any 
+     * of its sub-classes) [Eager Loading should be implemented here].
      * 
      * This method is not declared abstract in order to allow both implementers
      * and consumers of this API to be able to implement or use this API without
@@ -1947,8 +1947,8 @@ abstract class Model
 
     /**
      * 
-     * Fetch an array of records (instances of \GDAO\Model\Record or any of its 
-     * sub-classes) [Eager Loading should be considered here].
+     * Fetch an array of records (instances of \GDAO\Model\RecordInterface or 
+     * any of its sub-classes) [Eager Loading should be considered here].
      * 
      * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      * 
@@ -2282,8 +2282,8 @@ abstract class Model
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
-     * @return array of records (instances of \GDAO\Model\Record or any of its 
-     *               sub-classes).
+     * @return array of records (instances of \GDAO\Model\RecordInterface or any
+     *               of its sub-classes).
      * 
      * @throws \PDOException
      * 
@@ -2293,7 +2293,7 @@ abstract class Model
     /**
      * 
      * Fetch an array of db data. Each record is an associative array and not an
-     * instance of \GDAO\Model\Record [Eager Loading should be considered here].
+     * instance of \GDAO\Model\RecordInterface [Eager Loading should be considered here].
      * 
      * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      * 
@@ -3276,7 +3276,7 @@ abstract class Model
      *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
      * 
-     * @return \GDAO\Model\Record
+     * @return \GDAO\Model\RecordInterface
      * 
      * @throws \PDOException
      * 
@@ -4072,7 +4072,7 @@ abstract class Model
      * Update the specified record in the database.
      * Save all fields in the specified record to the corresponding row in the db.
      * 
-     * @param \GDAO\Model\Record $record
+     * @param \GDAO\Model\RecordInterface $record
      * 
      * @return bool true for a successful update, false for a failed update 
      *              OR null if supplied record is a record that has never been
@@ -4081,7 +4081,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function updateSpecifiedRecord(\GDAO\Model\Record $record);
+    public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record);
     
     //////////////////////////////////////
     // Getters for non-public properties

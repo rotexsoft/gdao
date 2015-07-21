@@ -2,56 +2,13 @@
 namespace GDAO\Model;
 
 /**
- * Description of Record
+ * 
+ * Contains a list of methods that Record classes must implement.
  *
- * @author Rotimi Adegbamigbe
- * @copyright (c) 2015, Rotimi Adegbamigbe
+ * @author aadegbam
  */
-abstract class Record implements RecordInterface
+interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate 
 {
-    /**
-     * 
-     * Data for this record ([to be saved to the db] or [as read from the db]).
-     *
-     * @var array 
-     */
-    protected $_data = array();
-    
-    /**
-     *
-     * Copy of the initial data loaded into this record.
-     * 
-     * @var array 
-     */
-    protected $_initial_data = -1;
-    
-    /**
-     * 
-     * Holds relationship data retreieved based on definitions in the array below.
-     * \GDAO\Model::$_relations
-     *
-     * @var array 
-     */
-    protected $_related_data = array();
-    
-    /**
-     * 
-     * Tracks if *this record* is new (i.e., not in the database yet).
-     *
-     * @var bool 
-     */
-    protected $_is_new = true;
-
-    /**
-     *
-     * The model object that saves and reads data to and from the db on behalf 
-     * of this record
-     * 
-     * @var \GDAO\Model
-     */
-    protected $_model;
-
-
     /**
      * 
      * @param array $data associative array of data to be loaded into this record.
@@ -68,26 +25,7 @@ abstract class Record implements RecordInterface
      */
 	public function __construct(
         array $data, \GDAO\Model $model, array $extra_opts=array()
-    ) {
-        $this->setModel($model);
-        $this->loadData($data);
-
-        if(count($extra_opts) > 0) {
-            
-            //set properties of this class specified in $extra_opts
-            foreach($extra_opts as $e_opt_key => $e_opt_val) {
-  
-                if ( property_exists($this, $e_opt_key) ) {
-                    
-                    $this->$e_opt_key = $e_opt_val;
-
-                } elseif ( property_exists($this, '_'.$e_opt_key) ) {
-
-                    $this->{"_$e_opt_key"} = $e_opt_val;
-                }
-            }
-        }
-    }
+    );
 	
     /**
      * 
@@ -105,11 +43,7 @@ abstract class Record implements RecordInterface
      * @return bool true if record was successfully deleted from db or false if not
      * 
      */
-    public function delete($set_record_objects_data_to_empty_array=false) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+    public function delete($set_record_objects_data_to_empty_array=false);
     
     /**
      * 
@@ -118,10 +52,7 @@ abstract class Record implements RecordInterface
      * 
      * @return array a copy of the current data for this record
      */
-    public function getData() {
-        
-        return $this->_data;
-    }
+    public function getData();
     
     /**
      * 
@@ -130,10 +61,7 @@ abstract class Record implements RecordInterface
      * 
      * @return array a copy of the initial data loaded into this record.
      */
-    public function getInitialData() {
-        
-        return $this->_initial_data;
-    }
+    public function getInitialData();
     
     
     /**
@@ -143,10 +71,7 @@ abstract class Record implements RecordInterface
      * 
      * @return array a reference to all the related data loaded into this record.
      */
-    public function getRelatedData() {
-        
-        return $this->_related_data;
-    }
+    public function getRelatedData();
     
     /**
      * 
@@ -155,10 +80,7 @@ abstract class Record implements RecordInterface
      * 
      * @return array a reference to the current data for this record.
      */
-    public function &getDataByRef() {
-        
-        return $this->_data;
-    }
+    public function &getDataByRef();
     
     /**
      * 
@@ -167,10 +89,7 @@ abstract class Record implements RecordInterface
      * 
      * @return array a reference to the initial data loaded into this record.
      */
-    public function &getInitialDataByRef() {
-        
-        return $this->_initial_data;
-    }
+    public function &getInitialDataByRef();
     
     /**
      * 
@@ -179,10 +98,7 @@ abstract class Record implements RecordInterface
      * 
      * @return array a reference to all the related data loaded into this record.
      */
-    public function &getRelatedDataByRef() {
-        
-        return $this->_related_data;
-    }
+    public function &getRelatedDataByRef();
     
     /**
      * 
@@ -194,29 +110,7 @@ abstract class Record implements RecordInterface
      * @throws \GDAO\Model\RecordRelationWithSameNameAsAnExistingDBTableColumnNameException
      * 
      */
-    public function setRelatedData($key, $value) {
-        
-        $my_model = $this->getModel();
-        $table_cols = $my_model->getTableColNames();
-        
-        if( in_array($key, $table_cols) ) {
-            
-            //Error trying to add a relation whose name collides with an actual
-            //name of a column in the db table associated with this record's model.
-            $msg = "ERROR: You cannont add a relationship with the name '$key' "
-                 . " to the record (".get_class($this)."). The database table "
-                 . " '{$my_model->getTableName()}' associated with the "
-                 . " record's model (".get_class($my_model).") already contains"
-                 . " a column with the same name."
-                 . PHP_EOL . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                 . PHP_EOL;
-                 
-            throw new RecordRelationWithSameNameAsAnExistingDBTableColumnNameException($msg);
-        }
-        
-        //We're safe, set the related data.
-        $this->_related_data[$key] = $value;
-    }
+    public function setRelatedData($key, $value);
     
     /**
      * 
@@ -225,30 +119,19 @@ abstract class Record implements RecordInterface
      * 
      * @return \GDAO\Model
      */
-	public function getModel() {
-        
-        return $this->_model;
-    }
+	public function getModel();
     
     /**
      * 
      * @return string name of the primary-key column of the db table this record belongs to
      */
-	public function getPrimaryCol() {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+	public function getPrimaryCol();
     
     /**
      * 
      * @return mixed the value stored in the primary-key column for this record.
      */
-	public function getPrimaryVal() {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+	public function getPrimaryVal();
     
     /**
      * 
@@ -261,11 +144,7 @@ abstract class Record implements RecordInterface
      * boolean true if the data is changed, boolean false if not changed.
      *  
      */
-	public function isChanged($col = null) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+	public function isChanged($col = null);
     
     /**
      * 
@@ -273,10 +152,7 @@ abstract class Record implements RecordInterface
      * 
      * @return bool
      */
-	public function isNew() {
-        
-        return (bool) $this->_is_new;
-    }
+	public function isNew();
     
     /**
      * \GDAO\Model\Record::$_initial_data should be set here only if it has the 
@@ -284,30 +160,26 @@ abstract class Record implements RecordInterface
      * 
      * This method partially or completely overwrites pre-existing data and 
      * replaces it with the new data. Related data should also be loaded if 
-     * $data_2_load is an instance of \GDAO\Model\RecordInterface. 
+     * $data_2_load is an instance of \GDAO\Model\Record. 
      * 
      * Note if $cols_2_load === null all data should be replaced, else only
      * replace data for the cols in $cols_2_load.
      * 
-     * If $data_2_load is an instance of \GDAO\Model\RecordInterface and is also an instance 
+     * If $data_2_load is an instance of \GDAO\Model\Record and is also an instance 
      * of a sub-class of the Record class in a package that implements this API and
      * if $data_2_load->getModel()->getTableName() !== $this->getModel()->getTableName(), 
      * then the exception below should be thrown:
      * 
      *      \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
-     * @param \GDAO\Model\RecordInterface|array $data_2_load
+     * @param \GDAO\Model\Record|array $data_2_load
      * @param array $cols_2_load name of field to load from $data_2_load. If null, 
      *                           load all fields in $data_2_load.
      * 
      * @throws \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
      */
-	public function loadData($data_2_load, array $cols_2_load = array()) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+	public function loadData($data_2_load, array $cols_2_load = array());
     
     /**
      * 
@@ -315,10 +187,7 @@ abstract class Record implements RecordInterface
      * for this record has never been saved to the db).
      * 
      */
-    public function markAsNew() {
-        
-        $this->_is_new = true;
-    }
+    public function markAsNew();
     
     /**
      * 
@@ -326,10 +195,7 @@ abstract class Record implements RecordInterface
      * for this record has been saved to the db or was read from the db).
      * 
      */
-    public function markAsNotNew() {
-        
-        $this->_is_new = false;
-    }
+    public function markAsNotNew();
     
     /**
      * Set all properties of this record to the state they should be in for a new record.
@@ -346,11 +212,7 @@ abstract class Record implements RecordInterface
      *  - or the value of _initial_data could be copied to _data
      *  - etc.
      */
-    public function setStateToNew() {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+    public function setStateToNew();
 
     /**
      * 
@@ -358,16 +220,12 @@ abstract class Record implements RecordInterface
      * Since this record can only talk to the db via its model property (_model)
      * the save operation will actually be done via $this->_model.
      * 
-     * @param \GDAO\Model\RecordInterface|array $data_2_save
+     * @param \GDAO\Model\Record|array $data_2_save
      * 
      * @return null|bool true: successful save, false: failed save, null: no changed data to save
      * 
      */
-	public function save($data_2_save = null) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+	public function save($data_2_save = null);
     
     /**
      * 
@@ -380,16 +238,12 @@ abstract class Record implements RecordInterface
      * mechanism available an Exception must be thrown alerting the caller to
      * use the save method instead.
      * 
-     * @param \GDAO\Model\RecordInterface|array $data_2_save
+     * @param \GDAO\Model\Record|array $data_2_save
      * 
      * @return bool true for a successful save, false for failed save, null: no changed data to save
      * 
      */
-	public function saveInTransaction($data_2_save = null) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+	public function saveInTransaction($data_2_save = null);
     
     /**
      * 
@@ -397,10 +251,7 @@ abstract class Record implements RecordInterface
      * 
      * @param \GDAO\Model $model
      */
-	public function setModel(\GDAO\Model $model) {
-        
-        $this->_model = $model;
-    }
+	public function setModel(\GDAO\Model $model);
     
     /**
      * 
@@ -409,99 +260,7 @@ abstract class Record implements RecordInterface
      * @return array of all data & property (name & value pairs) for this record.
      * 
      */
-    public function toArray() {
-
-        return get_object_vars($this);
-    }
-    
-    //Interface Methods
-    
-    /**
-     * 
-     * ArrayAccess: does the requested key exist?
-     * 
-     * @param string $key The requested key.
-     * 
-     * @return bool
-     * 
-     */
-    public function offsetExists($key) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
-
-    /**
-     * 
-     * ArrayAccess: get a key value.
-     * 
-     * @param string $key The requested key.
-     * 
-     * @return mixed
-     * 
-     */
-    public function offsetGet($key) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
-
-    /**
-     * 
-     * ArrayAccess: set a key value.
-     * 
-     * @param string $key The requested key.
-     * 
-     * @param string $val The value to set it to.
-     * 
-     * @return void
-     * 
-     */
-    public function offsetSet($key, $val) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
-
-    /**
-     * 
-     * ArrayAccess: unset a key.
-     * 
-     * @param string $key The requested key.
-     * 
-     * @return void
-     * 
-     */
-    public function offsetUnset($key) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
-
-    /**
-     * 
-     * Countable: how many keys are there?
-     * 
-     * @return int
-     * 
-     */
-    public function count(){
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
-
-    /**
-     * 
-     * 
-     * @return \ArrayIterator
-     * 
-     */
-    public function getIterator(){
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+    public function toArray();
     
     //Magic Methods
     
@@ -514,11 +273,7 @@ abstract class Record implements RecordInterface
      * @return mixed The data value.
      * 
      */
-    public function __get($key) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+    public function __get($key);
 
     /**
      * 
@@ -532,11 +287,7 @@ abstract class Record implements RecordInterface
      * @return void
      * 
      */
-    public function __isset($key) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+    public function __isset($key);
 
     /**
      * 
@@ -549,11 +300,7 @@ abstract class Record implements RecordInterface
      * @return void
      * 
      */
-    public function __set($key, $val) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+    public function __set($key, $val);
 
     /**
      * 
@@ -564,10 +311,7 @@ abstract class Record implements RecordInterface
      *                (name & value pairs) for this record.
      * 
      */
-    public function __toString() {
-        
-        return print_r($this->toArray(), true);
-    }
+    public function __toString();
 
     /**
      * 
@@ -578,9 +322,10 @@ abstract class Record implements RecordInterface
      * @return void
      * 
      */
-    public function __unset($key) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new RecordMustImplementMethodException($msg);
-    }
+    public function __unset($key);
 }
+
+class RecordMustImplementMethodException extends \Exception{}
+class RecordOperationNotSupportedException extends \Exception{}
+class LoadingDataFromInvalidSourceIntoRecordException extends \Exception{}
+class RecordRelationWithSameNameAsAnExistingDBTableColumnNameException extends \Exception{}
