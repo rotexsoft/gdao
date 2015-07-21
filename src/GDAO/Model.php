@@ -3946,7 +3946,7 @@ abstract class Model
      * number or string value (this should happen before even attempting to 
      * perform the insert).
      * 
-     * @param array $col_names_n_vals an array whose keys are the names of columns
+     * @param array $data_2_insert an array whose keys are the names of columns
      *                                in the database and whose corresponding values
      *                                are the values to be inserted in each column.
      *                                The values must be one of these types:
@@ -3968,7 +3968,7 @@ abstract class Model
      * @throws \GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException
      * 
      */
-    public abstract function insert(array $col_names_n_vals=array());
+    public abstract function insert(array $data_2_insert=array());
 
     /**
      * 

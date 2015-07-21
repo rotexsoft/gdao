@@ -287,7 +287,7 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      * @throws \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
      */
-	public abstract function loadData($data_2_load, array $cols_2_load = null);
+	public abstract function loadData($data_2_load, array $cols_2_load = array());
     
     /**
      * 
