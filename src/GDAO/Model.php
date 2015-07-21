@@ -17,7 +17,6 @@ namespace GDAO;
  */
 abstract class Model
 {
-    
     /**
      * 
      * Name of the primary key column in the db table associated with this model
@@ -283,46 +282,46 @@ abstract class Model
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //the entry below is not needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
      * 
-     *          'foreign_key_col_in_my_models_table' => 'p_author_id',
+     *          'foreign_key_col_in_my_table' => 'p_author_id',
      *          /////////////////////////////////////////////////////////////////////////////////
      * 
-     *          'foreign_models_table' => 'authors',
+     *          'foreign_table' => 'authors',
      * 
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //the entry below is not needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
      * 
-     *          'foreign_key_col_in_foreign_models_table' => 'author_id',
+     *          'foreign_key_col_in_foreign_table' => 'author_id',
      *          /////////////////////////////////////////////////////////////////////////////////
      * 
      * 
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //the entry below is only needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
      * 
-     *          'col_in_my_models_table_linked_to_join_table' => 'post_id',
+     *          'col_in_my_table_linked_to_join_table' => 'post_id',
      *          /////////////////////////////////////////////////////////////////////////////////
      *
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //the entry below is only needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
      *          
-     *          'join_table_name' => 'posts_tags',
+     *          'join_table' => 'posts_tags',
      *          /////////////////////////////////////////////////////////////////////////////////
      *          
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //the entry below is only needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
      *          
-     *          'col_in_join_table_linked_to_my_models_table' => 'psts_post_id',
+     *          'col_in_join_table_linked_to_my_table' => 'psts_post_id',
      *          /////////////////////////////////////////////////////////////////////////////////        
      *      
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //the entry below is only needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
      * 
-     *          'col_in_join_table_linked_to_foreign_models_table' => 'psts_tag_id',
+     *          'col_in_join_table_linked_to_foreign_table' => 'psts_tag_id',
      *          /////////////////////////////////////////////////////////////////////////////////        
      *  
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //the entry below is only needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
      * 
-     *          'col_in_foreign_models_table_linked_to_join_table' => 'tag_id',
+     *          'col_in_foreign_table_linked_to_join_table' => 'tag_id',
      *          /////////////////////////////////////////////////////////////////////////////////
      * 
      *          /////////////////////////////////////////////////////////////////////////////////
@@ -353,25 +352,25 @@ abstract class Model
      *          // that are sub-classes of \GDAO\Model, \GDAO\Model\Collection
      *          // and \GDAO\Model\Record 
      *          //
-     *          // 'primary_key_col_in_foreign_models_table' must be set in order to
+     *          // 'primary_key_col_in_foreign_table' must be set in order to
      *          // be able to create a model instance for the related records.
      *          /////////////////////////////////////////////////////////////////////////////////
      *          
      *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
-     *          'primary_key_col_in_foreign_models_table' => 'post_id'
+     *          'primary_key_col_in_foreign_table' => 'post_id'
      *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
      *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
      * 
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //the entry below can be used to modify the sql query for retrieving data from
-     *          //$this->_relations['relation_name1']['foreign_models_table'].
+     *          //$this->_relations['relation_name1']['foreign_table'].
      *          //See the documentation for the $params parameter for $this->fetchAll(..) 
      *          //in order to understand the expected value(s) that should be set for 
-     *          //$this->_relations['relation_name1']['foreign_models_table']
+     *          //$this->_relations['relation_name1']['foreign_table']
      *          //NOTE: that the `relations_to_include`, `limit_offset` and
      *          //      `limit_size` entries acceptable in the $params parameter 
      *          //      for $this->fetchAll(..) should not be included in the  
-     *          //      value to be set for $this->_relations['relation_name1']['foreign_models_table']
+     *          //      value to be set for $this->_relations['relation_name1']['foreign_table']
      * 
      *          'foreign_models_table_sql_params'=> [....]
      *          /////////////////////////////////////////////////////////////////////////////////
@@ -419,12 +418,12 @@ abstract class Model
      *      [
      *          'relation_type' => \GDAO\Model::RELATION_TYPE_HAS_ONE,
      *  
-     *          'foreign_key_col_in_my_models_table' => 'post_id',
+     *          'foreign_key_col_in_my_table' => 'post_id',
      *          
-     *          'foreign_models_table' => 'summaries',
-     *          'foreign_key_col_in_foreign_models_table' => 's_post_id'
+     *          'foreign_table' => 'summaries',
+     *          'foreign_key_col_in_foreign_table' => 's_post_id'
      * 
-     *          'primary_key_col_in_foreign_models_table' => 'summary_id'
+     *          'primary_key_col_in_foreign_table' => 'summary_id'
      *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
      *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
      *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
@@ -437,7 +436,7 @@ abstract class Model
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model
      *       class whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['foreign_models_table'].
+     *       \GDAO\Model->_relations['relation_name']['foreign_table'].
      *       In the example above 'relation_name' should be substituted with 
      *       'summary'.
      * 
@@ -478,12 +477,12 @@ abstract class Model
      *      [
      *          'relation_type' => \GDAO\Model::RELATION_TYPE_BELONGS_TO,
      * 
-     *          'foreign_key_col_in_my_models_table' => 'p_author_id',
+     *          'foreign_key_col_in_my_table' => 'p_author_id',
      *          
-     *          'foreign_models_table' => 'authors',
-     *          'foreign_key_col_in_foreign_models_table' => 'author_id',
+     *          'foreign_table' => 'authors',
+     *          'foreign_key_col_in_foreign_table' => 'author_id',
      * 
-     *          'primary_key_col_in_foreign_models_table' => 'post_id'
+     *          'primary_key_col_in_foreign_table' => 'post_id'
      *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
      *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
      *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
@@ -496,7 +495,7 @@ abstract class Model
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model
      *       class whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['foreign_models_table'].
+     *       \GDAO\Model->_relations['relation_name']['foreign_table'].
      *       In the example above 'relation_name' should be substituted with 
      *       'author'.
      * 
@@ -537,12 +536,12 @@ abstract class Model
      *      [
      *          'relation_type' => \GDAO\Model::RELATION_TYPE_HAS_MANY,
      * 
-     *          'foreign_key_col_in_my_models_table' => 'post_id',
+     *          'foreign_key_col_in_my_table' => 'post_id',
      *          
-     *          'foreign_models_table' => 'comments',
-     *          'foreign_key_col_in_foreign_models_table' => 'c_post_id'
+     *          'foreign_table' => 'comments',
+     *          'foreign_key_col_in_foreign_table' => 'c_post_id'
      * 
-     *          'primary_key_col_in_foreign_models_table' => 'comment_id'
+     *          'primary_key_col_in_foreign_table' => 'comment_id'
      *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
      *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
      *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
@@ -555,7 +554,7 @@ abstract class Model
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model class
      *       whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['foreign_models_table'].
+     *       \GDAO\Model->_relations['relation_name']['foreign_table'].
      *       In the example above 'relation_name' should be substituted with 
      *       'comments'.
      * 
@@ -600,16 +599,16 @@ abstract class Model
      *      [
      *          'relation_type' => \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH,
      * 
-     *          'col_in_my_models_table_linked_to_join_table' => 'post_id',
+     *          'col_in_my_table_linked_to_join_table' => 'post_id',
      *
-     *          'join_table_name' => 'posts_tags',
-     *          'col_in_join_table_linked_to_my_models_table' => 'psts_post_id',
-     *          'col_in_join_table_linked_to_foreign_models_table' => 'psts_tag_id',
+     *          'join_table' => 'posts_tags',
+     *          'col_in_join_table_linked_to_my_table' => 'psts_post_id',
+     *          'col_in_join_table_linked_to_foreign_table' => 'psts_tag_id',
      * 
-     *          'foreign_models_table' => 'tags',
-     *          'col_in_foreign_models_table_linked_to_join_table' => 'tag_id',
+     *          'foreign_table' => 'tags',
+     *          'col_in_foreign_table_linked_to_join_table' => 'tag_id',
      *          
-     *          'primary_key_col_in_foreign_models_table' => 'tag_id'
+     *          'primary_key_col_in_foreign_table' => 'tag_id'
      *          'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName'
      *          'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection'
      *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
@@ -622,16 +621,16 @@ abstract class Model
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model class
      *       whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['foreign_models_table'].
+     *       \GDAO\Model->_relations['relation_name']['foreign_table'].
      *       In the example above 'relation_name' should be substituted with 
      *       'author'.
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model class 
      *       whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['foreign_models_table'].
+     *       \GDAO\Model->_relations['relation_name']['foreign_table'].
      *       'join_models_class_name' should contain the name of a Model class 
      *       whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['join_table_name'].
+     *       \GDAO\Model->_relations['relation_name']['join_table'].
      *       In the example above 'relation_name' should be substituted with 'tags'.
      * 
      * 
