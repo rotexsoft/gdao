@@ -36,6 +36,7 @@ abstract class Collection implements \ArrayAccess, \Countable, \IteratorAggregat
      * \GDAO\Model\GDAORecordsList->toArray(). In this case $data->toArray().
      * 
      * @param \GDAO\Model\GDAORecordsList $data list of instances of \GDAO\Model\Record
+     * @param \GDAO\Model $model The model object that transfers data between the db and this collection.
      * @param array $extra_opts an array that may be used to pass initialization 
      *                          value(s) for protected and / or private properties
      *                          of this class

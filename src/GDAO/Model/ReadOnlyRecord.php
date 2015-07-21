@@ -2,6 +2,7 @@
 namespace GDAO\Model;
 
 /**
+ * 
  * This a record class that is lighter weight than \GDAO\Model\Record.
  * It does not have an _initial_data array for tracking changes made to a record
  * and it does not allow changing the values of a record's fields once the data
@@ -12,6 +13,7 @@ namespace GDAO\Model;
  *
  * @author Rotimi Adegbamigbe
  * @copyright (c) 2015, Rotimi Adegbamigbe
+ * 
  */
 abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggregate
 {
@@ -129,10 +131,8 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
     
     /**
      * 
-     * Get a copy of the initial data loaded into this record.
-     * Modifying the returned data will not affect the initial data inside this record.
+     * Not Supported, not overridable.
      * 
-     * @return array a copy of the initial data loaded into this record.
      */
     public final function getInitialData() {
         
@@ -166,10 +166,8 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
     
     /**
      * 
-     * Get a reference to the initial data loaded into this record.
-     * Modifying the returned data will affect the initial data inside this record.
+     * Not Supported, not overridable.
      * 
-     * @return array a reference to the initial data loaded into this record.
      */
     public final function &getInitialDataByRef() {
         
@@ -248,13 +246,7 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
     
     /**
      * 
-     * Tells if the record, or a particular table-column in the record, has 
-     * changed from its initial value.
-     * 
-     * @param string $col The table-column name.
-     * 
-     * @return void|bool Returns null if the table-column name does not exist,
-     * boolean true if the data is changed, boolean false if not changed.
+     * Not Supported, not overridable.
      *  
      */
     public final function isChanged($col = null) {
@@ -264,9 +256,8 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
     
     /**
      * 
-     * Is the record new? (I.e. its data has never been saved to the db)
+     * Not Supported, not overridable.
      * 
-     * @return bool
      */
     public final function isNew() {
         
@@ -302,8 +293,7 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
     
     /**
      * 
-     * Set the _is_new attribute of this record to true (meaning that the data
-     * for this record has never been saved to the db).
+     * Not Supported, not overridable.
      * 
      */
     public final function markAsNew() {
@@ -313,8 +303,7 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
     
     /**
      * 
-     * Set the _is_new attribute of this record to false (meaning that the data
-     * for this record has been saved to the db or was read from the db).
+     * Not Supported, not overridable.
      * 
      */
     public final function markAsNotNew() {
@@ -323,19 +312,9 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
     }
     
     /**
-     * Set all properties of this record to the state they should be in for a new record.
-     * For example:
-     *  - unset its primary key value via unset($this[$this->getPrimaryCol()]);
-     *  - call $this->markAsNew()
-     *  - etc.
      * 
-     * The _data & _initial_data properties can be updated as needed by the 
-     * implementing sub-class. 
-     * For example:
-     *  - they could be left as is 
-     *  - or the value of _data could be copied to _initial_data
-     *  - or the value of _initial_data could be copied to _data
-     *  - etc.
+     * Not Supported, not overridable.
+     * 
      */
     public final function setStateToNew() {
         
@@ -344,13 +323,7 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
 
     /**
      * 
-     * Save the specified or already existing data for this record to the db.
-     * Since this record can only talk to the db via its model property (_model)
-     * the save operation will actually be done via $this->_model.
-     * 
-     * @param \GDAO\Model\Record|array $data_2_save
-     * 
-     * @return null|bool true: successful save, false: failed save, null: no changed data to save
+     * Not Supported, not overridable.
      * 
      */
     public final function save($data_2_save = null) {
@@ -360,18 +333,7 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
     
     /**
      * 
-     * Save the specified or already existing data for this record to the db.
-     * Since this record can only talk to the db via its model property (_model)
-     * the save operation will actually be done via $this->_model.
-     * This save operation shoould be gaurded by the PDO transaction mechanism
-     * if available or another transaction mechanism. If the save operation 
-     * fails all changes should be rolled back. If there is not transaction
-     * mechanism available an Exception must be thrown alerting the caller to
-     * use the save method instead.
-     * 
-     * @param \GDAO\Model\Record|array $data_2_save
-     * 
-     * @return bool true for a successful save, false for failed save, null: no changed data to save
+     * Not Supported, not overridable.
      * 
      */
     public final function saveInTransaction($data_2_save = null) {
@@ -406,10 +368,14 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
     
     /**
      * 
-     * {@inheritDoc}
+     * ArrayAccess: does the requested key exist?
+     * 
+     * @param string $key The requested key.
+     * 
+     * @return bool
      * 
      */
-    public function offsetExists($offset) {
+    public function offsetExists($key) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
@@ -417,10 +383,14 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
 
     /**
      * 
-     * {@inheritDoc}
+     * ArrayAccess: get a key value.
+     * 
+     * @param string $key The requested key.
+     * 
+     * @return mixed
      * 
      */
-    public function offsetGet($offset) {
+    public function offsetGet($key) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
@@ -428,10 +398,16 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
 
     /**
      * 
-     * {@inheritDoc}
+     * ArrayAccess: set a key value.
+     * 
+     * @param string $key The requested key.
+     * 
+     * @param string $val The value to set it to.
+     * 
+     * @return void
      * 
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($key, $val) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
@@ -439,10 +415,14 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
 
     /**
      * 
-     * {@inheritDoc}
+     * ArrayAccess: unset a key.
+     * 
+     * @param string $key The requested key.
+     * 
+     * @return void
      * 
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($key) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
@@ -450,7 +430,9 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
 
     /**
      * 
-     * {@inheritDoc}
+     * Countable: how many keys are there?
+     * 
+     * @return int
      * 
      */
     public function count(){
@@ -461,7 +443,8 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
 
     /**
      * 
-     * {@inheritDoc}
+     * 
+     * @return \ArrayIterator
      * 
      */
     public function getIterator(){
@@ -472,19 +455,51 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
     
     //Magic Methods
     
+    /**
+     * 
+     * Gets a data value.
+     * 
+     * @param string $key The requested data key.
+     * 
+     * @return mixed The data value.
+     * 
+     */
     public function __get($key) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
     }
 
+    /**
+     * 
+     * Does a certain key exist in the data?
+     * 
+     * Note that this is slightly different from normal PHP isset(); it will
+     * say the key is set, even if the key value is null or otherwise empty.
+     * 
+     * @param string $key The requested data key.
+     * 
+     * @return void
+     * 
+     */
     public function __isset($key) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
     }
 
-    public final function __set($key, $value) {
+    /**
+     * 
+     * Sets a key value.
+     * 
+     * @param string $key The requested data key.
+     * 
+     * @param mixed $val The value to set the data to.
+     * 
+     * @return void
+     * 
+     */
+    public final function __set($key, $val) {
         
         $this->_throwNotSupportedException(__FUNCTION__);
     }
@@ -503,6 +518,15 @@ abstract class ReadOnlyRecord implements \ArrayAccess, \Countable, \IteratorAggr
         return print_r($this->toArray(), true);
     }
 
+    /**
+     * 
+     * Removes a key and its value in the data.
+     * 
+     * @param string $key The requested data key.
+     * 
+     * @return void
+     * 
+     */
     public final function __unset($key) {
         
         $this->_throwNotSupportedException(__FUNCTION__);

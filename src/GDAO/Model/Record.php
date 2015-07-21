@@ -61,7 +61,7 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      *                      .............................,
      *                      'col_nameN'=>'value_for_colN'
      *                    ]
-     * 
+     * @param \GDAO\Model $model The model object that transfers data between the db and this record.
      * @param array $extra_opts an array that may be used to pass initialization 
      *                          value(s) for protected and / or private properties
      *                          of this class
@@ -365,7 +365,7 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @param \GDAO\Model $model
      */
-	public function setModel(\GDAO\Model $model){
+	public function setModel(\GDAO\Model $model) {
         
         $this->_model = $model;
     }
@@ -386,10 +386,14 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * 
-     * {@inheritDoc}
+     * ArrayAccess: does the requested key exist?
+     * 
+     * @param string $key The requested key.
+     * 
+     * @return bool
      * 
      */
-    public function offsetExists($offset) {
+    public function offsetExists($key) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
@@ -397,10 +401,14 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
 
     /**
      * 
-     * {@inheritDoc}
+     * ArrayAccess: get a key value.
+     * 
+     * @param string $key The requested key.
+     * 
+     * @return mixed
      * 
      */
-    public function offsetGet($offset) {
+    public function offsetGet($key) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
@@ -408,10 +416,16 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
 
     /**
      * 
-     * {@inheritDoc}
+     * ArrayAccess: set a key value.
+     * 
+     * @param string $key The requested key.
+     * 
+     * @param string $val The value to set it to.
+     * 
+     * @return void
      * 
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($key, $val) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
@@ -419,10 +433,14 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
 
     /**
      * 
-     * {@inheritDoc}
+     * ArrayAccess: unset a key.
+     * 
+     * @param string $key The requested key.
+     * 
+     * @return void
      * 
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($key) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
@@ -430,7 +448,9 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
 
     /**
      * 
-     * {@inheritDoc}
+     * Countable: how many keys are there?
+     * 
+     * @return int
      * 
      */
     public function count(){
@@ -441,7 +461,8 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
 
     /**
      * 
-     * {@inheritDoc}
+     * 
+     * @return \ArrayIterator
      * 
      */
     public function getIterator(){
@@ -452,19 +473,51 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
     
     //Magic Methods
     
+    /**
+     * 
+     * Gets a data value.
+     * 
+     * @param string $key The requested data key.
+     * 
+     * @return mixed The data value.
+     * 
+     */
     public function __get($key) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
     }
 
+    /**
+     * 
+     * Does a certain key exist in the data?
+     * 
+     * Note that this is slightly different from normal PHP isset(); it will
+     * say the key is set, even if the key value is null or otherwise empty.
+     * 
+     * @param string $key The requested data key.
+     * 
+     * @return void
+     * 
+     */
     public function __isset($key) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
     }
 
-    public function __set($key, $value) {
+    /**
+     * 
+     * Sets a key value.
+     * 
+     * @param string $key The requested data key.
+     * 
+     * @param mixed $val The value to set the data to.
+     * 
+     * @return void
+     * 
+     */
+    public function __set($key, $val) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new RecordMustImplementMethodException($msg);
@@ -484,6 +537,15 @@ abstract class Record implements \ArrayAccess, \Countable, \IteratorAggregate
         return print_r($this->toArray(), true);
     }
 
+    /**
+     * 
+     * Removes a key and its value in the data.
+     * 
+     * @param string $key The requested data key.
+     * 
+     * @return void
+     * 
+     */
     public function __unset($key) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
