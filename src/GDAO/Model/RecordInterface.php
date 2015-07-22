@@ -160,19 +160,19 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * This method partially or completely overwrites pre-existing data and 
      * replaces it with the new data. Related data should also be loaded if 
-     * $data_2_load is an instance of \GDAO\Model\Record. 
+     * $data_2_load is an instance of \GDAO\Model\RecordInterface. 
      * 
      * Note if $cols_2_load === null all data should be replaced, else only
      * replace data for the cols in $cols_2_load.
      * 
-     * If $data_2_load is an instance of \GDAO\Model\Record and is also an instance 
+     * If $data_2_load is an instance of \GDAO\Model\RecordInterface and is also an instance 
      * of a sub-class of the Record class in a package that implements this API and
      * if $data_2_load->getModel()->getTableName() !== $this->getModel()->getTableName(), 
      * then the exception below should be thrown:
      * 
      *      \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
-     * @param \GDAO\Model\Record|array $data_2_load
+     * @param \GDAO\Model\RecordInterface|array $data_2_load
      * @param array $cols_2_load name of field to load from $data_2_load. If null, 
      *                           load all fields in $data_2_load.
      * 
@@ -220,7 +220,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * Since this record can only talk to the db via its model property (_model)
      * the save operation will actually be done via $this->_model.
      * 
-     * @param \GDAO\Model\Record|array $data_2_save
+     * @param \GDAO\Model\RecordInterface|array $data_2_save
      * 
      * @return null|bool true: successful save, false: failed save, null: no changed data to save
      * 
@@ -238,7 +238,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * mechanism available an Exception must be thrown alerting the caller to
      * use the save method instead.
      * 
-     * @param \GDAO\Model\Record|array $data_2_save
+     * @param \GDAO\Model\RecordInterface|array $data_2_save
      * 
      * @return bool true for a successful save, false for failed save, null: no changed data to save
      * 
