@@ -20,6 +20,8 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     ////   $this->getData() & $this->getDataByRef(). Data contained in this 
     ////   property should be set via 
     ////   $this->loadData($data_2_load, array $cols_2_load = array()).
+    ////   For documentation purposes this property will be refered to as
+    ////   $this->_data (with an assumption that it is an array).
     ////   
     //// * Another property of the same data type as the one described above should
     ////   be present in the class implementing this interface. This property should 
@@ -32,6 +34,8 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     ////   & $this->getInitialDataByRef(). Data contained in this property should 
     ////   be set ONCE via $this->loadData($data_2_load, array $cols_2_load = array())
     ////   the first time loadData is called on a record.
+    ////   For documentation purposes this property will be refered to as
+    ////   $this->_initial_data (with an assumption that it is an array).
     ////   
     //// * Another property should be present in the class implementing this 
     ////   interface. This property should hold data related to a record (ie.
@@ -39,14 +43,20 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     ////   Data from this property should be returned via $this->getRelatedData()
     ////   & $this->getRelatedDataByRef(). Data contained in this property should 
     ////   be set via $this->setRelatedData($key, $value).
+    ////   For documentation purposes this property will be refered to as
+    ////   $this->_related_data (with an assumption that it is an array).
     ////   
     //// * A boolean property should be present in the class implementing this 
     ////   interface. This property should be set to true if a record is new
     ////   (ie. its data has never been saved to the DB), else false.
+    ////   For documentation purposes this property will be refered to as
+    ////   $this->_is_new.
     ////   
     //// * A property of type \GDAO\Model should be present in a class implementing
     ////   this interface. This is the model object that will perform database 
     ////   operations on behalf of the record.
+    ////   For documentation purposes this property will be refered to as
+    ////   $this->_model
     ////   
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////    
