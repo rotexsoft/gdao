@@ -24,6 +24,170 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->_mock_model_obj_with_memory_sqlite_connection->setPDO($pdo);
         ////////////////////////////////////////////////////////////////////////
     }
+    
+////////////////////////////////////////////////////////////////////////////////
+// Start Tests for \GDAO\Model::__construct(....)
+////////////////////////////////////////////////////////////////////////////////
+    
+    public function testThatConstructorSetsFirstFourParamsCorrectly() {
+        
+        $model = new \MockModelForTestingNonAbstractMethods(
+                    'test_dsn',
+                    'test_username',
+                    'test_passwd',
+                    [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
+                    [
+                        '_primary_col'=>'component_id', 
+                        '_table_name'=>'components',
+                    ]
+                );
+                
+        $msg = __METHOD__;
+        
+        $model_obj_as_array = $model->toArray();
+        $this->assertTrue($model_obj_as_array['_primary_col'] === 'component_id', $msg);
+        $this->assertTrue($model_obj_as_array['_table_name'] === 'components', $msg);
+        $this->assertTrue($model_obj_as_array['_dsn'] === 'test_dsn', $msg);
+        $this->assertTrue($model_obj_as_array['_username'] === 'test_username', $msg);
+        $this->assertTrue($model_obj_as_array['_passwd'] === 'test_passwd', $msg);
+        $this->assertTrue($model_obj_as_array['_pdo_driver_opts'] === [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'], $msg);
+    }
+    
+    /**
+     * @expectedException \GDAO\ModelPrimaryColNameNotSetDuringConstructionException
+     */
+    public function testThatConstructorThrowsExceptionForEmptyPrimaryColName() {
+        
+        $model = new \MockModelForTestingNonAbstractMethods(
+                    'test_dsn',
+                    'test_username',
+                    'test_passwd',
+                    [],
+                    [
+                        //'_primary_col'=>'component_id', 
+                        '_table_name'=>'components',
+                    ]
+                );
+    }
+    
+    /**
+     * @expectedException \GDAO\ModelTableNameNotSetDuringConstructionException
+     */
+    public function testThatConstructorThrowsExceptionForEmptyTableName() {
+                    
+        $model = new \MockModelForTestingNonAbstractMethods(
+                    'test_dsn',
+                    'test_username',
+                    'test_passwd',
+                    [],
+                    [
+                        '_primary_col'=>'component_id', 
+                        //'_table_name'=>'components',
+                    ]
+                );
+    }
+    
+    public function testThatConstructorSetsModelPropertiesCorrectlyViaTheExtraoptsArray() {
+
+        $rel = [
+            'a_relation_name'=> [
+                'relation_type' => \GDAO\Model::RELATION_TYPE_BELONGS_TO,
+                'foreign_key_col_in_my_table' => 'output_id',
+                'foreign_table' => 'project_outputs',
+                'foreign_key_col_in_foreign_table' => 'output_id',
+                'primary_key_col_in_foreign_table' => 'output_id',
+                'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName',
+                'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
+                'foreign_models_record_class_name' => '\StdClass',
+                'foreign_table_sql_params' => [
+                    'cols' => ['project_outputs.deliverable_id', 'component_deliverables.deliverable', 'component_deliverables.component_id'],
+                    'where' => [
+                        [ 'col' => 'project_outputs.hidden_fiscal_year', 'op' => '=', 'val' => 16 ],
+                        [ 'col' => 'project_outputs.deactivated', 'op' => '=', 'val' => 0],
+                        [ 'col' => 'project_outputs.parent_id', 'op' => 'is-null'],
+                    ],
+                ]
+            ],
+        ];
+        
+        //create model setting property values with exact property names
+        $model = new \MockModelForTestingNonAbstractMethods(
+                '',
+                '',
+                '',
+                [],//[PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
+                [
+                    '_primary_col'=>'component_id', 
+                    '_table_name'=>'components', 
+                    '_relations'=>$rel,
+                    '_collection_class_name'=>'TestCollectionClassName',
+                    '_record_class_name'=>'TestRecordClassName',
+                    '_table_cols'=>['col1', 'col2'],
+                    '_created_timestamp_column_name'=> 'test_c_col_name',
+                    '_updated_timestamp_column_name'=> 'test_u_col_name',
+                    '_dsn'=> 'test_dsn',
+                    '_username'=> 'test_username',
+                    '_passwd'=> 'test_passwd',
+                    '_pdo_driver_opts'=> [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
+                ]
+            );
+        
+        //create model setting property values with property names (excluding the underscore prefix)
+        $model2 = new \MockModelForTestingNonAbstractMethods(
+                '',
+                '',
+                '',
+                [],//[PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
+                [
+                    'primary_col'=>'component_id', 
+                    'table_name'=>'components', 
+                    'relations'=>$rel,
+                    'collection_class_name'=>'TestCollectionClassName',
+                    'record_class_name'=>'TestRecordClassName',
+                    'table_cols'=>['col1', 'col2'],
+                    'created_timestamp_column_name'=> 'test_c_col_name',
+                    'updated_timestamp_column_name'=> 'test_u_col_name',
+                    'dsn'=> 'test_dsn',
+                    'username'=> 'test_username',
+                    'passwd'=> 'test_passwd',
+                    'pdo_driver_opts'=> [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
+                ]
+            );
+        
+        $msg = __METHOD__;
+        
+        $model_obj_as_array = $model->toArray();
+        $this->assertTrue($model_obj_as_array['_primary_col'] === 'component_id', $msg);
+        $this->assertTrue($model_obj_as_array['_table_name'] === 'components', $msg);
+        $this->assertTrue($model_obj_as_array['_relations'] === $rel, $msg);
+        $this->assertTrue($model_obj_as_array['_collection_class_name'] === 'TestCollectionClassName', $msg);
+        $this->assertTrue($model_obj_as_array['_record_class_name'] === 'TestRecordClassName', $msg);
+        $this->assertTrue($model_obj_as_array['_table_cols'] === ['col1', 'col2'], $msg);
+        $this->assertTrue($model_obj_as_array['_created_timestamp_column_name'] === 'test_c_col_name', $msg);
+        $this->assertTrue($model_obj_as_array['_updated_timestamp_column_name'] === 'test_u_col_name', $msg);
+        $this->assertTrue($model_obj_as_array['_dsn'] === 'test_dsn', $msg);
+        $this->assertTrue($model_obj_as_array['_username'] === 'test_username', $msg);
+        $this->assertTrue($model_obj_as_array['_passwd'] === 'test_passwd', $msg);
+        $this->assertTrue($model_obj_as_array['_pdo_driver_opts'] === [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'], $msg);
+        
+        $model2_obj_as_array = $model2->toArray();
+        $this->assertTrue($model2_obj_as_array['_primary_col'] === 'component_id', $msg);
+        $this->assertTrue($model2_obj_as_array['_table_name'] === 'components', $msg);
+        $this->assertTrue($model2_obj_as_array['_relations'] === $rel, $msg);
+        $this->assertTrue($model2_obj_as_array['_collection_class_name'] === 'TestCollectionClassName', $msg);
+        $this->assertTrue($model2_obj_as_array['_record_class_name'] === 'TestRecordClassName', $msg);
+        $this->assertTrue($model2_obj_as_array['_table_cols'] === ['col1', 'col2'], $msg);
+        $this->assertTrue($model2_obj_as_array['_created_timestamp_column_name'] === 'test_c_col_name', $msg);
+        $this->assertTrue($model2_obj_as_array['_updated_timestamp_column_name'] === 'test_u_col_name', $msg);
+        $this->assertTrue($model2_obj_as_array['_dsn'] === 'test_dsn', $msg);
+        $this->assertTrue($model2_obj_as_array['_username'] === 'test_username', $msg);
+        $this->assertTrue($model2_obj_as_array['_passwd'] === 'test_passwd', $msg);
+        $this->assertTrue($model2_obj_as_array['_pdo_driver_opts'] === [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'], $msg);
+    }
+    
+////////////////////////////////////////////////////////////////////////////////
+// End of Tests for \GDAO\Model::__construct(....)
+////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 // Start Tests for \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
@@ -1689,6 +1853,126 @@ EOT;
         ];
 
         $this->assertEquals($expected_params, $result[1]);
+    }
+    
+    public function testToEnsureThatToStringWorksAsExpected() {
+        
+        $model = new \MockModelForTestingNonAbstractMethods(
+            'test_dsn',
+            'test_username',
+            'test_passwd',
+            [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
+            [
+                '_primary_col'=>'component_id', 
+                '_table_name'=>'components',
+            ]
+        );
+        
+        $sub_str = <<<EOT
+Array
+(
+    [_primary_col] => component_id
+    [_table_name] => components
+    [_table_cols] => Array
+        (
+        )
+
+    [_collection_class_name] => 
+    [_record_class_name] => 
+    [_created_timestamp_column_name] => 
+    [_updated_timestamp_column_name] => 
+    [_relations] => Array
+        (
+        )
+
+    [_dsn] => test_dsn
+    [_username] => test_username
+    [_passwd] => test_passwd
+    [_pdo_driver_opts] => Array
+        (
+            [1002] => SET NAMES utf8
+        )
+
+)
+EOT;
+        //echo $model->__toString(); exit;
+        $this->assertContains($sub_str, $model->__toString());
+    }
+    
+    /**
+     * @expectedException \GDAO\ModelMustImplementMethodException
+     */
+    public function testThat__callThrowsException() {
+        
+        $model = new \MockModelForTestingNonAbstractMethods(
+                    'test_dsn',
+                    'test_username',
+                    'test_passwd',
+                    [],
+                    [
+                        '_primary_col'=>'component_id', 
+                        '_table_name'=>'components',
+                    ]
+                );
+        
+        $model->__call('', '');
+    }
+    
+    /**
+     * @expectedException \GDAO\ModelMustImplementMethodException
+     */
+    public function testThat__getThrowsException() {
+        
+        $model = new \MockModelForTestingNonAbstractMethods(
+                    'test_dsn',
+                    'test_username',
+                    'test_passwd',
+                    [],
+                    [
+                        '_primary_col'=>'component_id', 
+                        '_table_name'=>'components',
+                    ]
+                );
+        
+        $model->__get('');
+    }
+    
+    /**
+     * @expectedException \GDAO\ModelMustImplementMethodException
+     */
+    public function testThatCreateNewCollectionThrowsException() {
+        
+        $model = new \MockModelForTestingNonAbstractMethods(
+                    'test_dsn',
+                    'test_username',
+                    'test_passwd',
+                    [],
+                    [
+                        '_primary_col'=>'component_id', 
+                        '_table_name'=>'components',
+                    ]
+                );
+        
+        $model->createNewCollection(new \GDAO\Model\GDAORecordsList([]));
+    }
+    
+    /**
+     * @expectedException \GDAO\ModelMustImplementMethodException
+     */
+    public function testThatFetchRecordsIntoCollectionThrowsException() {
+        
+        $model = new \MockModelForTestingNonAbstractMethods(
+                    'test_dsn',
+                    'test_username',
+                    'test_passwd',
+                    [],
+                    [
+                        '_primary_col'=>'component_id', 
+                        '_table_name'=>'components',
+                    ]
+                );
+        
+        $model->fetchRecordsIntoCollection();
     }
     
     protected function _isHhvm() {

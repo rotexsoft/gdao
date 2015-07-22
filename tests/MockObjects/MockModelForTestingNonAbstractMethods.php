@@ -7,6 +7,8 @@
  */
 class MockModelForTestingNonAbstractMethods extends \GDAO\Model
 {
+    protected $_primary_col = null;
+    
     /**
      * 
      * A pdo object for connecting to the db.
