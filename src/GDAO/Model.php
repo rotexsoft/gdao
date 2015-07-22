@@ -1934,7 +1934,7 @@ abstract class Model
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
-     * @return GDAO\Model\Collection 
+     * @return GDAO\Model\RecordInterface 
      * 
      * @throws \PDOException
      * 

@@ -582,7 +582,7 @@ abstract class Collection implements CollectionInterface
      * @return void
      * 
      */
-    protected function _preDeleteAll() { }
+    public function _preDeleteAll() { }
     
     /**
      * 
@@ -594,7 +594,7 @@ abstract class Collection implements CollectionInterface
      * @return void
      * 
      */
-    protected function _postDeleteAll() { }
+    public function _postDeleteAll() { }
     
     /**
      * 
@@ -606,7 +606,7 @@ abstract class Collection implements CollectionInterface
      * @return void
      * 
      */
-    protected function _preSave() { }
+    public function _preSave() { }
     
     /**
      * 
@@ -618,5 +618,5 @@ abstract class Collection implements CollectionInterface
      * @return void
      * 
      */
-    protected function _postSave() { }
+    public function _postSave() { }
 }
