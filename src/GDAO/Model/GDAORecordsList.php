@@ -41,7 +41,7 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
      * 
      * @return \Collections\Collection
      */
-    public function &getData() {
+    public function getData() {
 
         return $this->_data;
     }

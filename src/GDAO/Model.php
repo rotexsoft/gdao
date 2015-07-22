@@ -372,7 +372,7 @@ abstract class Model
      *          //      for $this->fetchAll(..) should not be included in the  
      *          //      value to be set for $this->_relations['relation_name1']['foreign_table']
      * 
-     *          'foreign_models_table_sql_params'=> [....]
+     *          'foreign_table_sql_params'=> [....]
      *          /////////////////////////////////////////////////////////////////////////////////
      *       ],
      *      ......,
