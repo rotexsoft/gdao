@@ -26,14 +26,6 @@ abstract class ReadOnlyRecord implements RecordInterface
     protected $_data = array();
     
     /**
-     *
-     * Copy of the initial data loaded into this record.
-     * 
-     * @var array 
-     */
-    protected $_initial_data = -1;
-    
-    /**
      * 
      * Holds relationship data retreieved based on definitions in the array below.
      * \GDAO\Model::$_relations
@@ -41,14 +33,6 @@ abstract class ReadOnlyRecord implements RecordInterface
      * @var array 
      */
     protected $_related_data = array();
-    
-    /**
-     * 
-     * Tracks if *this record* is new (i.e., not in the database yet).
-     *
-     * @var bool 
-     */
-    protected $_is_new = true;
 
     /**
      *
