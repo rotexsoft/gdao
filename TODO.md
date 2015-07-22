@@ -6,8 +6,6 @@
 > (they can be used separately (by supplying an array of data to their constructor), no need for a Model or Collection class). 
 > Fast Read-Only Records are another possibility (they don't need to keep track of initial data).
 
-* Re-implement \Collections\Collection used inside GDAORecordsList in order to sever dependency on danielgsims/php-collections
-
 * Write an alternative implementation of \GDAO\Model\Collection using SplFixedArray instead of a plain old php array (SplFixedArray seems to be more memory efficient than php arrays). 
 > in loadData(..) and __construct(..) add this line   
 > $this->_data = \SplFixedArray::fromArray( $data->toArray() );   

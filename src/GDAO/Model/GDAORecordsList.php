@@ -3,12 +3,10 @@
 namespace GDAO\Model;
 
 /**
- * This class is an implementation that guarantees that all the items in this
- * list are instances of \GDAO\Model\RecordInterface or any of its sub-classes.
+ * This class is a collection / list implementation that guarantees that all the 
+ * items in this collection / list are instances of \GDAO\Model\RecordInterface 
+ * or any of its sub-classes.
  * 
- * It depends on https://github.com/danielgsims/php-collections / 
- * https://packagist.org/packages/danielgsims/php-collections
- *
  * @author Rotimi Adegbamigbe
  * @copyright (c) 2015, Rotimi Adegbamigbe
  */
@@ -16,34 +14,37 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
 {
     /**
      *
-     * @var \Collections\Collection
+     * @var array
      */
-    protected $_data;
+    protected $_data = array();
 
     /**
      * 
-     * @param array $gdao_records an array of instances of \GDAO\Model\RecordInterface or 
+     * @param array $records an array of instances of \GDAO\Model\RecordInterface or 
      *                            any of its sub-classes
      */
-    public function __construct(array $gdao_records = null) {
-
-        $this->_data = new \Collections\Collection('\\GDAO\\Model\\RecordInterface');
-
-        if (is_array($gdao_records) && count($gdao_records) > 0) {
-
-            $this->_data->addRange($gdao_records);
+    public function __construct(array $records = null) {
+        
+        foreach($records as $key=>$record) {
+            
+            if( !($record instanceof \GDAO\Model\RecordInterface) ) {
+                
+                $class_name = get_class($this);
+                $type = is_object($record)? get_class($record) : gettype($record); 
+                
+                $msg = "ERROR: $class_name only stores instances of "
+                     . "\\GDAO\\Model\\RecordInterface. Incompatible item of type"
+                     . " '$type' found at the position with a key value of '$key'"
+                     . " in: " . PHP_EOL . var_export($records, true) 
+                     . PHP_EOL . " Error occured in "
+                     . get_class($this).'::' . __FUNCTION__ .'(...).'. PHP_EOL;
+                
+                throw new \InvalidArgumentException($msg);
+            }
         }
-    }
-
-    /**
-     * 
-     * Get the actual collection object powering this class
-     * 
-     * @return \Collections\Collection
-     */
-    public function getData() {
-
-        return $this->_data;
+        
+        //All is well, all records are of the right type.
+        $this->_data = $records;
     }
 
     /**
@@ -52,9 +53,9 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
      *
      * @param \GDAO\Model\RecordInterface $item A \GDAO\Model\RecordInterface to be added
      */
-    public function add(\GDAO\Model\RecordInterface $item) {
-
-        $this->_data->add($item);
+    public function add(\GDAO\Model\RecordInterface $item) { 
+        
+        $this->_data[] = $item;
     }
 
     /**
@@ -66,199 +67,112 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
     public function addRange(array $items) {
 
         $this->_data->addRange($items);
+        
+        foreach($items as $key => $item) {
+            
+            if( !($item instanceof \GDAO\Model\RecordInterface) ) {
+                
+                $class_name = get_class($this);
+                $type = is_object($item)? get_class($item) : gettype($item); 
+                
+                $msg = "ERROR: $class_name only stores instances of "
+                     . "\\GDAO\\Model\\RecordInterface. Incompatible item of type"
+                     . " '$type' found at the position with a key value of '$key'"
+                     . " in: " . PHP_EOL . var_export($items, true) 
+                     . PHP_EOL . " Error occured in "
+                     . get_class($this).'::' . __FUNCTION__ .'(...).'. PHP_EOL;
+                
+                throw new \InvalidArgumentException($msg);
+                
+            } else {
+                
+                $this->_data[] = $item;
+            }
+        }
+    }
+
+    /**
+     * Empties all of the items in the array
+     */
+    public function clear()
+    {
+        $this->_data = array();
     }
 
     /**
      * 
-     * Fetches the \GDAO\Model\RecordInterface at the specified index
+     * Removes all occurences of the record in the list
      *
-     * @param integer $index The index of the \GDAO\Model\RecordInterface to fetch
-     * @throws InvalidArgumentException
-     * @throws OutOfRangeException
-     * @return mixed The \GDAO\Model\RecordInterface at the specified index
+     * @param \GDAO\Model\RecordInterface $record The Record to remove.
+     * @return bool Whether the Record was found and removed
      */
-    public function at($index) {
-
-        return $this->_data->at($index);
+    public function removeAll(\GDAO\Model\RecordInterface $record) {
+        
+       $result = false;
+       
+       foreach( $this->_data as $key => $value ) {
+            
+            if( $record === $value ) {
+                
+                $result = true;
+                unset($this->_data[$key]);
+            }
+        }
+        
+        return $result;
     }
 
     /**
      * 
-     * Determines whether the specified \GDAO\Model\RecordInterface is in the Collection
+     * Removes the first occurence of the record in the list
      *
-     * @param \GDAO\Model\RecordInterface $needle The record to search for in the collection
-     * @return bool Whether the specified \GDAO\Model\RecordInterface was in the array or not
+     * @param \GDAO\Model\RecordInterface $record The Record to remove.
+     * @return bool Whether the Record was found and removed
      */
-    public function contains(\GDAO\Model\RecordInterface $needle) {
+    public function removeFirst(\GDAO\Model\RecordInterface $record) {
         
-        return $this->_data->contains($needle);
+       $result = false;
+       
+       foreach( $this->_data as $key => $value ) {
+            
+            if( $record === $value ) {
+                
+                $result = true;
+                unset($this->_data[$key]);
+                break;
+            }
+        }
+        
+        return $result;
     }
 
     /**
      * 
-     * The number of items in a collection
+     * Removes the last occurences of the record in the list
      *
-     * @return integer The number of items in the collection
+     * @param \GDAO\Model\RecordInterface $record The Record to remove.
+     * @return bool Whether the Record was found and removed
      */
-    public function count() {
+    public function removeLast(\GDAO\Model\RecordInterface $record) {
         
-        return $this->_data->count();
+       $result = false;
+       $reversed = array_reverse($this->_data, true);
+       
+       foreach( $reversed as $key => $value ) {
+            
+            if( $record === $value ) {
+                
+                $result = true;
+                unset($this->_data[$key]);
+                break;
+            }
+        }
+        
+        return $result;
     }
 
     /**
-     * 
-     * Check to see if an item in the collection exists that satisfies the provided callback
-     *
-     * @param callback $condition The condition criteria to test each item, requires one argument that represents the Collection item during an iteration.
-     * @return bool Whether an item exists that satisfied the condition
-     */
-    public function exists(callable $condition) {
-        
-        return $this->_data->exists($condition);
-    }
-
-    /**
-     * Finds and returns the first item in the collection that satisfies the callback.
-     *
-     * @param callback $condition The condition critera to test each item, requires one argument that represents the Collection item during iteration.
-     * @return mixed|bool The first item that satisfied the condition or false if no object was found
-     */
-    public function find(callable $condition) {
-        
-        return $this->_data->find($condition);
-    }
-
-    /**
-     * Returns a collection of all items that satisfy the callback function. If nothing is found, returns an empty
-     * Collection
-     *
-     * @param calback $condition The condition critera to test each item, requires one argument that represents the Collection item during iteration.
-     * @return Collectiona A collection of all of the items that satisfied the condition
-     */
-    public function findAll(callable $condition) {
-        
-        return $this->_data->findAll($condition);
-    }
-
-    /**
-     * Finds the index of the first item that returns true from the callback,
-     * returns -1 if no item is found
-     *
-     * @param callback $condition The condition critera to test each item, requires one toargument that represents the Collection item during iteration.
-     * @return integer The index of the first item satisfying the callback or -1 if no item was found
-     */
-    public function findIndex(callable $condition) {
-        
-        return $this->_data->findIndex($condition);
-    }
-
-    /**
-     * Finds and returns the last item in the collection that satisfies the callback.
-     *
-     * @param callback $condition The condition criteria to test each item, requires one argument that represents the Collection item during an iteration.
-     * @return mixed|bool The last item that matched condition or -1 if no item was found matching the condition.
-     */
-    public function findLast(callable $condition) {
-        
-        return $this->_data->findLast($condition);
-    }
-
-    /**
-     * Finds the index of the last item that returns true from the callback,
-     * returns -1 if no item is found
-     *
-     * @param callback $condition The condition criteria to test each item, requires one argument that represents the Collection item during an iteration.
-     * @return integer The index of the last item  to match that matches the condition, returns -1 if no item was found
-     */
-    public function findLastIndex(callable $condition) {
-        
-        return $this->_data->findLastIndex($condition);
-    }
-
-    /**
-     * Insert the \GDAO\Model\RecordInterface at index
-     *
-     * @throws InvalidArgumentException
-     * @param integer $index The index where to insert the item
-     * @param \GDAO\Model\RecordInterface $item The \GDAO\Model\RecordInterface to insert
-     */
-    public function insert($index, \GDAO\Model\RecordInterface $item) {
-        
-        $this->_data->insert($index, $item);
-    }
-
-    /**
-     * Inset a range at the index
-     *
-     * @param integer $index Index where to insert the range
-     * @param array items An array of instances of \GDAO\Model\RecordInterface to insert
-     */
-    public function insertRange($index, array $items) {
-        
-        $this->_data->insertRange($index, $items);
-    }
-
-    /**
-     * Removes the first item that satisfies the condition callback
-     *
-     * @param callback $condition The condition critera to test each item, requires one argument that represents the Collection item during iteration.
-     * @return bool Whether the item was found
-     */
-    public function remove(callable $condition) {
-        
-        return $this->_data->remove($condition);
-    }
-
-    /**
-     * Removes all items that satisfy the condition callback
-     *
-     * @param callback @condition The condition criteria to test each item, requires on argument that represents the Collection item during interation.
-     * @return int the number of items found
-     */
-    public function removeAll(callable $condition) {
-        
-        return $this->_data->removeAll($condition);
-    }
-
-    /**
-     * Removes the item at the specified index
-     *
-     * @param integer $index The index where the object should be removed
-     */
-    public function removeAt($index) {
-        
-        $this->_data->removeAt($index);
-    }
-
-    /**
-     * Removes the last item to satisfy the condition callback
-     *
-     * @param callback $condition The condition criteria to test each item, requires one argument that represents the Collection item during an iteration.
-     * @return bool Whether the item was removed or not
-     */
-    public function removeLast(callable $condition) {
-        
-        return $this->_data->removeLast($condition);
-    }
-
-    /**
-     * Reverses the Collection
-     */
-    public function reverse() {
-        
-        $this->_data->reverse();
-    }
-
-    /**
-     * Sorts the collection with a usort
-     */
-    public function sort(callable $callback) {
-        
-        return $this->_data->sort($callback);
-    }
-
-    /**
-     * Return the collection as an array
+     * Return the collection / list as an array
      *
      * Returns the array that is encapsulated by the collection.
      *
@@ -266,15 +180,34 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
      */
     public function toArray() {
         
-        return $this->_data->toArray();
+        return $this->_data;
+    }
+    
+    //////////////////////
+    // Interface Methods
+    //////////////////////
+    
+    /**
+     * 
+     * Countable Interface: 
+     * The number of items in a collection
+     *
+     * @return integer The number of items in the collection
+     */
+    public function count() {
+        
+        return count($this->_data);
     }
     
     /**
+     * 
+     * IteratorAggregate Interface:
      * Get Iterator to satisfy IteratorAggregate interface
-     * @return ArrayIterator
+     * 
+     * @return \ArrayIterator
      */
     public function getIterator()
     {
-        return $this->_data->getIterator();
+        return new \ArrayIterator($this->_data);
     }
 }
