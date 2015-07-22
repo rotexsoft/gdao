@@ -12,15 +12,31 @@ namespace GDAO\Model;
  */
 interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggregate
 {
-
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////
+    //// RECOMMENDATIONS
+    //// * Data for the collection should be stored in a property of the collection 
+    ////   class implementing this interface. It could be an array, ArrayObject, 
+    ////   SPLFixedArray or any other suitable data structure.
+    ////   
+    //// * A property of type \GDAO\Model should be present in a class implementing
+    ////   this interface. This is the model object that will perform database 
+    //     operations on behalf of the collection.
+    ////   
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////    
+    
     /**
      * 
      * \GDAO\Model\GDAORecordsList is only used to enforce strict typing.
      * Ie. all the records in the collection are of type \GDAO\Model\RecordInterface
      * or any of its sub-classes.
      * 
-     * $this->_data should be assigned the value of 
-     * \GDAO\Model\GDAORecordsList->toArray(). In this case $data->toArray().
+     * Implementers of this API do not have to store the collection's data in
+     * a \GDAO\Model\GDAORecordsList. They can use an array and just call
+     * \GDAO\Model\GDAORecordsList->toArray() to get at the underlying array
+     * \GDAO\Model\GDAORecordsList uses to store items.
      * 
      * @param \GDAO\Model\GDAORecordsList $data list of instances of \GDAO\Model\RecordInterface
      * @param \GDAO\Model $model The model object that transfers data between the db and this collection.

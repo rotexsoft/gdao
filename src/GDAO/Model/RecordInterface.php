@@ -9,6 +9,48 @@ namespace GDAO\Model;
  */
 interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate 
 {
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+    ////
+    //// RECOMMENDATIONS
+    //// * Data for the record ([to be saved to the DB] or [as read from the DB]) 
+    ////   should be stored in a property of the record class implementing this
+    ////   interface. It could be an array, ArrayObject or any other suitable 
+    ////   data structure. Data from this property should be returned via 
+    ////   $this->getData() & $this->getDataByRef(). Data contained in this 
+    ////   property should be set via 
+    ////   $this->loadData($data_2_load, array $cols_2_load = array()).
+    ////   
+    //// * Another property of the same data type as the one described above should
+    ////   be present in the class implementing this interface. This property should 
+    ////   only be set the first time record data is fetched from the DB (it holds
+    ////   a copy of the data initially loaded into the record from the DB). This 
+    ////   property's values should be compared with the values of the property 
+    ////   described above in order to be able to determine if the record's data 
+    ////   has changed (this should be implemented in $this->isChanged($col=null)). 
+    ////   Data from this property should be returned via $this->getInitialData() 
+    ////   & $this->getInitialDataByRef(). Data contained in this property should 
+    ////   be set ONCE via $this->loadData($data_2_load, array $cols_2_load = array())
+    ////   the first time loadData is called on a record.
+    ////   
+    //// * Another property should be present in the class implementing this 
+    ////   interface. This property should hold data related to a record (ie.
+    ////   has-many, has-one, belongs-to and has-many-through relationship data).
+    ////   Data from this property should be returned via $this->getRelatedData()
+    ////   & $this->getRelatedDataByRef(). Data contained in this property should 
+    ////   be set via $this->setRelatedData($key, $value).
+    ////   
+    //// * A boolean property should be present in the class implementing this 
+    ////   interface. This property should be set to true if a record is new
+    ////   (ie. its data has never been saved to the DB), else false.
+    ////   
+    //// * A property of type \GDAO\Model should be present in a class implementing
+    ////   this interface. This is the model object that will perform database 
+    ////   operations on behalf of the record.
+    ////   
+    ////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////    
+    
     /**
      * 
      * @param array $data associative array of data to be loaded into this record.
@@ -155,26 +197,24 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
 	public function isNew();
     
     /**
-     * \GDAO\Model\Record::$_initial_data should be set here only if it has the 
-     * initial value of -1.
      * 
-     * This method partially or completely overwrites pre-existing data and 
-     * replaces it with the new data. Related data should also be loaded if 
-     * $data_2_load is an instance of \GDAO\Model\RecordInterface. 
+     * This method partially or completely overwrites pre-existing data for a 
+     * record and replaces it with the new data (this does not include related
+     * data). If no data has previously been loaded into the record, keep a copy
+     * of the loaded data for comparison in $this->isChanged($col=null)).
      * 
      * Note if $cols_2_load === null all data should be replaced, else only
      * replace data for the cols in $cols_2_load.
      * 
-     * If $data_2_load is an instance of \GDAO\Model\RecordInterface and is also an instance 
-     * of a sub-class of the Record class in a package that implements this API and
-     * if $data_2_load->getModel()->getTableName() !== $this->getModel()->getTableName(), 
+     * If $data_2_load is an instance of \GDAO\Model\RecordInterface and if 
+     * $data_2_load->getModel()->getTableName() !== $this->getModel()->getTableName(), 
      * then the exception below should be thrown:
      * 
      *      \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
      * @param \GDAO\Model\RecordInterface|array $data_2_load
-     * @param array $cols_2_load name of field to load from $data_2_load. If null, 
-     *                           load all fields in $data_2_load.
+     * @param array $cols_2_load name of field to load from $data_2_load. 
+     *                           If null, load all fields in $data_2_load.
      * 
      * @throws \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
