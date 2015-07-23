@@ -1,7 +1,8 @@
 <?php
 
 /**
- * MockModel
+ * 
+ * A Model Class for testing non-abstract methods in the abstract class (\GDAO\Model).
  *
  * @author aadegbam
  */
@@ -28,17 +29,11 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
 
     public function createNewRecord( 
         array $col_names_and_values = [], array $extra_opts = []
-    ) {
-        
-    }
+    ) { }
 
-    public function deleteMatchingDbTableRows(array $cols_n_vals=[]) {
-        
-    }
+    public function deleteMatchingDbTableRows(array $cols_n_vals=[]) { }
 
-    public function fetchRecordsIntoArray(array $params = []) {
-        
-    }
+    public function fetchRecordsIntoArray(array $params = []) { }
 
     public function getPDO() {
         
@@ -55,53 +50,32 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
         return $this->_validateWhereOrHavingParamsArray($array);
     }
     
-    
     public function getWhereOrHavingClauseWithParams(
         array &$array, $indent_level=0
     ) {
         return $this->_getWhereOrHavingClauseWithParams($array, $indent_level);
     }
 
-    public function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record) {
-        
-    }
+    public function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record) { }
 
-    public function fetchRowsIntoArray(array $params = []) {
-        
-    }
+    public function fetchRowsIntoArray(array $params = []) { }
 
-    public function fetchCol(array $params = []) {
-        
-    }
+    public function fetchCol(array $params = []) { }
 
-    public function fetchOneRecord(array $params = []) {
-        
-    }
+    public function fetchOneRecord(array $params = []) { }
 
-    public function fetchPairs(array $params = []) {
-        
-    }
+    public function fetchPairs(array $params = []) { }
 
-    public function fetchValue(array $params = []) {
-        
-    }
+    public function fetchValue(array $params = []) { }
 
-    public function insert(array $col_names_n_vals = []) {
-        
-    }
+    public function insert(array $col_names_n_vals = []) { }
 
-    public function insertMany(array $col_names_n_vals = array()) {
-        
-    }
+    public function insertMany(array $col_names_n_vals = array()) { }
     
     public function updateMatchingDbTableRows(
         array $col_names_n_values_2_save = [],
         array $col_names_n_values_2_match = []
-    ) {
-        
-    }
+    ) { }
 
-    public function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record) {
-        
-    }
+    public function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record) { }
 }

@@ -339,9 +339,4 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue( $iterator->current() === $record1, $msg); //7th and last element
     }
-    
-    protected function _isHhvm() {
-        
-        return defined('HHVM_VERSION');
-    }
 }

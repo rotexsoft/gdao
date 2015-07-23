@@ -53,7 +53,8 @@ abstract class Model
      * It can be a one dimensional array of strings, where each string is the 
      * name of a column in the db table associated with this model.
      * 
-     * Eg. for a table posts associated with this model this array could look like 
+     * Eg. for a table posts associated with an instance of this model this 
+     * array could look like:
      * 
      *  ['id', 'title', 'body', ....]
      * 
@@ -148,12 +149,12 @@ abstract class Model
     /**
      * 
      * Name of the collection class for this model. 
-     * Must be a descendant of \GDAO\Model\Collection
+     * The class must implement \GDAO\Model\CollectionInterface
      * 
      * This is an OPTIONAL field & may be set by consumers of this class if they
-     * would be calling methods of this class that either return instance(s) of
-     * \GDAO\Model\Collection or its descendants or accepts \GDAO\Model\Collection 
-     * or its descendants as parameters.
+     * would be calling methods of this class that return instance(s) of
+     * \GDAO\Model\CollectionInterface or that accept instance(s) of 
+     * \GDAO\Model\CollectionInterface as parameters.
      * 
      * Implementers of this class should check that $this->_collection_class_name 
      * has a valid value before attempting to use it inside method(s) they are 
@@ -167,7 +168,7 @@ abstract class Model
     /**
      * 
      * Name of the record class for this model. 
-     * Must be a descendant of \GDAO\Model\RecordInterface
+     * The class must implement \GDAO\Model\RecordInterface
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
@@ -198,7 +199,7 @@ abstract class Model
      * @var string
      * 
      */
-    protected $_created_timestamp_column_name = null; //string
+    protected $_created_timestamp_column_name = null;
 
     /**
      *
@@ -226,9 +227,9 @@ abstract class Model
     
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //* There are 4 arrays below for modeling relationships                  *//
+    //* The array below ($this->_relations) is for modeling relationships.   *//
     //*                                                                      *//
-    //* Four types of relationships supported                                *//
+    //* Four types of relationships are supported:                           *//
     //*  - One-To-One (eg. 1 Post has exactly 1 Summary) a.k.a Has-One       *//
     //*  - One-To-Many (eg. 1 Post has Many Comments) a.k.a Has-Many         *//
     //*  - Many-To-One (eg. Many Posts belong to 1 Author) a.k.a Belongs-To  *//
@@ -238,8 +239,8 @@ abstract class Model
     //* It is up to the individual(s) extending this class to implement      *//
     //* relationship related features based on the definition structures     *//
     //* outlined below. Things like eager loading and saving related         *//
-    //* records are some of the features that can be implemented using       *//
-    //* these relationship definitions.                                      *//
+    //* records are some of the features that can be implemented             *//
+    //* using these relationship definitions.                                *//
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
   
@@ -346,12 +347,19 @@ abstract class Model
      *          // $this->_relations['relation_name1']['foreign_models_class_name']
      *          // if set.
      *          // 
-     *          // Values associated with 'foreign_models_class_name',
-     *          // 'foreign_models_collection_class_name' and 
-     *          // 'foreign_models_record_class_name' must be names of classes 
-     *          // that are sub-classes of \GDAO\Model, \GDAO\Model\Collection
-     *          // and \GDAO\Model\RecordInterface
-     *          //
+     *          // The value associated with 'foreign_models_class_name', must 
+     *          // be a name of any class that is a sub-class of \GDAO\Model.
+     *          // 
+     *          // The value associated with 'foreign_models_collection_class_name',  
+     *          // must be a name of any class that either directly implements
+     *          // \GDAO\Model\CollectionInterface or is a sub-class of a class
+     *          // that implements \GDAO\Model\CollectionInterface.
+     *          // 
+     *          // The value associated with 'foreign_models_record_class_name',  
+     *          // must be a name of any class that either directly implements
+     *          // \GDAO\Model\RecordInterface or is a sub-class of a class that
+     *          // implements \GDAO\Model\RecordInterface.
+     *          // 
      *          // 'primary_key_col_in_foreign_table' must be set in order to
      *          // be able to create a model instance for the related records.
      *          /////////////////////////////////////////////////////////////////////////////////
@@ -366,11 +374,11 @@ abstract class Model
      *          //$this->_relations['relation_name1']['foreign_table'].
      *          //See the documentation for the $params parameter for $this->fetchAll(..) 
      *          //in order to understand the expected value(s) that should be set for 
-     *          //$this->_relations['relation_name1']['foreign_table']
+     *          //$this->_relations['relation_name1']['foreign_table_sql_params']
      *          //NOTE: that the `relations_to_include`, `limit_offset` and
      *          //      `limit_size` entries acceptable in the $params parameter 
      *          //      for $this->fetchAll(..) should not be included in the  
-     *          //      value to be set for $this->_relations['relation_name1']['foreign_table']
+     *          //      value to be set for $this->_relations['relation_name1']['foreign_table_sql_params']
      * 
      *          'foreign_table_sql_params'=> [....]
      *          /////////////////////////////////////////////////////////////////////////////////
