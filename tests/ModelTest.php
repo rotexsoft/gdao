@@ -16,11 +16,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->_mock_model_obj_with_no_db_connection = 
-            new \MockModelForTestingNonAbstractMethods('', '', '', [], []);
+            new \ModelForTestingNonAbstractMethods('', '', '', [], []);
         
         ////////////////////////////////////////////////////////////////////////
         $this->_mock_model_obj_with_memory_sqlite_connection = 
-            new \MockModelForTestingNonAbstractMethods('', '', '', [], []);
+            new \ModelForTestingNonAbstractMethods('', '', '', [], []);
         
         $pdo = new \PDO("sqlite::memory:");
         $this->_mock_model_obj_with_memory_sqlite_connection->setPDO($pdo);
@@ -33,7 +33,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
     
     public function testThatConstructorSetsFirstFourParamsCorrectly() {
         
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
                     'test_username',
                     'test_passwd',
@@ -60,7 +60,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
      */
     public function testThatConstructorThrowsExceptionForEmptyPrimaryColName() {
         
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
                     'test_username',
                     'test_passwd',
@@ -77,7 +77,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
      */
     public function testThatConstructorThrowsExceptionForEmptyTableName() {
                     
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
                     'test_username',
                     'test_passwd',
@@ -113,7 +113,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         ];
         
         //create model setting property values with exact property names
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                 '',
                 '',
                 '',
@@ -135,7 +135,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
             );
         
         //create model setting property values with property names (excluding the underscore prefix)
-        $model2 = new \MockModelForTestingNonAbstractMethods(
+        $model2 = new \ModelForTestingNonAbstractMethods(
                 '',
                 '',
                 '',
@@ -1859,7 +1859,7 @@ EOT;
     
     public function testThat__toStringWorksAsExpected() {
         
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
             'test_dsn',
             'test_username',
             'test_passwd',
@@ -1899,7 +1899,7 @@ EOT;
     
     public function testThatToArrayWorksAsExpected() {
         
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
             'test_dsn',
             'test_username',
             'test_passwd',
@@ -1934,7 +1934,7 @@ EOT;
      */
     public function testThat__callThrowsException() {
         
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
                     'test_username',
                     'test_passwd',
@@ -1953,7 +1953,7 @@ EOT;
      */
     public function testThat__getThrowsException() {
         
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
                     'test_username',
                     'test_passwd',
@@ -1972,7 +1972,7 @@ EOT;
      */
     public function testThatCreateNewCollectionThrowsException() {
         
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
                     'test_username',
                     'test_passwd',
@@ -1991,7 +1991,7 @@ EOT;
      */
     public function testThatFetchRecordsIntoCollectionThrowsException() {
         
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
                     'test_username',
                     'test_passwd',
@@ -2008,7 +2008,7 @@ EOT;
     public function testThatGetCreatedTimestampColumnNameWorksAsExpected() {
 
         //create model setting property values with exact property names
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                     '', '', '', [],
                     [
                         '_primary_col'=>'component_id', 
@@ -2023,7 +2023,7 @@ EOT;
     public function testThatGetUpdatedTimestampColumnNameWorksAsExpected() {
 
         //create model setting property values with exact property names
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                     '', '', '', [],
                     [
                         '_primary_col'=>'component_id', 
@@ -2038,7 +2038,7 @@ EOT;
     public function testThatGetPrimaryColNameWorksAsExpected() {
 
         //create model setting property values with exact property names
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                     '', '', '', [],
                     [
                         '_primary_col'=>'component_id', 
@@ -2053,7 +2053,7 @@ EOT;
     public function testThatGetTableNameWorksAsExpected() {
 
         //create model setting property values with exact property names
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                     '', '', '', [],
                     [
                         '_primary_col'=>'component_id', 
@@ -2067,7 +2067,7 @@ EOT;
     public function testThatGetTableColNamesWorksAsExpected() {
         
         //create model setting property values with exact property names
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                 '',
                 '',
                 '',
@@ -2078,7 +2078,7 @@ EOT;
                     '_table_cols'=>['col1', 'col2'],
                 ]
             );
-        $model2 = new \MockModelForTestingNonAbstractMethods(
+        $model2 = new \ModelForTestingNonAbstractMethods(
                 '',
                 '',
                 '',
@@ -2139,7 +2139,7 @@ EOT;
         ];
         
         //create model setting property values with exact property names
-        $model = new \MockModelForTestingNonAbstractMethods(
+        $model = new \ModelForTestingNonAbstractMethods(
                 '',
                 '',
                 '',

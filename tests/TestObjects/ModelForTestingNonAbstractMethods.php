@@ -5,7 +5,7 @@
  *
  * @author aadegbam
  */
-class MockModelForTestingNonAbstractMethods extends \GDAO\Model
+class ModelForTestingNonAbstractMethods extends \GDAO\Model
 {
     protected $_primary_col = null;
     
