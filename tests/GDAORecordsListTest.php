@@ -41,6 +41,30 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
         //line below should cause an exception to be thrown.
         new \GDAO\Model\GDAORecordsList($array_of_alleged_recs);
     }
+    
+    public function testThatConstructorWorksAsExpected() {
+        
+        $record1 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record2 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record3 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record4 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record5 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record6 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        
+        $array_of_records = [$record1, $record2, $record3, $record4, $record5, $record6];
+        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        
+        $msg = __METHOD__;
+        $this->assertTrue(count($record_list_obj) === 6, $msg);
+                
+        $list_as_array = $record_list_obj->toArray();
+        $this->assertTrue(in_array($record1, $list_as_array), $msg);
+        $this->assertTrue(in_array($record2, $list_as_array), $msg);
+        $this->assertTrue(in_array($record3, $list_as_array), $msg);
+        $this->assertTrue(in_array($record4, $list_as_array), $msg);
+        $this->assertTrue(in_array($record5, $list_as_array), $msg);
+        $this->assertTrue(in_array($record6, $list_as_array), $msg);
+    }
 
     public function testThatAddWorksAsExpected() {
         
@@ -55,31 +79,31 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
         $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
         
         $msg = __METHOD__;
-        $this->assertTrue(count($record_list_obj->toArray()) === 2, $msg);
+        $this->assertTrue(count($record_list_obj) === 2, $msg);
         
         $record_list_obj->add($record3);
         $list_as_array = $record_list_obj->toArray();
         $new_last_item = array_pop($list_as_array);
         $this->assertTrue($new_last_item === $record3, $msg); //new last element
-        $this->assertTrue(count($record_list_obj->toArray()) === 3, $msg); //total count has been increased by one
+        $this->assertTrue(count($record_list_obj) === 3, $msg); //total count has been increased by one
         
         $record_list_obj->add($record4);
         $list_as_array = $record_list_obj->toArray();
         $new_last_item = array_pop($list_as_array);
         $this->assertTrue($new_last_item === $record4, $msg); //new last element
-        $this->assertTrue(count($record_list_obj->toArray()) === 4, $msg); //total count has been increased by one
+        $this->assertTrue(count($record_list_obj) === 4, $msg); //total count has been increased by one
         
         $record_list_obj->add($record5);
         $list_as_array = $record_list_obj->toArray();
         $new_last_item = array_pop($list_as_array);
         $this->assertTrue($new_last_item === $record5, $msg); //new last element
-        $this->assertTrue(count($record_list_obj->toArray()) === 5, $msg); //total count has been increased by one
+        $this->assertTrue(count($record_list_obj) === 5, $msg); //total count has been increased by one
         
         $record_list_obj->add($record6);
         $list_as_array = $record_list_obj->toArray();
         $new_last_item = array_pop($list_as_array);
         $this->assertTrue($new_last_item === $record6, $msg); //new last element
-        $this->assertTrue(count($record_list_obj->toArray()) === 6, $msg); //total count has been increased by one
+        $this->assertTrue(count($record_list_obj) === 6, $msg); //total count has been increased by one
     }
     
     /**
@@ -94,6 +118,31 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
         
         //line below should cause an exception to be thrown.
         $record_list_obj->addRange([new stdClass()]);
+    }
+    
+    public function testThatAddRangeWorksAsExpected() {
+        
+        $record1 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record2 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record3 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record4 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record5 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record6 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        
+        $array_of_records = [$record1, $record2];
+        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        
+        $msg = __METHOD__;
+        $this->assertTrue(count($record_list_obj) === 2, $msg);
+        
+        $record_list_obj->addRange([$record3, $record4, $record5, $record6]);
+        $this->assertTrue(count($record_list_obj) === 6, $msg);
+        
+        $list_as_array = $record_list_obj->toArray();
+         $this->assertTrue(in_array($record3, $list_as_array), $msg);
+         $this->assertTrue(in_array($record4, $list_as_array), $msg);
+         $this->assertTrue(in_array($record5, $list_as_array), $msg);
+         $this->assertTrue(in_array($record6, $list_as_array), $msg);
     }
     
     public function testThatClearWorksAsExpected() {
@@ -123,31 +172,31 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
         $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
         
         $msg = __METHOD__;
-        $this->assertTrue(count($record_list_obj->toArray()) === 7, $msg);
+        $this->assertTrue(count($record_list_obj) === 7, $msg);
         
         $result = $record_list_obj->removeAll($record1);
         $this->assertTrue($result, $msg);
-        $this->assertTrue(count($record_list_obj->toArray()) === 5, $msg);
+        $this->assertTrue(count($record_list_obj) === 5, $msg);
         
         $result = $record_list_obj->removeAll($record2);
         $this->assertTrue($result, $msg);
-        $this->assertTrue(count($record_list_obj->toArray()) === 4, $msg);
+        $this->assertTrue(count($record_list_obj) === 4, $msg);
         
         $result = $record_list_obj->removeAll($record3);
         $this->assertTrue($result, $msg);
-        $this->assertTrue(count($record_list_obj->toArray()) === 3, $msg);
+        $this->assertTrue(count($record_list_obj) === 3, $msg);
         
         $result = $record_list_obj->removeAll($record4);
         $this->assertTrue($result, $msg);
-        $this->assertTrue(count($record_list_obj->toArray()) === 2, $msg);
+        $this->assertTrue(count($record_list_obj) === 2, $msg);
         
         $result = $record_list_obj->removeAll($record5);
         $this->assertTrue($result, $msg);
-        $this->assertTrue(count($record_list_obj->toArray()) === 1, $msg);
+        $this->assertTrue(count($record_list_obj) === 1, $msg);
         
         $result = $record_list_obj->removeAll($record6);
         $this->assertTrue($result, $msg);
-        $this->assertTrue(count($record_list_obj->toArray()) === 0, $msg);
+        $this->assertTrue(count($record_list_obj) === 0, $msg);
     }
     
     public function testThatRemoveFirstWorksAsExpected() {
@@ -165,7 +214,7 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
         $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
         
         $msg = __METHOD__;
-        $this->assertTrue(count($record_list_obj->toArray()) === 7, $msg);
+        $this->assertTrue(count($record_list_obj) === 7, $msg);
         
         $result = $record_list_obj->removeFirst($record1);
         $list_as_array = $record_list_obj->toArray();
@@ -174,7 +223,7 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result, $msg);//test return value
         $this->assertTrue($new_first_item !== $record1, $msg); //former first element has been removed
         $this->assertTrue($new_first_item === $record2, $msg); //new first element
-        $this->assertTrue(count($record_list_obj->toArray()) === 6, $msg); //total count has been decreased by one
+        $this->assertTrue(count($record_list_obj) === 6, $msg); //total count has been decreased by one
     }
     
     public function testThatRemoveLastWorksAsExpected() {
@@ -192,7 +241,7 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
         $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
         
         $msg = __METHOD__;
-        $this->assertTrue(count($record_list_obj->toArray()) === 7, $msg);
+        $this->assertTrue(count($record_list_obj) === 7, $msg);
         
         $result = $record_list_obj->removeLast($record1);
         $list_as_array = $record_list_obj->toArray();
@@ -201,7 +250,7 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result, $msg);//test return value
         $this->assertTrue($new_last_item !== $record1, $msg); //former last element has been removed
         $this->assertTrue($new_last_item === $record6, $msg); //new last element
-        $this->assertTrue(count($record_list_obj->toArray()) === 6, $msg); //total count has been decreased by one
+        $this->assertTrue(count($record_list_obj) === 6, $msg); //total count has been decreased by one
     }
     
     public function testThatToArrayWorksAsExpected() {
