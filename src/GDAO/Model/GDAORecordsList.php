@@ -65,8 +65,6 @@ final class GDAORecordsList implements \Countable, \IteratorAggregate
      * @param array $items An array of instances of \GDAO\Model\RecordInterface to be added
      */
     public function addRange(array $items) {
-
-        $this->_data->addRange($items);
         
         foreach($items as $key => $item) {
             
