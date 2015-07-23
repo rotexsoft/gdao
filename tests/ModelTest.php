@@ -1871,33 +1871,29 @@ EOT;
         );
         
         $sub_str = <<<EOT
-Array
-(
-    [_primary_col] => component_id
-    [_table_name] => components
-    [_table_cols] => Array
-        (
-        )
-
-    [_collection_class_name] => 
-    [_record_class_name] => 
-    [_created_timestamp_column_name] => 
-    [_updated_timestamp_column_name] => 
-    [_relations] => Array
-        (
-        )
-
-    [_dsn] => test_dsn
-    [_username] => test_username
-    [_passwd] => test_passwd
-    [_pdo_driver_opts] => Array
-        (
-            [1002] => SET NAMES utf8
-        )
-
+array (
+  '_primary_col' => 'component_id',
+  '_table_name' => 'components',
+  '_table_cols' => 
+  array (
+  ),
+  '_collection_class_name' => NULL,
+  '_record_class_name' => NULL,
+  '_created_timestamp_column_name' => NULL,
+  '_updated_timestamp_column_name' => NULL,
+  '_relations' => 
+  array (
+  ),
+  '_dsn' => 'test_dsn',
+  '_username' => 'test_username',
+  '_passwd' => 'test_passwd',
+  '_pdo_driver_opts' => 
+  array (
+    1002 => 'SET NAMES utf8',
+  ),
 )
 EOT;
-        //echo $model->__toString(); exit;
+//echo $model->__toString(); exit;
         $this->assertContains($sub_str, $model->__toString());
     }
     

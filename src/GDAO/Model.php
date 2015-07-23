@@ -823,7 +823,7 @@ abstract class Model
      */
     public function __toString() {
 
-        return print_r($this->toArray(), true);
+        return var_export($this->toArray(), true);
     }
 
     /**
