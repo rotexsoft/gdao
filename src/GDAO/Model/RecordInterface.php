@@ -374,8 +374,3 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      */
     public function __unset($key);
 }
-
-class RecordMustImplementMethodException extends \Exception{}
-class RecordOperationNotSupportedException extends \Exception{}
-class LoadingDataFromInvalidSourceIntoRecordException extends \Exception{}
-class RecordRelationWithSameNameAsAnExistingDBTableColumnNameException extends \Exception{}

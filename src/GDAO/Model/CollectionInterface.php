@@ -298,6 +298,3 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
     public function _postSave();
 }
 
-class ItemNotFoundInCollectionException extends \Exception {}
-class CollectionMustImplementMethodException extends \Exception{}
-class CollectionCanOnlyContainGDAORecordsException extends \Exception{}

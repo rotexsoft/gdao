@@ -4187,12 +4187,3 @@ abstract class Model
         return $this->_updated_timestamp_column_name;
     }
 }
-
-class ModelRequiresPdoInstanceException extends \Exception{}
-class ModelMustImplementMethodException extends \Exception{}
-class ModelInvalidInsertValueSuppliedException extends \Exception{}
-class ModelInvalidUpdateValueSuppliedException extends \Exception{}
-class ModelBadWhereOrHavingParamSuppliedException extends \Exception{}
-class ModelTableNameNotSetDuringConstructionException extends \Exception {}
-class ModelPrimaryColNameNotSetDuringConstructionException extends \Exception {}
-class ModelPrimaryColValueNotRetrievableAfterInsertException extends \Exception {}
