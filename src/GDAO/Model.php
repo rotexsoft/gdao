@@ -274,10 +274,10 @@ abstract class Model
      *      'relation_name1' => 
      *       [
      *          //the entry below's value must be one of 
-     *          //\GDAO\Model::RELATION_TYPE_HAS_ONE, 
-     *          //\GDAO\Model::RELATION_TYPE_HAS_MANY,
-     *          //\GDAO\Model::RELATION_TYPE_BELONGS_TO or
-     *          //\GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH.
+     *          // * \GDAO\Model::RELATION_TYPE_HAS_ONE, 
+     *          // * \GDAO\Model::RELATION_TYPE_HAS_MANY,
+     *          // * \GDAO\Model::RELATION_TYPE_BELONGS_TO or
+     *          // * \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH.
      *          'relation_type' => \GDAO\Model::RELATION_TYPE_BELONGS_TO, 
      * 
      *          /////////////////////////////////////////////////////////////////////////////////
@@ -286,7 +286,11 @@ abstract class Model
      *          'foreign_key_col_in_my_table' => 'p_author_id',
      *          /////////////////////////////////////////////////////////////////////////////////
      * 
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          //the entry below is needed for all types of relationships
+     * 
      *          'foreign_table' => 'authors',
+     *          /////////////////////////////////////////////////////////////////////////////////
      * 
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //the entry below is not needed for \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH
@@ -330,8 +334,8 @@ abstract class Model
      *          // returning related data.
      *          //
      *          // They must ALL BE SET or ALL NOT BE SET.
-     *          // If they ALL NOT SET, then the related records should be returned 
-     *          // using arrays.
+     *          // If they are ALL NOT SET, then the related records should be  
+     *          // returned using arrays.
      *          //
      *          // Each related record will be stored in an instance of 
      *          // $this->_relations['relation_name1']['foreign_models_record_class_name']
@@ -370,14 +374,15 @@ abstract class Model
      *          'foreign_models_record_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Record'
      * 
      *          /////////////////////////////////////////////////////////////////////////////////
-     *          //the entry below can be used to modify the sql query for retrieving data from
+     *          //The entry below can be used to modify the sql query for retrieving data from
      *          //$this->_relations['relation_name1']['foreign_table'].
-     *          //See the documentation for the $params parameter for $this->fetchAll(..) 
-     *          //in order to understand the expected value(s) that should be set for 
+     *          //See the documentation for the $params parameter for 
+     *          //$this->fetchRecordsIntoCollection(..) in order to understand 
+     *          //the expected value(s) that should be set for 
      *          //$this->_relations['relation_name1']['foreign_table_sql_params']
      *          //NOTE: that the `relations_to_include`, `limit_offset` and
      *          //      `limit_size` entries acceptable in the $params parameter 
-     *          //      for $this->fetchAll(..) should not be included in the  
+     *          //      for $this->fetchRecordsIntoCollection(..) should not be included in the  
      *          //      value to be set for $this->_relations['relation_name1']['foreign_table_sql_params']
      * 
      *          'foreign_table_sql_params'=> [....]
@@ -445,8 +450,7 @@ abstract class Model
      * NOTE: 'foreign_models_class_name' should contain the name of a Model
      *       class whose _table_name property has the same value as
      *       \GDAO\Model->_relations['relation_name']['foreign_table'].
-     *       In the example above 'relation_name' should be substituted with 
-     *       'summary'.
+     *       'relation_name' should be substituted with 'summary' in this case.
      * 
      * Example Schema for a `Belongs-To` relationship
      * ===============================================
@@ -504,8 +508,7 @@ abstract class Model
      * NOTE: 'foreign_models_class_name' should contain the name of a Model
      *       class whose _table_name property has the same value as
      *       \GDAO\Model->_relations['relation_name']['foreign_table'].
-     *       In the example above 'relation_name' should be substituted with 
-     *       'author'.
+     *       'relation_name' should be substituted with 'author' in this case.
      * 
      * Example Schema for a `Has-Many` relationship
      * =============================================
@@ -530,8 +533,8 @@ abstract class Model
      *      |----------||=========||--------|----------|
      *      --------------------------------------------
      *     
-     *      NOTE: the post_id column in the posts table is an
-     *            auto-incrementing integer primary key.
+     *      NOTE: the post_id column in the posts table is an auto-incrementing 
+     *            integer primary key.
      *     
      *      NOTE: the comment_id column in the comments table is an
      *            auto-incrementing integer primary key.
@@ -563,8 +566,7 @@ abstract class Model
      * NOTE: 'foreign_models_class_name' should contain the name of a Model class
      *       whose _table_name property has the same value as
      *       \GDAO\Model->_relations['relation_name']['foreign_table'].
-     *       In the example above 'relation_name' should be substituted with 
-     *       'comments'.
+     *       'relation_name' should be substituted with 'comments' in this case.
      * 
      * Example Schema for a `Has-Many-Through` relationship
      * =====================================================
@@ -589,11 +591,11 @@ abstract class Model
      *      |-------------||============||===========||
      *      -------------------------------------------
      *     
-     *      NOTE: the post_id column in the posts table is an
-     *            auto-incrementing integer primary key.
+     *      NOTE: the post_id column in the posts table is an auto-incrementing
+     *            integer primary key.
      *     
-     *      NOTE: the tag_id column in the tags table is an
-     *            auto-incrementing integer primary key.
+     *      NOTE: the tag_id column in the tags table is an auto-incrementing 
+     *            integer primary key.
      *     
      *      NOTE: the posts_tags_id column in the posts_tags 
      *            table is an auto-incrementing integer primary key. 
@@ -627,20 +629,10 @@ abstract class Model
      *       be used to name a relationship (but it is recommended that it should
      *       not be a name of an existing column in the current model's db table).
      * 
-     * NOTE: 'foreign_models_class_name' should contain the name of a Model class
-     *       whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['foreign_table'].
-     *       In the example above 'relation_name' should be substituted with 
-     *       'author'.
-     * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model class 
      *       whose _table_name property has the same value as
      *       \GDAO\Model->_relations['relation_name']['foreign_table'].
-     *       'join_models_class_name' should contain the name of a Model class 
-     *       whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['join_table'].
-     *       In the example above 'relation_name' should be substituted with 'tags'.
-     * 
+     *       'relation_name' should be substituted with 'tags' in this case.
      * 
      * @var array
      * 
@@ -916,8 +908,9 @@ abstract class Model
      * 
      * @param \GDAO\Model\RecordInterface $record
      * 
-     * @return bool|null true for a successful deletion OR null if supplied record 
-     *                   is a record that has never been saved to the db.
+     * @return bool|null true for a successful deletion, false if deletion failed 
+     *                   OR null if supplied record is a record that has never 
+     *                   been saved to the db.
      * 
      * @throws \PDOException
      * 
@@ -940,8 +933,8 @@ abstract class Model
      *  $this->_validateWhereOrHavingParamsArray($params['where']);
      *  $this->_validateWhereOrHavingParamsArray($params['having']);
      * 
-     * @see phpdoc for \GDAO\Model::fetchAll(array $params) for the definition 
-     *      of a valid 'where' or 'having' array
+     * @see phpdoc for \GDAO\Model::fetchRecordsIntoCollection(array $params) for 
+     *      the definition of a valid 'where' or 'having' array
      * 
      * @param array $array 
      * @return bool true if the array has a valid structure
@@ -1443,9 +1436,11 @@ abstract class Model
      * @param array $array an array of where or having condition(s) definition as
      *                     specified in the params documentation of the fetch* methods
      * @param int $indent_level the number of tab characters to add to the sql clause
+     * 
      * @return array an array of two items, the first is the having or where 
      *               clause sql string and the second item is an associative
      *               array of parameters to bind to the query
+     * 
      * @throws ModelBadWhereOrHavingParamSuppliedException
      * 
      * @see \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
@@ -1601,9 +1596,9 @@ abstract class Model
     
     /**
      * 
-     * Fetch a collection (an instance of GDAO\Model\Collection or any of its 
-     * sub-classes) of records (instances of \GDAO\Model\RecordInterface or any 
-     * of its sub-classes) [Eager Loading should be implemented here].
+     * Fetch a collection (an instance of GDAO\Model\CollectionInterface) of 
+     * records (instances of \GDAO\Model\RecordInterface) 
+     * [Eager Loading should be implemented here].
      * 
      * This method is not declared abstract in order to allow both implementers
      * and consumers of this API to be able to implement or use this API without
@@ -1942,7 +1937,7 @@ abstract class Model
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
-     * @return GDAO\Model\RecordInterface 
+     * @return GDAO\Model\CollectionInterface 
      * 
      * @throws \PDOException
      * 
@@ -2290,8 +2285,7 @@ abstract class Model
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
-     * @return array of records (instances of \GDAO\Model\RecordInterface or any
-     *               of its sub-classes).
+     * @return array of records (instances of \GDAO\Model\RecordInterface).
      * 
      * @throws \PDOException
      * 
@@ -4125,6 +4119,18 @@ abstract class Model
 
     /**
      * 
+     * Get the value of $this->_table_name.
+     * 
+     * @return string the value of $this->_table_name.
+     * 
+     */
+    public function getTableName() {
+
+        return $this->_table_name;
+    }
+    
+    /**
+     * 
      * Get an array of table column names.
      * 
      * @return array an array of table column names.
@@ -4167,18 +4173,6 @@ abstract class Model
     public function getRelationNames() {
 
         return array_keys($this->_relations);
-    }
-
-    /**
-     * 
-     * Get the value of $this->_table_name.
-     * 
-     * @return string the value of $this->_table_name.
-     * 
-     */
-    public function getTableName() {
-
-        return $this->_table_name;
     }
 
     /**
