@@ -1487,7 +1487,6 @@ abstract class Model
                         $op_is_in_or_not_in = 
                             in_array($value['op'], array('not-in', 'in'));
 
-                        //quote $value['col'] and $value['val'] as needed
                         $db_specific_op = 
                             static::$_where_or_having_ops_2_dbms_ops[$value['op']];
 
@@ -1500,7 +1499,12 @@ abstract class Model
 
                         } else if( $has_a_val_key ) {
 
-                            //$value['val'] should be pdo quoted.
+                            //$value['val'] should be pdo quoted only if it's an array.
+                            //in this case it needs to be converted to a string that
+                            //will be the value for an IN or NOT IN statement.
+                            //It will not be added to the array of named parameters
+                            //to be returned by this method, that's why we need to 
+                            //pdo quote it.
                             $quoted_val = '';
                             
                             if (is_array($value['val'])) {
@@ -1523,13 +1527,10 @@ abstract class Model
                                     " (" . implode(',', $value['val']) . ") ";
                             } else {
 
-                                $quoted_val = 
-                                    (
-                                        !$op_is_in_or_not_in 
-                                        && is_string($value['val'])
-                                    ) ? 
-                                        $this->getPDO()->quote($value['val']) 
-                                                                : $value['val'];
+                                //no need to quote, since it will be a value
+                                //for a named parameter that will be passed to 
+                                //pdo statement
+                                $quoted_val = $value['val'];
                                 
                                 if($op_is_in_or_not_in) {
                                     
@@ -1542,7 +1543,9 @@ abstract class Model
                                             && strpos($value['val'], ')') === false
                                         )
                                     ) {
-                                        $quoted_val = "($quoted_val)";
+                                        $quoted_val = 
+                                            is_string($value['val']) 
+                                                ? "('$quoted_val')" : "($quoted_val)";
                                     }
                                 }
                             }
@@ -1555,7 +1558,7 @@ abstract class Model
                                          . "{$value['col']} $db_specific_op :_{$bind_params_index}_ " 
                                          . PHP_EOL;
                                 $result_bind_params["_{$bind_params_index}_"] = $quoted_val;
-                                
+
                             } else {
                                 //no need for named place holder just place the
                                 //quoted val directly.
