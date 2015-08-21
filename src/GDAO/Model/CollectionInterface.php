@@ -164,7 +164,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @throws \PDOException
      * 
      */
-    public function save($group_inserts_together=false);
+    public function saveAll($group_inserts_together=false);
     
     /**
      * 
@@ -278,23 +278,23 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * User-defined pre-save logic for the collection.
      * 
      * Implementers of this class should add a call to this method as the 
-     * first line of code in their implementation of $this->save(...)
+     * first line of code in their implementation of $this->saveAll(...)
      * 
      * @return void
      * 
      */
-    public function _preSave();
+    public function _preSaveAll();
     
     /**
      * 
      * User-defined post-save logic for the collection.
      * 
      * Implementers of this class should add a call to this method as the 
-     * last line of code in their implementation of $this->save(...)
+     * last line of code in their implementation of $this->saveAll(...)
      * 
      * @return void
      * 
      */
-    public function _postSave();
+    public function _postSaveAll();
 }
 
