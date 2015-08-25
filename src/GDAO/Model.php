@@ -20,7 +20,7 @@ abstract class Model
     /**
      * 
      * Name of the primary key column in the db table associated with this model
-     * Default value is 'id'.
+     * Default value is null.
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
@@ -29,7 +29,7 @@ abstract class Model
      * @var string
      * 
      */
-    protected $_primary_col = 'id';
+    protected $_primary_col = null;
     
     /**
      *
@@ -724,6 +724,9 @@ abstract class Model
      *                          of this class
      * 
      * @see \PDO::__construct(...) for definition of first four parameters
+     * 
+     * @throws \GDAO\ModelPrimaryColNameNotSetDuringConstructionException
+     * @throws \GDAO\ModelTableNameNotSetDuringConstructionException
      * 
      */
     public function __construct(
