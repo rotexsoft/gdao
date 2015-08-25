@@ -15,3 +15,7 @@
 > This is to make sure this package really works for PHP 5.3, since the short array syntax is only used in test files and not in the actual source (src) files
 
 * Find a way using git hooks or something to update the year in the license during a commit, push or something.
+
+* The concept of a **DisconnectedRecordInterface** and a **DisconnectedCollectionInterface** that will be similar to the existing **RecordInterface** and a **CollectionInterface** but without the need / reference to a **Model** object (these new interfaces will not contain methods that perform database operations such as **save**, **delete**, etc.). Instances of **DisconnectedRecordInterface** and **DisconnectedCollectionInterface** will exist without any reference to a **Model** object. They could be used with non-sql data sources.
+
+  > A good approach will be to define methods common to  **DisconnectedRecordInterface** and  **RecordInterface** inside of  **DisconnectedRecordInterface** and make **RecordInterface** extend **DisconnectedRecordInterface** (in this case **RecordInterface** will only contain additional method signatures that require a **Model** object and / or perform operations on the database)
