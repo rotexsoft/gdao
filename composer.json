@@ -1,8 +1,8 @@
 {
     "name": "rotexsoft/gdao",
     "type": "library",
-    "description": "A package containing abstract class definitions that can be used as a basis for a Table Data Gateway-ish (http://bit.ly/1F8Zjfc) implementation of a DB access library that performs data manipulation (DM) tasks.",
-    "keywords": [ "orm", "db", "pdo", "mysql", "postgresql", "sqlite", "database", "sql", "table","data", "gateway", "table data gateway"],
+    "description": "A package containing class and interface definitions that can be used as a basis for a Table Data Gateway (http://bit.ly/1F8Zjfc) and Data Mapper (http://bit.ly/1hD2qCc) implementation of a database access library that performs data manipulation (DM) tasks.",
+    "keywords": [ "orm", "db", "pdo", "mysql", "postgresql", "sqlite", "database", "sql", "table","data", "gateway", "table-data-gateway", "table data gateway", "data", "mapper", "data-mapper", "data mapper"],
     "homepage": "https://github.com/rotexsoft/gdao",
     "license": "BSD-2-Clause",
     "authors": [
@@ -29,6 +29,6 @@
         "classmap": ["src/", "tests/"]
     },
     "suggest": {
-        "rotexsoft/leanorm": "A Concrete Implementation of the Abstract Classes in rotexsoft/gdao based on a stripped down version of idiorm (\\LeanOrm\\DBConnector). Light weight data access library."
+        "rotexsoft/leanorm": "A Concrete Implementation of the Abstract Classes and Interfaces in rotexsoft/gdao based on a stripped down version of idiorm (\\LeanOrm\\DBConnector). Light weight data access library."
     }
 }
