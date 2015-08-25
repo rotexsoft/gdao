@@ -226,26 +226,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      */
     public function __set($key, \GDAO\Model\RecordInterface $val);
-    
-    /**
-     * 
-     * ArrayAccess: set a key value; appends to the array when using []
-     * notation.
-     * 
-     * NOTE: Implementers of this class must make sure that $val is an instance 
-     *       of \GDAO\Model\RecordInterface else throw a 
-     *       \GDAO\Model\CollectionCanOnlyContainGDAORecordsException exception.
-     * 
-     * @param string $key The requested key.
-     * 
-     * @param \GDAO\Model\RecordInterface $val The value to set it to.
-     * 
-     * @return void
-     * 
-     * @throws \GDAO\Model\CollectionCanOnlyContainGDAORecordsException
-     * 
-     */
-    public function offsetSet($key, \GDAO\Model\RecordInterface $val);
+
 
     /**
      * 
