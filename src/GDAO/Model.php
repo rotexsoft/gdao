@@ -1943,7 +1943,7 @@ abstract class Model
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
-     * @return GDAO\Model\CollectionInterface 
+     * @return GDAO\Model\CollectionInterface|bool return a collection of matched record object(s) or false if no matching record(s) were found 
      * 
      * @throws \PDOException
      * 
@@ -3284,7 +3284,7 @@ abstract class Model
      *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
      * 
-     * @return \GDAO\Model\RecordInterface
+     * @return \GDAO\Model\RecordInterface|bool return a record object if found or false if no matching record was found
      * 
      * @throws \PDOException
      * 
