@@ -24,7 +24,7 @@ and **RecordYY** in your updated code; which should all work nicely together).
 This package isn't meant to perform database schema management tasks like creating/altering tables, etc. However, it exposes a PDO object (via **\GDAO\Model->getPDO()**) that can be used to perform such tasks and other data manipulation (DM) tasks that cannot be accomplished via this API.
 
 
-##  Assumptions and Conventions in this API. 
+## Assumptions and Conventions in this API. 
 
 * Each database table has a single auto-incrementing numeric primary key column (composite primary keys are not supported; however a single primary key column that is non-numeric should work)
 
@@ -39,3 +39,6 @@ This package isn't meant to perform database schema management tasks like creati
  
  * **Implementer:** The developer that creates a package / library containing concrete implementation of the APIs specified in the abstract classes in this package.
 
+## Running Tests
+
+  ` ./vendor/bin/phpunit --coverage-text`
