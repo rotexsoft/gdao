@@ -29,14 +29,14 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
     
     /**
      * 
-     * \GDAO\Model\ is only used to enforce strict typing.
+     * \GDAO\Model\RecordsList is only used to enforce strict typing.
      * Ie. all the records in the collection are of type \GDAO\Model\RecordInterface
      * or any of its sub-classes.
      * 
      * Implementers of this API do not have to store the collection's data in
-     * a \GDAO\Model\. They can use an array and just call
-     * \GDAO\Model\->toArray() to get at the underlying array
-     * \GDAO\Model\ uses to store items.
+     * a \GDAO\Model\RecordsList. They can use an array and just call
+     * \GDAO\Model\RecordsList->toArray() to get at the underlying array
+     * \GDAO\Model\RecordsList uses to store items.
      * 
      * @param \GDAO\Model\RecordsList $data list of instances of \GDAO\Model\RecordInterface
      * @param \GDAO\Model $model The model object that transfers data between the db and this collection.
@@ -109,8 +109,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * Load the collection with a list of records.
      * 
-     * \GDAO\Model\ is used instead of an array because
-     * \GDAO\Model\ can only contain instances of \GDAO\Model\RecordInterface
+     * \GDAO\Model\RecordsList is used instead of an array because
+     * \GDAO\Model\RecordsList can only contain instances of \GDAO\Model\RecordInterface
      * or its descendants. We only ever want instances of \GDAO\Model\RecordInterface or
      * its descendants inside a collection.
      * 

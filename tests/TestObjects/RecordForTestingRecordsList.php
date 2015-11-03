@@ -2,7 +2,7 @@
 
 /**
  * 
- * This is a dummy record class needed for Testing .
+ * This is a dummy record class needed for Testing RecordsList.
  *
  * @author aadegbam
  */
