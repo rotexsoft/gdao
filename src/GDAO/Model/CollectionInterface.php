@@ -29,23 +29,23 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
     
     /**
      * 
-     * \GDAO\Model\GDAORecordsList is only used to enforce strict typing.
+     * \GDAO\Model\ is only used to enforce strict typing.
      * Ie. all the records in the collection are of type \GDAO\Model\RecordInterface
      * or any of its sub-classes.
      * 
      * Implementers of this API do not have to store the collection's data in
-     * a \GDAO\Model\GDAORecordsList. They can use an array and just call
-     * \GDAO\Model\GDAORecordsList->toArray() to get at the underlying array
-     * \GDAO\Model\GDAORecordsList uses to store items.
+     * a \GDAO\Model\. They can use an array and just call
+     * \GDAO\Model\->toArray() to get at the underlying array
+     * \GDAO\Model\ uses to store items.
      * 
-     * @param \GDAO\Model\GDAORecordsList $data list of instances of \GDAO\Model\RecordInterface
+     * @param \GDAO\Model\RecordsList $data list of instances of \GDAO\Model\RecordInterface
      * @param \GDAO\Model $model The model object that transfers data between the db and this collection.
      * @param array $extra_opts an array that may be used to pass initialization 
      *                          value(s) for protected and / or private properties
      *                          of this class
      */
 	public function __construct(
-        GDAORecordsList $data, \GDAO\Model $model, array $extra_opts=array()
+        RecordsList $data, \GDAO\Model $model, array $extra_opts=array()
     );
     
     /**
@@ -109,17 +109,17 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * Load the collection with a list of records.
      * 
-     * \GDAO\Model\GDAORecordsList is used instead of an array because
-     * \GDAO\Model\GDAORecordsList can only contain instances of \GDAO\Model\RecordInterface
+     * \GDAO\Model\ is used instead of an array because
+     * \GDAO\Model\ can only contain instances of \GDAO\Model\RecordInterface
      * or its descendants. We only ever want instances of \GDAO\Model\RecordInterface or
      * its descendants inside a collection.
      * 
-     * @param \GDAO\Model\GDAORecordsList $data_2_load
+     * @param \GDAO\Model\RecordsList $data_2_load
      * 
      * @return void
      * 
      */
-	public function loadData(GDAORecordsList $data_2_load);
+	public function loadData(RecordsList $data_2_load);
     
     
     /**

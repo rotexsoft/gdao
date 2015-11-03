@@ -1983,7 +1983,7 @@ EOT;
                     ]
                 );
         
-        $model->createNewCollection(new \GDAO\Model\GDAORecordsList([]));
+        $model->createNewCollection(new \GDAO\Model\RecordsList([]));
     }
     
     /**

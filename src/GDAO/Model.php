@@ -850,14 +850,14 @@ abstract class Model
      * collections. The Model and Record classes are mandatory, the collection 
      * class is optional(php arrays are a good & natively available alternative).
      * 
-     * @param \GDAO\Model\GDAORecordsList $list_of_records 
+     * @param \GDAO\Model\RecordsList $list_of_records 
      * @param array $extra_opts an array of other parameters that may be needed 
      *                          in creating an instance of \GDAO\Model\Collection
      * 
      * @return \GDAO\Model\Collection a collection of instances of \GDAO\Model\RecordInterface.
      * 
      */
-    public function createNewCollection(\GDAO\Model\GDAORecordsList $list_of_records, array $extra_opts=array()) {
+    public function createNewCollection(\GDAO\Model\RecordsList $list_of_records, array $extra_opts=array()) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new ModelMustImplementMethodException($msg);

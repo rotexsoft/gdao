@@ -11,7 +11,7 @@ Below are its main components:
 
 * an optional **CollectionInterface** interface (contains definitions of methods that any class that is to __**serve as a collection of multiple instances of RecordInterface objects**__, MUST IMPLEMENT)
 
-* a **GDAORecordsList** class (a collection-like data structure that stores only instances of **RecordInterface**. It's the only data-structure that the **CollectionInterface** constructor accepts for passing one or more records to a Collection object. It guarantees that only instances of **RecordInterface** are stored in instances of **CollectionInterface**.)
+* a **** class (a collection-like data structure that stores only instances of **RecordInterface**. It's the only data-structure that the **CollectionInterface** constructor accepts for passing one or more records to a Collection object. It guarantees that only instances of **RecordInterface** are stored in instances of **CollectionInterface**.)
 
 This API is intended to make it easy / trivial to swap out different implementations of each of the Main classes.
 For example, an application may have been written to use a package that implements this API in the following classes:

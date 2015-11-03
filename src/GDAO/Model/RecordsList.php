@@ -10,7 +10,7 @@ namespace GDAO\Model;
  * @author Rotimi Adegbamigbe
  * @copyright (c) 2015, Rotimi Adegbamigbe
  */
-final class GDAORecordsList implements \Countable, \IteratorAggregate
+final class RecordsList implements \Countable, \IteratorAggregate
 {
     /**
      *

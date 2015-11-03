@@ -6,7 +6,7 @@
  *
  * @author aadegbam
  */
-class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
+class RecordsListTest extends \PHPUnit_Framework_TestCase
 {
     protected $_mock_model_obj_with_memory_sqlite_connection;
 
@@ -34,25 +34,25 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
         
         $array_of_alleged_recs =
             [
-                new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection),
+                new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection),
                 new stdClass()
             ];
         
         //line below should cause an exception to be thrown.
-        new \GDAO\Model\GDAORecordsList($array_of_alleged_recs);
+        new \GDAO\Model\RecordsList($array_of_alleged_recs);
     }
     
     public function testThatConstructorWorksAsExpected() {
         
-        $record1 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record2 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record3 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record4 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record5 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record6 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record1 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record2 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record3 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record4 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record5 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record6 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
         
         $array_of_records = [$record1, $record2, $record3, $record4, $record5, $record6];
-        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        $record_list_obj = new \GDAO\Model\RecordsList($array_of_records);
         
         $msg = __METHOD__;
         $this->assertTrue(count($record_list_obj) === 6, $msg);
@@ -68,15 +68,15 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
 
     public function testThatAddWorksAsExpected() {
         
-        $record1 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record2 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record3 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record4 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record5 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record6 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record1 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record2 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record3 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record4 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record5 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record6 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
         
         $array_of_records = [$record1, $record2];
-        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        $record_list_obj = new \GDAO\Model\RecordsList($array_of_records);
         
         $msg = __METHOD__;
         $this->assertTrue(count($record_list_obj) === 2, $msg);
@@ -112,9 +112,9 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
     public function testThatAddRangeThrowsExceptionWhenANonRecordInterfaceObjectIsPresent() {
         
         $array_of_alleged_recs = [
-            new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection),
+            new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection),
         ];
-        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_alleged_recs);
+        $record_list_obj = new \GDAO\Model\RecordsList($array_of_alleged_recs);
         
         //line below should cause an exception to be thrown.
         $record_list_obj->addRange([new stdClass()]);
@@ -122,15 +122,15 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
     
     public function testThatAddRangeWorksAsExpected() {
         
-        $record1 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record2 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record3 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record4 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record5 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record6 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record1 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record2 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record3 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record4 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record5 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record6 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
         
         $array_of_records = [$record1, $record2];
-        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        $record_list_obj = new \GDAO\Model\RecordsList($array_of_records);
         
         $msg = __METHOD__;
         $this->assertTrue(count($record_list_obj) === 2, $msg);
@@ -148,9 +148,9 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
     public function testThatClearWorksAsExpected() {
         
         $array_of_records = [
-            new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection),
+            new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection),
         ];
-        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        $record_list_obj = new \GDAO\Model\RecordsList($array_of_records);
         $record_list_obj->clear();
 
         $msg = __METHOD__;
@@ -159,17 +159,17 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
     
     public function testThatRemoveAllWorksAsExpected() {
         
-        $record1 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record2 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record3 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record4 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record5 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record6 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record1 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record2 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record3 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record4 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record5 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record6 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
         
         $array_of_records = [
             $record1, $record2, $record3, $record4, $record5, $record6, $record1
         ];
-        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        $record_list_obj = new \GDAO\Model\RecordsList($array_of_records);
         
         $msg = __METHOD__;
         $this->assertTrue(count($record_list_obj) === 7, $msg);
@@ -201,17 +201,17 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
     
     public function testThatRemoveFirstWorksAsExpected() {
         
-        $record1 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record2 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record3 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record4 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record5 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record6 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record1 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record2 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record3 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record4 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record5 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record6 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
         
         $array_of_records = [
             $record1, $record2, $record3, $record4, $record5, $record6, $record1
         ];
-        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        $record_list_obj = new \GDAO\Model\RecordsList($array_of_records);
         
         $msg = __METHOD__;
         $this->assertTrue(count($record_list_obj) === 7, $msg);
@@ -228,17 +228,17 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
     
     public function testThatRemoveLastWorksAsExpected() {
         
-        $record1 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record2 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record3 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record4 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record5 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record6 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record1 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record2 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record3 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record4 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record5 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record6 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
         
         $array_of_records = [
             $record1, $record2, $record3, $record4, $record5, $record6, $record1
         ];
-        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        $record_list_obj = new \GDAO\Model\RecordsList($array_of_records);
         
         $msg = __METHOD__;
         $this->assertTrue(count($record_list_obj) === 7, $msg);
@@ -255,17 +255,17 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
     
     public function testThatToArrayWorksAsExpected() {
         
-        $record1 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record2 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record3 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record4 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record5 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record6 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record1 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record2 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record3 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record4 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record5 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record6 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
         
         $array_of_records = [
             $record1, $record2, $record3, $record4, $record5, $record6, $record1
         ];
-        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        $record_list_obj = new \GDAO\Model\RecordsList($array_of_records);
         
         $msg = __METHOD__;
         $this->assertTrue($record_list_obj->toArray() === $array_of_records, $msg);
@@ -273,17 +273,17 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
     
     public function testThatCountWorksAsExpected() {
         
-        $record1 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record2 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record3 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record4 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record5 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record6 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record1 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record2 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record3 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record4 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record5 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record6 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
         
         $array_of_records = [
             $record1, $record2, $record3, $record4, $record5, $record6, $record1
         ];
-        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        $record_list_obj = new \GDAO\Model\RecordsList($array_of_records);
         
         $msg = __METHOD__;
         $this->assertTrue($record_list_obj->count() === 7, $msg);
@@ -300,17 +300,17 @@ class GDAORecordsListTest extends \PHPUnit_Framework_TestCase
 
     public function testThatGetIteratorWorksAsExpected() {
         
-        $record1 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record2 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record3 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record4 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record5 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
-        $record6 = new RecordForTestingGDAORecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record1 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record2 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record3 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record4 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record5 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
+        $record6 = new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection);
         
         $array_of_records = [
             $record1, $record2, $record3, $record4, $record5, $record6, $record1
         ];
-        $record_list_obj = new \GDAO\Model\GDAORecordsList($array_of_records);
+        $record_list_obj = new \GDAO\Model\RecordsList($array_of_records);
         
         $msg = __METHOD__;
         $iterator = $record_list_obj->getIterator();

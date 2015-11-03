@@ -2,11 +2,11 @@
 
 /**
  * 
- * This is a dummy record class needed for Testing GDAORecordsList.
+ * This is a dummy record class needed for Testing .
  *
  * @author aadegbam
  */
-class RecordForTestingGDAORecordsList implements \GDAO\Model\RecordInterface
+class RecordForTestingRecordsList implements \GDAO\Model\RecordInterface
 {
     public function __construct(
         array $data, \GDAO\Model $model, array $extra_opts = array()
