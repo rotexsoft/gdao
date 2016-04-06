@@ -1,5 +1,7 @@
 # Generic Data Access Objects (GDAO) ![Build Status](https://travis-ci.org/rotexsoft/gdao.svg?branch=master)
 
+WILL RESUME ACTIVE DEVELOPMENT IN JULY 2016.
+
 ## Description
 
 A package containing class and interface definitions that can be used as a basis for a __**Table Data Gateway**__ (http://bit.ly/1F8Zjfc) and __**Data Mapper**__ (http://bit.ly/1hD2qCc) implementation of a database access library that performs data manipulation (DM) tasks.
