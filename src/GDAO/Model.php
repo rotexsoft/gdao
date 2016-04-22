@@ -1518,9 +1518,11 @@ abstract class Model
                                     $value['val'],
 
                                     function(&$val, $key, $pdo) {
-                                        $val = 
-                                            (is_string($val)) 
-                                                ? $pdo->quote($val) : $val;
+                                        
+                                        if( is_string($val) ) {
+                                            
+                                            $val = $pdo->quote($val);
+                                        }
                                     },
 
                                     $this->getPDO()
@@ -1545,10 +1547,15 @@ abstract class Model
                                             && strpos($value['val'], '(') === false
                                             && strpos($value['val'], ')') === false
                                         )
-                                    ) {
-                                        $quoted_val = 
-                                            is_string($value['val']) 
-                                                ? "('$quoted_val')" : "($quoted_val)";
+                                    ) { 
+                                        if( is_string($value['val']) ) {
+                                            
+                                            $quoted_val = "('$quoted_val')";
+                                            
+                                        } else {
+                                            
+                                            $quoted_val = "($quoted_val)";
+                                        }
                                     }
                                 }
                             }
