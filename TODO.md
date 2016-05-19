@@ -1,4 +1,4 @@
-* Strive for 100% Unit Test Coverage
+* ~~Strive for 100% Unit Test Coverage~~ (Accomplished!)
 
 * Make API usable with tables that do not have a primary key column defined.
 > Remove the phrase **Working on supporting tables that do not have any primary key column defined** from **README.md** once the above task is completed   
