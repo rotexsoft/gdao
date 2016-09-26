@@ -386,6 +386,12 @@ abstract class Model
      *          //      value to be set for $this->_relations['relation_name1']['foreign_table_sql_params']
      * 
      *          'foreign_table_sql_params'=> [....]
+     * 
+     *          /////////////////////////////////////////////////////////////////////////////////
+     *          // An Array of optional extra options to be passed to the foreign model's
+     *          // constructor.
+     * 
+     *          'extra_opts_for_foreign_model'=> [....]
      *          /////////////////////////////////////////////////////////////////////////////////
      *       ],
      *      ......,
