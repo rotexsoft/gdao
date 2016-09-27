@@ -1053,7 +1053,7 @@ abstract class Model
                         ) 
                         ||
                         (
-                            is_string($value) && empty($value)
+                            is_string($value) && $value === ''
                         ) 
                         ||
                         (
