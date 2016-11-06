@@ -293,23 +293,23 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * User-defined pre-save logic for the collection.
      * 
      * Implementers of this class should add a call to this method as the 
-     * first line of code in their implementation of $this->saveAll(...)
+     * first line of code in their implementation of $this->save(...)
      * 
      * @return void
      * 
      */
-    public function _preSaveAll();
+    public function _preSaveAll($group_inserts_together=false);
     
     /**
      * 
      * User-defined post-save logic for the collection.
      * 
      * Implementers of this class should add a call to this method as the 
-     * last line of code in their implementation of $this->saveAll(...)
+     * last line of code in their implementation of $this->save(...)
      * 
      * @return void
      * 
      */
-    public function _postSaveAll();
+    public function _postSaveAll($save_all_result, $group_inserts_together=false);
 }
 
