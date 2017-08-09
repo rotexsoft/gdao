@@ -46,6 +46,14 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     ////   For documentation purposes this property will be refered to as
     ////   $this->_related_data (with an assumption that it is an array).
     ////   
+    //// * Another property should be present in the class implementing this 
+    ////   interface. This property should hold other data for a record instance 
+    ////   (i.e. data not from any actual db column and not related data).
+    ////   Data from this property should be returned via $this->getNonTableColAndNonRelatedData()
+    ////   & $this->getNonTableColAndNonRelatedDataByRef().
+    ////   For documentation purposes this property will be refered to as
+    ////   $this->_non_table_col_and_non_related_data (with an assumption that it is an array).
+    ////   
     //// * A boolean property should be present in the class implementing this 
     ////   interface. This property should be set to true if a record is new
     ////   (ie. its data has never been saved to the DB), else false.
@@ -127,6 +135,14 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     
     /**
      * 
+     * Get data for this record that does not belong to any of it's table columns and is not related data.
+     * 
+     * @return array Data for this record (not to be saved to the db i.e. not from any actual db column and not related data).
+     */
+    public function getNonTableColAndNonRelatedData();
+    
+    /**
+     * 
      * Get a reference to the data for this record.
      * Modifying the returned data will affect the data inside this record.
      * 
@@ -151,6 +167,14 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * @return array a reference to all the related data loaded into this record.
      */
     public function &getRelatedDataByRef();
+    
+    /**
+     * 
+     * Get data for this record that does not belong to any of it's table columns and is not related data.
+     * 
+     * @return array reference to the data for this record (not from any actual db column and not related data).
+     */
+    public function &getNonTableColAndNonRelatedDataByRef();
     
     /**
      * 

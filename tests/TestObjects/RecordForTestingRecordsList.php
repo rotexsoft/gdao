@@ -75,4 +75,8 @@ class RecordForTestingRecordsList implements \GDAO\Model\RecordInterface
     public function setStateToNew() { }
 
     public function toArray() { }
+    
+    public function getNonTableColAndNonRelatedData() { ; }
+    
+    public function &getNonTableColAndNonRelatedDataByRef() { ; }
 }
