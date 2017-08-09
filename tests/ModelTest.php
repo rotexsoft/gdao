@@ -1817,9 +1817,9 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         
         $expected_sql = <<<EOT
 (
-	col_1 > :_1_ 
+	col_1 < :_1_ 
 	AND
-	col_2 > :_2_ 
+	col_2 < :_2_ 
 	AND
 	(
 		col_11 > :_3_ 
@@ -1827,9 +1827,9 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 		col_21 > :_4_ 
 		OR
 		(
-			col_12 > :_5_ 
+			col_12 < :_5_ 
 			AND
-			col_22 > :_6_ 
+			col_22 < :_6_ 
 		)
 		AND
 		col_31 >= :_7_ 
@@ -1841,7 +1841,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 		)
 	)
 	AND
-	column_name_44 > :_10_ 
+	column_name_44 < :_10_ 
 	AND
 	column_name_55 IS NULL
 )
