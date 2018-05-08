@@ -141,7 +141,7 @@ abstract class Model
      * Db schema meta-data could also easily be queried using the PDO object 
      * available via $this->getPDO().
      * 
-     * @var aray
+     * @var array
      * 
      */
     protected $_table_cols = array();
@@ -860,7 +860,7 @@ abstract class Model
      * @param array $extra_opts an array of other parameters that may be needed 
      *                          in creating an instance of \GDAO\Model\Collection
      * 
-     * @return \GDAO\Model\Collection a collection of instances of \GDAO\Model\RecordInterface.
+     * @return \GDAO\Model\CollectionInterface a collection of instances of \GDAO\Model\RecordInterface.
      * 
      */
     public function createNewCollection(\GDAO\Model\RecordsList $list_of_records, array $extra_opts=array()) {
@@ -942,7 +942,7 @@ abstract class Model
      *  $this->_validateWhereOrHavingParamsArray($params['where']);
      *  $this->_validateWhereOrHavingParamsArray($params['having']);
      * 
-     * @see phpdoc for \GDAO\Model::fetchRecordsIntoCollection(array $params) for 
+     * @see \GDAO\Model::fetchRecordsIntoCollection(array $params) for 
      *      the definition of a valid 'where' or 'having' array
      * 
      * @param array $array 
@@ -1956,7 +1956,7 @@ abstract class Model
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
-     * @return GDAO\Model\CollectionInterface|bool return a collection of matched record object(s) or false if no matching record(s) were found 
+     * @return \GDAO\Model\CollectionInterface|bool return a collection of matched record object(s) or false if no matching record(s) were found 
      * 
      * @throws \PDOException
      * 
