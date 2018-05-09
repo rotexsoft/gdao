@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 namespace GDAO\Model;
 
 /**
@@ -7,8 +8,7 @@ namespace GDAO\Model;
  *
  * @author aadegbam
  */
-interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate 
-{
+interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate {
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     ////
@@ -68,7 +68,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     ////   
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////    
-    
+
     /**
      * 
      * @param array $data associative array of data to be loaded into this record.
@@ -83,10 +83,10 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      *                          value(s) for protected and / or private properties
      *                          of this class
      */
-	public function __construct(
-        array $data, \GDAO\Model $model, array $extra_opts=array()
+    public function __construct(
+    array $data, \GDAO\Model $model, array $extra_opts = array()
     );
-	
+
     /**
      * 
      * Delete the record from the db. 
@@ -103,8 +103,8 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * @return bool true if record was successfully deleted from db or false if not
      * 
      */
-    public function delete($set_record_objects_data_to_empty_array=false);
-    
+    public function delete($set_record_objects_data_to_empty_array = false): bool;
+
     /**
      * 
      * Get the data for this record.
@@ -112,8 +112,8 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return array a copy of the current data for this record
      */
-    public function getData();
-    
+    public function getData(): array;
+
     /**
      * 
      * Get a copy of the initial data loaded into this record.
@@ -121,9 +121,8 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return array a copy of the initial data loaded into this record.
      */
-    public function getInitialData();
-    
-    
+    public function getInitialData(): array;
+
     /**
      * 
      * Get all the related data loaded into this record.
@@ -131,16 +130,16 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return array a reference to all the related data loaded into this record.
      */
-    public function getRelatedData();
-    
+    public function getRelatedData(): array;
+
     /**
      * 
      * Get data for this record that does not belong to any of it's table columns and is not related data.
      * 
      * @return array Data for this record (not to be saved to the db i.e. not from any actual db column and not related data).
      */
-    public function getNonTableColAndNonRelatedData();
-    
+    public function getNonTableColAndNonRelatedData(): array;
+
     /**
      * 
      * Get a reference to the data for this record.
@@ -148,8 +147,8 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return array a reference to the current data for this record.
      */
-    public function &getDataByRef();
-    
+    public function &getDataByRef(): array;
+
     /**
      * 
      * Get a reference to the initial data loaded into this record.
@@ -157,8 +156,8 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return array a reference to the initial data loaded into this record.
      */
-    public function &getInitialDataByRef();
-    
+    public function &getInitialDataByRef(): array;
+
     /**
      * 
      * Get a reference to all the related data loaded into this record.
@@ -166,16 +165,16 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return array a reference to all the related data loaded into this record.
      */
-    public function &getRelatedDataByRef();
-    
+    public function &getRelatedDataByRef(): array;
+
     /**
      * 
      * Get data for this record that does not belong to any of it's table columns and is not related data.
      * 
      * @return array reference to the data for this record (not from any actual db column and not related data).
      */
-    public function &getNonTableColAndNonRelatedDataByRef();
-    
+    public function &getNonTableColAndNonRelatedDataByRef(): array;
+
     /**
      * 
      * Set relation data for this record.
@@ -183,11 +182,13 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * @param string $key relation name
      * @param mixed $value an array or record or collection containing related data
      * 
+     * @return $this
+     * 
      * @throws \GDAO\Model\RecordRelationWithSameNameAsAnExistingDBTableColumnNameException
      * 
      */
-    public function setRelatedData($key, $value);
-    
+    public function setRelatedData($key, $value): self;
+
     /**
      * 
      * Get the model object that saves and reads data to and from the db on 
@@ -195,20 +196,20 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return \GDAO\Model
      */
-	public function getModel();
-    
+    public function getModel(): \GDAO\Model;
+
     /**
      * 
      * @return string name of the primary-key column of the db table this record belongs to
      */
-	public function getPrimaryCol();
-    
+    public function getPrimaryCol(): string;
+
     /**
      * 
      * @return mixed the value stored in the primary-key column for this record.
      */
-	public function getPrimaryVal();
-    
+    public function getPrimaryVal();
+
     /**
      * 
      * Tells if the record, or a particular table-column in the record, has 
@@ -220,16 +221,16 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * boolean true if the data is changed, boolean false if not changed.
      *  
      */
-	public function isChanged($col = null);
-    
+    public function isChanged($col = null): ?bool;
+
     /**
      * 
      * Is the record new? (I.e. its data has never been saved to the db)
      * 
      * @return bool
      */
-	public function isNew();
-    
+    public function isNew(): bool;
+
     /**
      * 
      * This method partially or completely overwrites pre-existing data for a 
@@ -250,27 +251,33 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * @param array $cols_2_load name of field to load from $data_2_load. 
      *                           If null, load all fields in $data_2_load.
      * 
+     * @return $this
+     * 
      * @throws \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
      */
-	public function loadData($data_2_load, array $cols_2_load = array());
-    
+    public function loadData($data_2_load, array $cols_2_load = array()): self;
+
     /**
      * 
      * Set the _is_new attribute of this record to true (meaning that the data
      * for this record has never been saved to the db).
      * 
+     * @return $this
+     * 
      */
-    public function markAsNew();
-    
+    public function markAsNew(): self;
+
     /**
      * 
      * Set the _is_new attribute of this record to false (meaning that the data
      * for this record has been saved to the db or was read from the db).
-     * 
+     *
+     * @return $this
+     *  
      */
-    public function markAsNotNew();
-    
+    public function markAsNotNew(): self;
+
     /**
      * Set all properties of this record to the state they should be in for a new record.
      * For example:
@@ -285,8 +292,10 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      *  - or the value of _data could be copied to _initial_data
      *  - or the value of _initial_data could be copied to _data
      *  - etc.
+     * 
+     * @return $this
      */
-    public function setStateToNew();
+    public function setStateToNew(): self;
 
     /**
      * 
@@ -299,8 +308,8 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * @return null|bool true: successful save, false: failed save, null: no changed data to save
      * 
      */
-	public function save($data_2_save = null);
-    
+    public function save($data_2_save = null): ?bool;
+
     /**
      * 
      * Save the specified or already existing data for this record to the db.
@@ -317,16 +326,19 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * @return bool true for a successful save, false for failed save, null: no changed data to save
      * 
      */
-	public function saveInTransaction($data_2_save = null);
-    
+    public function saveInTransaction($data_2_save = null): ?bool;
+
     /**
      * 
      * Set the \GDAO\Model object for this record
      * 
      * @param \GDAO\Model $model
+     * 
+     * @return $this
+     * 
      */
-	public function setModel(\GDAO\Model $model);
-    
+    public function setModel(\GDAO\Model $model): self;
+
     /**
      * 
      * Get all the data and property (name & value pairs) for this record.
@@ -334,10 +346,10 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * @return array of all data & property (name & value pairs) for this record.
      * 
      */
-    public function toArray();
-    
+    public function toArray(): array;
+
     //Magic Methods
-    
+
     /**
      * 
      * Gets a data value.
@@ -385,7 +397,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      *                (name & value pairs) for this record.
      * 
      */
-    public function __toString();
+    public function __toString(): string;
 
     /**
      * 

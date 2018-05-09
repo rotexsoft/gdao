@@ -14,7 +14,8 @@
         }
     ],    
     "require": {
-        "php": ">=7.1"
+        "php": ">=7.1",
+        "rotexsoft/versatile-collections": "^1.0"
     },
     "require-dev": {
         "satooshi/php-coveralls": "^2.0",

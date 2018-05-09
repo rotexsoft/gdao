@@ -6,7 +6,7 @@
  *
  * @author aadegbam
  */
-class ModelTest extends \PHPUnit_Framework_TestCase
+class ModelTest extends \PHPUnit\Framework\TestCase
 {
     protected $_mock_model_obj_with_no_db_connection;
     protected $_mock_model_obj_with_memory_sqlite_connection;
@@ -1983,7 +1983,7 @@ EOT;
                     ]
                 );
         
-        $model->createNewCollection(new \GDAO\Model\RecordsList([]));
+        $model->createNewCollection([]);
     }
     
     /**

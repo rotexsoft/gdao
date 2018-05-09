@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace GDAO\Model;
 
@@ -7,11 +8,11 @@ namespace GDAO\Model;
  * Represents a collection of \GDAO\Model\RecordInterface objects.
  *
  * @author Rotimi Adegbamigbe
- * @copyright (c) 2015, Rotimi Adegbamigbe
+ * @copyright (c) 2018, Rotimi Adegbamigbe
  * 
  */
-interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggregate
-{
+interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggregate {
+    
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     ////
@@ -26,28 +27,13 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
     ////   
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////    
-    
+
     /**
      * 
-     * \GDAO\Model\RecordsList is only used to enforce strict typing.
-     * Ie. all the records in the collection are of type \GDAO\Model\RecordInterface
-     * or any of its sub-classes.
-     * 
-     * Implementers of this API do not have to store the collection's data in
-     * a \GDAO\Model\RecordsList. They can use an array and just call
-     * \GDAO\Model\RecordsList->toArray() to get at the underlying array
-     * \GDAO\Model\RecordsList uses to store items.
-     * 
-     * @param \GDAO\Model\RecordsList $data list of instances of \GDAO\Model\RecordInterface
-     * @param \GDAO\Model $model The model object that transfers data between the db and this collection.
-     * @param array $extra_opts an array that may be used to pass initialization 
-     *                          value(s) for protected and / or private properties
-     *                          of this class
+     * @param \GDAO\Model\RecordInterface $records one or more record objects to be stored in the collection.
      */
-	public function __construct(
-        RecordsList $data, \GDAO\Model $model, array $extra_opts=array()
-    );
-    
+    public function __construct(\GDAO\Model\RecordInterface ...$records);
+
     /**
      * 
      * Deletes each record in the collection from the database, but leaves the
@@ -55,16 +41,40 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * Call $this->removeAll() to empty the collection of the record objects.
      * 
-     * @return bool|array true if all records were successfully deleted or an
-     *                    array of keys in the collection for the records that 
-     *                    couldn't be successfully deleted. It's most likely a 
-     *                    PDOException would be thrown if the deletion failed.
+     * Records that could not be deleted, should be stored so that they can be returned 
+     * by $this->getRecordsNotDeletedByLastDeleteAll(...).
+     * If all records were successfully deleted the store should contain an empty
+     * array so that $this->getRecordsNotDeletedByLastDeleteAll(...) returns an
+     * empty collection.
+     * 
+     * @return bool|array true if all records were successfully deleted or false if not.
+     * 
+     * @see \GDAO\Model\CollectionInterface::getRecordsNotDeletedByLastDeleteAll($purge_records_for_next_call)
      * 
      * @throws \PDOException 
      * 
      */
-	public function deleteAll();
-    
+    public function deleteAll(): bool;
+
+    /**
+     * 
+     * Returns a collection of records that were not successfully deleted by the last call to $this->deleteAll()
+     * 
+     * @param bool $purge_records_for_next_call true if returned records should not be returned on subsequent calls to
+     *                                          this method until $this->deleteAll() is called again which may lead to
+     *                                          another batch of records that were not deleted via $this->deleteAll(),
+     *                                          false otherwise (meaning this method will keep returning a collection
+     *                                          of records that could not be deleted via the last call to $this->deleteAll()
+     *                                          until $this->deleteAll() is called again).
+     * 
+     * @return \GDAO\Model\CollectionInterface a collection of records that could not be deleted by the last call to
+     *                                         $this->deleteAll(). If last call to $this->deleteAll() did not fail,
+     *                                         then an empty collection should be returned.
+     * 
+     * @see \GDAO\Model\CollectionInterface::deleteAll()
+     */
+    public function getRecordsNotDeletedByLastDeleteAll(bool $purge_records_for_next_call=false): \GDAO\Model\CollectionInterface;
+
     /**
      * 
      * Returns an array of all values for a single column in the collection.
@@ -76,8 +86,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      *               element.
      * 
      */
-	public function getColVals($col);
-    
+    public function getColVals($col): array;
+
     /**
      * 
      * Returns all the keys for this collection.
@@ -85,8 +95,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return array
      * 
      */
-    public function getKeys();
-    
+    public function getKeys(): array;
+
     /**
      * 
      * Returns the model from which the data originates.
@@ -94,43 +104,41 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return \GDAO\Model The origin model object.
      * 
      */
-	public function getModel();
-    
+    public function getModel(): \GDAO\Model;
+
     /**
      * 
      * Are there any records in the collection?
      * 
-     * @return bool True if empty, false if not.
+     * @return bool true if empty, false if not.
      * 
      */
-	public function isEmpty();
-    
+    public function isEmpty(): bool;
+
     /**
      * 
-     * Load the collection with a list of records.
+     * Load the collection with record objects that will replace the records (if any ) that were in the collection. 
      * 
-     * \GDAO\Model\RecordsList is used instead of an array because
-     * \GDAO\Model\RecordsList can only contain instances of \GDAO\Model\RecordInterface
-     * or its descendants. We only ever want instances of \GDAO\Model\RecordInterface or
-     * its descendants inside a collection.
+     * If an array of records is to be injected into this method, it must be done
+     * via the argument unpacking technique.
      * 
-     * @param \GDAO\Model\RecordsList $data_2_load
      * 
-     * @return void
+     * @param \GDAO\Model\RecordInterface $records one or more record objects to be added to the collection
+     * 
+     * @return $this the collection records were added to.
      * 
      */
-	public function loadData(RecordsList $data_2_load);
-    
-    
+    public function loadData(\GDAO\Model\RecordInterface ...$records): self;
+
     /**
      * 
      * Removes all records from the collection but **does not** delete them
      * from the database.
      * 
-     * @return void
+     * @return $this the collection object all records were just removed from
      * 
      */
-	public function removeAll();
+    public function removeAll(): self;
 
     /**
      * 
@@ -150,33 +158,58 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      *          VALUES ('1', 'Lord of the Rings'),
      *                 ('2', 'Harry Potter');
      * 
+     * Records that could not be saved, should be stored so that they can be 
+     * returned by $this->getRecordsNotSavedByLastSaveAll(...).
+     * If all records were successfully saved the store should contain an empty
+     * array so that $this->getRecordsNotSavedByLastSaveAll(...) returns an
+     * empty collection.
+     * 
      * @param bool $group_inserts_together true to group all records to be 
      *                                     inserted together in order to perform 
      *                                     a single sql insert operation, false
      *                                     to perform one-by-one inserts.
      * 
-     * @return bool|array true if all inserts and updates were successful or
-     *                    return an array of keys in the collection for the 
-     *                    records that couldn't be successfully inserted or
-     *                    updated. It's most likely a PDOException would be
-     *                    thrown if an insert or update fails.
+     * @return bool true if all inserts and updates were successful or false
+     *              if one or more record(s) couldn't be successfully inserted 
+     *              or updated. It's most likely a PDOException would be thrown 
+     *              if an insert or update fails.
+     * 
+     * @see \GDAO\Model\CollectionInterface::getRecordsNotSavedByLastSaveAll($purge_records_for_next_call)
      * 
      * @throws \PDOException
      * 
      */
-    public function saveAll($group_inserts_together=false);
-    
+    public function saveAll($group_inserts_together = false);
+
+    /**
+     * 
+     * Returns a collection of records that were not successfully saved by the last call to $this->saveAll()
+     * 
+     * @param bool $purge_records_for_next_call true if returned records should not be returned on subsequent calls to
+     *                                          this method until $this->saveAll() is called again which may lead to
+     *                                          another batch of records that were not saved via $this->saveAll(),
+     *                                          false otherwise (meaning this method will keep returning a collection
+     *                                          of records that could not be saved via the last call to $this->saveAll()
+     *                                          until $this->saveAll() is called again).
+     * 
+     * @return \GDAO\Model\CollectionInterface a collection of records that could not be saved by the last call to
+     *                                         $this->saveAll(). If last call to $this->saveAll() did not fail,
+     *                                         then an empty collection should be returned.
+     * 
+     * @see \GDAO\Model\CollectionInterface::saveAll($group_inserts_together = false)
+     */
+    public function getRecordsNotSavedByLastSaveAll(bool $purge_records_for_next_call=false): \GDAO\Model\CollectionInterface;
     /**
      * 
      * Injects the model from which the data originates.
      * 
      * @param \GDAO\Model $model The origin model object.
      * 
-     * @return void
+     * @return $this collection object that model was just set on
      * 
      */
-	public function setModel(\GDAO\Model $model);
-    
+    public function setModel(\GDAO\Model $model): self;
+
     /**
      * 
      * Returns an array representation of an instance of this class.
@@ -184,16 +217,21 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return array an array representation of an instance of this class.
      * 
      */
-    public function toArray();
-    
+    public function toArray(): array;
+
     /**
      * 
      * Returns a record from the collection based on its key value.
+     * 
+     * A \GDAO\Model\ItemNotFoundInCollectionException must be thrown if no
+     * record exists with the specified $key
      * 
      * @param int|string $key The sequential or associative key value for the
      *                        record.
      * 
      * @return \GDAO\Model\RecordInterface
+     * 
+     * @throws \GDAO\Model\ItemNotFoundInCollectionException
      * 
      */
     public function __get($key);
@@ -202,9 +240,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * Does a certain key exist in the data?
      * 
-     * @param string $key The requested data key.
+     * @param int|string $key The requested data key.
      * 
-     * @return void
      * 
      */
     public function __isset($key);
@@ -218,52 +255,31 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * @return void
      * 
-     * 
      */
-    public function __set($key, \GDAO\Model\RecordInterface $val);
+    public function __set($key, $val): void;
 
-    /**
-     * 
-     * ArrayAccess: set a key value; appends to the array when using []
-     * notation.
-     * 
-     * NOTE: Implementers of this class must make sure that $val is an instance 
-     *       of \GDAO\Model\RecordInterface else throw a 
-     *       \GDAO\Model\CollectionCanOnlyContainGDAORecordsException exception.
-     * 
-     * @param string $key The requested key.
-     * 
-     * @param \GDAO\Model\RecordInterface $val The value to set it to.
-     * 
-     * @return void
-     * 
-     * @throws \GDAO\Model\CollectionCanOnlyContainGDAORecordsException
-     * 
-     */
-    public function offsetSet($key, $val);
-    
     /**
      * 
      * Returns a string representation of an instance of this class.
      * 
-     * @return array a string representation of an instance of this class.
+     * @return string a string representation of an instance of this class.
      * 
      */
-    public function __toString();
+    public function __toString(): string;
 
     /**
      * 
-     * Removes a record with the specified key from the collection.
+     * Removes a record with the specified key from the collection, if present.
      * 
      * @param string $key The requested data key.
      * 
      * @return void
      * 
      */
-    public function __unset($key);
-    
+    public function __unset($key): void;
+
     //Hooks
-    
+
     /**
      * 
      * User-defined pre-delete logic.
@@ -274,8 +290,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return void
      * 
      */
-    public function _preDeleteAll();
-    
+    public function _preDeleteAll(): void;
+
     /**
      * 
      * User-defined post-delete logic.
@@ -286,8 +302,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return void
      * 
      */
-    public function _postDeleteAll();
-    
+    public function _postDeleteAll(): void;
+
     /**
      * 
      * User-defined pre-save logic for the collection.
@@ -298,8 +314,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return void
      * 
      */
-    public function _preSaveAll($group_inserts_together=false);
-    
+    public function _preSaveAll($group_inserts_together = false): void;
+
     /**
      * 
      * User-defined post-save logic for the collection.
@@ -310,6 +326,5 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return void
      * 
      */
-    public function _postSaveAll($save_all_result, $group_inserts_together=false);
+    public function _postSaveAll($save_all_result, $group_inserts_together = false): void;
 }
-
