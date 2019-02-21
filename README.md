@@ -1,4 +1,4 @@
-# Generic Data Access Objects (GDAO) ![Build Status](https://travis-ci.org/rotexsoft/gdao.svg?branch=master)
+# Generic Data Access Objects (GDAO) [![Build Status](https://img.shields.io/travis/rotexsoft/gdao/master.png?style=flat-square)](https://travis-ci.org/rotexsoft/gdao) 
 
 ## Description
 
