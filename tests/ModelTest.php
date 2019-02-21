@@ -6,12 +6,12 @@
  *
  * @author aadegbam
  */
-class ModelTest extends \PHPUnit_Framework_TestCase
+class ModelTest extends \PHPUnit\Framework\TestCase
 {
     protected $_mock_model_obj_with_no_db_connection;
     protected $_mock_model_obj_with_memory_sqlite_connection;
 
-    protected function setUp() {
+    protected function setUp(): void {
         
         parent::setUp();
 
@@ -54,11 +54,10 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($model_obj_as_array['_passwd'] === 'test_passwd', $msg);
         $this->assertTrue($model_obj_as_array['_pdo_driver_opts'] === [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'], $msg);
     }
-    
-    /**
-     * @expectedException \GDAO\ModelPrimaryColNameNotSetDuringConstructionException
-     */
+
     public function testThatConstructorThrowsExceptionForEmptyPrimaryColName() {
+        
+        $this->expectException(\GDAO\ModelPrimaryColNameNotSetDuringConstructionException::class);
         
         $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
@@ -71,12 +70,11 @@ class ModelTest extends \PHPUnit_Framework_TestCase
                     ]
                 );
     }
-    
-    /**
-     * @expectedException \GDAO\ModelTableNameNotSetDuringConstructionException
-     */
+
     public function testThatConstructorThrowsExceptionForEmptyTableName() {
-                    
+        
+        $this->expectException(\GDAO\ModelTableNameNotSetDuringConstructionException::class);
+        
         $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
                     'test_username',
@@ -1745,7 +1743,6 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         $this->_testParamsArray4Exception($data['where'], $msg, $substr);
     }
     
-    
     public function testValidateWhereOrHavnParamsHasKeysInTheAcceptableRange() {
         
         $data = [
@@ -1777,7 +1774,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
         } catch (\Exception $actual_exception) {
             
                 $this->assertInstanceOf( $expected, $actual_exception, $label);           
-                $this->assertContains( $expected_err_msg_substr, $actual_exception->getMessage());
+                $this->assertStringContainsString( $expected_err_msg_substr, $actual_exception->getMessage());
         }
     }
     
@@ -1847,7 +1844,7 @@ class ModelTest extends \PHPUnit_Framework_TestCase
 )
 EOT;
 
-        $this->assertContains($expected_sql, $result[0]);
+        $this->assertStringContainsString($expected_sql, $result[0]);
         
         $expected_params = [
             '_1_' => 58, '_2_' => 68, '_3_' => 581, '_4_' => 681, '_5_' => 582,
@@ -1894,7 +1891,7 @@ array (
 )
 EOT;
 //echo $model->__toString(); exit;
-        $this->assertContains($sub_str, $model->__toString());
+        $this->assertStringContainsString($sub_str, $model->__toString());
     }
     
     public function testThatToArrayWorksAsExpected() {
@@ -1928,11 +1925,10 @@ EOT;
         $msg = __METHOD__;
         $this->assertTrue( $expected_array === $model->toArray(), $msg);
     }
-    
-    /**
-     * @expectedException \GDAO\ModelMustImplementMethodException
-     */
+
     public function testThat__callThrowsException() {
+        
+        $this->expectException(\GDAO\ModelMustImplementMethodException::class);
         
         $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
@@ -1947,11 +1943,10 @@ EOT;
         
         $model->__call('', '');
     }
-    
-    /**
-     * @expectedException \GDAO\ModelMustImplementMethodException
-     */
+
     public function testThat__getThrowsException() {
+        
+        $this->expectException(\GDAO\ModelMustImplementMethodException::class);
         
         $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
@@ -1966,11 +1961,10 @@ EOT;
         
         $model->__get('');
     }
-    
-    /**
-     * @expectedException \GDAO\ModelMustImplementMethodException
-     */
+
     public function testThatCreateNewCollectionThrowsException() {
+        
+        $this->expectException(\GDAO\ModelMustImplementMethodException::class);
         
         $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
@@ -1985,11 +1979,10 @@ EOT;
         
         $model->createNewCollection(new \GDAO\Model\RecordsList([]));
     }
-    
-    /**
-     * @expectedException \GDAO\ModelMustImplementMethodException
-     */
+
     public function testThatFetchRecordsIntoCollectionThrowsException() {
+        
+        $this->expectException(\GDAO\ModelMustImplementMethodException::class);
         
         $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',

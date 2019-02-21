@@ -14,13 +14,13 @@
         }
     ],    
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=7.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.7",
+        "phpunit/phpunit": "^8.0",
         "devster/ubench": "^1.1",
         "digitalnature/php-ref": "^1.0",
-        "satooshi/php-coveralls": "^1.0"
+        "php-coveralls/php-coveralls": "^2.0"
     },
     "autoload": {
         "classmap": ["src/"]
@@ -29,6 +29,6 @@
         "classmap": ["src/", "tests/"]
     },
     "suggest": {
-        "rotexsoft/leanorm": "A Concrete Implementation of the Abstract Classes and Interfaces in rotexsoft/gdao based on a stripped down version of idiorm (\\LeanOrm\\DBConnector). Light weight data access library."
+        "rotexsoft/leanorm": "A Concrete Implementation of the Abstract Classes and Interfaces in rotexsoft/gdao. A light weight data-access / ORM library."
     }
 }

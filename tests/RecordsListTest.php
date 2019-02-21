@@ -6,11 +6,11 @@
  *
  * @author aadegbam
  */
-class RecordsListTest extends \PHPUnit_Framework_TestCase
+class RecordsListTest extends \PHPUnit\Framework\TestCase
 {
     protected $_mock_model_obj_with_memory_sqlite_connection;
 
-    protected function setUp() {
+    protected function setUp(): void {
         
         parent::setUp();
 
@@ -26,11 +26,10 @@ class RecordsListTest extends \PHPUnit_Framework_TestCase
 ////////////////////////////////////////////////////////////////////////////////
 // Start Tests for \GDAO\Model::__construct(....)
 ////////////////////////////////////////////////////////////////////////////////
-    
-    /**
-     * @expectedException \InvalidArgumentException
-     */
+
     public function testThatConstructorThrowsExceptionWhenANonRecordInterfaceObjectIsPresent() {
+        
+        $this->expectException(\InvalidArgumentException::class);
         
         $array_of_alleged_recs =
             [
@@ -105,11 +104,10 @@ class RecordsListTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($new_last_item === $record6, $msg); //new last element
         $this->assertTrue(count($record_list_obj) === 6, $msg); //total count has been increased by one
     }
-    
-    /**
-     * @expectedException \InvalidArgumentException
-     */
+
     public function testThatAddRangeThrowsExceptionWhenANonRecordInterfaceObjectIsPresent() {
+        
+        $this->expectException(\InvalidArgumentException::class);
         
         $array_of_alleged_recs = [
             new RecordForTestingRecordsList([], $this->_mock_model_obj_with_memory_sqlite_connection),
