@@ -711,12 +711,14 @@ abstract class Model
         '<'         => '<', 
         '<='        => '<=', 
         'in'        => 'IN', 
-        'is-null'   => 'IS NULL', 
+        'is-null'   => 'IS NULL',
+        'is-empty-string'   => "= ''",
         'like'      => 'LIKE', 
         '!='        => '<>', 
         'not-in'    => 'NOT IN',
         'not-like'  => 'NOT LIKE', 
-        'not-null'  => 'IS NOT NULL'
+        'not-null'  => 'IS NOT NULL',
+        'not-empty-string'  => "<> ''",
     );
     
     /**
@@ -1165,11 +1167,12 @@ abstract class Model
                 } else if (
                         $has_a_col_and_an_op_key 
                         && !$has_a_val_key 
-                        && !in_array($value['op'], array('is-null', 'not-null'))
+                        && !in_array($value['op'], array('is-null', 'not-null', 'is-empty-string', 'not-empty-string'))
                 ) {
                     //Failed Requirement below
                     //If the $value array is has these 2 keys 'col' & 'op' 
                     //the operator's value must be either 'is-null' or 'not-null'
+                    // or 'is-empty-string' or 'not-empty-string'
                     $msg = "ERROR: Incorect where condition definition in a"
                             . " sub-array referenced via a key named '{$key}'. "
                             . PHP_EOL . var_export($value, true) . PHP_EOL
@@ -1178,19 +1181,19 @@ abstract class Model
                             . PHP_EOL . 'A sub-array containing keys named'
                             . ' \'col\' and \'op\' without a key named'
                             . ' \'val\' is valid if and only if the entry with'
-                            . ' a key named \'op\' has either a value of'
-                            . ' \'is-null\' or \'not-null\' '. PHP_EOL;
+                            . ' a key named \'op\' has a value of'
+                            . ' \'is-null\' or \'not-null\' or \'is-empty-string\' or \'not-empty-string\' '. PHP_EOL;
 
                     throw new ModelBadWhereOrHavingParamSuppliedException($msg);
                     
                 } else if (
                         $has_a_col_and_an_op_key 
                         && $has_a_val_key 
-                        && in_array($value['op'], array('is-null', 'not-null'))
+                        && in_array($value['op'], array('is-null', 'not-null', 'is-empty-string', 'not-empty-string'))
                 ) {
                     //Failed Requirement below
                     //For any sub-array containing an item with a key named 'op' 
-                    //with a value of either 'not-null' or 'is-null', there must not be
+                    //with a value of 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
                     //any item in that sub-array with a key named 'val', but there must
                     //be a corresponding item with a key named 'col' with a string value.
                     $msg = "ERROR: Incorect where condition definition in a"
@@ -1501,7 +1504,7 @@ abstract class Model
 
                         if( 
                             !$has_a_val_key 
-                            ||  in_array( $value['op'], array('not-null', 'is-null') ) 
+                            ||  in_array( $value['op'], array('not-null', 'is-null', 'is-empty-string', 'not-empty-string') ) 
                         ) {
                             $result_sql .= str_repeat("\t", ($indent_level + 1) )
                                      . "{$value['col']} $db_specific_op" . PHP_EOL;
@@ -1693,7 +1696,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -1774,7 +1777,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -1825,7 +1828,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -1906,7 +1909,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -2041,7 +2044,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -2122,7 +2125,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -2173,7 +2176,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -2254,7 +2257,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -2385,7 +2388,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -2466,7 +2469,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -2517,7 +2520,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -2598,7 +2601,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -2719,7 +2722,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -2800,7 +2803,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -2851,7 +2854,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -2932,7 +2935,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -3062,7 +3065,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -3143,7 +3146,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -3194,7 +3197,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -3275,7 +3278,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -3365,7 +3368,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -3446,7 +3449,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -3497,7 +3500,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -3578,7 +3581,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -3695,7 +3698,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -3776,7 +3779,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
@@ -3827,7 +3830,7 @@ abstract class Model
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null'
+     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
      *    
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
@@ -3908,7 +3911,7 @@ abstract class Model
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
      *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null', there must not be
+     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
      *              any item in that sub-array with a key named 'val', but there must
      *              be a corresponding item with a key named 'col' with a string value.
      *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
