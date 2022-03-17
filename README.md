@@ -1,4 +1,16 @@
-# Generic Data Access Objects (GDAO) [![Build Status](https://img.shields.io/travis/rotexsoft/gdao/master.png?style=flat-square)](https://travis-ci.org/rotexsoft/gdao) 
+# Generic Data Access Objects (GDAO) 
+
+[![Build Status](https://img.shields.io/travis/rotexsoft/gdao/master.png?style=flat-square)](https://travis-ci.org/rotexsoft/gdao) &nbsp; 
+[![Coverage Status](https://coveralls.io/repos/github/rotexsoft/gdao/badge.svg)](https://coveralls.io/github/rotexsoft/gdao) &nbsp; 
+![GitHub repo size](https://img.shields.io/github/repo-size/rotexsoft/gdao) &nbsp; 
+![Packagist Downloads](https://img.shields.io/packagist/dt/rotexsoft/gdao) &nbsp; 
+![GitHub top language](https://img.shields.io/github/languages/top/rotexsoft/gdao) &nbsp; 
+![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/rotexsoft/gdao) &nbsp; 
+![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/rotexsoft/gdao) &nbsp; 
+![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/rotexsoft/gdao/latest)
+![GitHub last commit](https://img.shields.io/github/last-commit/rotexsoft/gdao) &nbsp; 
+![GitHub Release Date](https://img.shields.io/github/release-date/rotexsoft/gdao)
+
 
 ## Description
 
