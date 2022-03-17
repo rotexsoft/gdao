@@ -5,11 +5,16 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/rotexsoft/gdao) &nbsp; 
 ![Packagist Downloads](https://img.shields.io/packagist/dt/rotexsoft/gdao) &nbsp; 
 ![GitHub top language](https://img.shields.io/github/languages/top/rotexsoft/gdao) &nbsp; 
-![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/rotexsoft/gdao) &nbsp; 
+
+<a href="https://libraries.io/github/rotexsoft/gdao">
+    <img alt="Libraries.io dependency status for GitHub repo" src="https://img.shields.io/librariesio/github/rotexsoft/gdao">
+</a>
+
 ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/rotexsoft/gdao) &nbsp; 
-![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/rotexsoft/gdao/latest)
+![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/rotexsoft/gdao/latest) &nbsp; 
 ![GitHub last commit](https://img.shields.io/github/last-commit/rotexsoft/gdao) &nbsp; 
 ![GitHub Release Date](https://img.shields.io/github/release-date/rotexsoft/gdao)
+
 
 ## Description
 
