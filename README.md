@@ -11,7 +11,6 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/rotexsoft/gdao) &nbsp; 
 ![GitHub Release Date](https://img.shields.io/github/release-date/rotexsoft/gdao)
 
-
 ## Description
 
 A package containing class and interface definitions that can be used as a basis for a __**Table Data Gateway**__ (http://bit.ly/1F8Zjfc) and __**Data Mapper**__ (http://bit.ly/1hD2qCc) implementation of a database access library that performs data manipulation (DM) tasks.
