@@ -33,7 +33,7 @@ class RecordForTestingRecordsList implements \GDAO\Model\RecordInterface
     public function getInitialData() { }
 
     public function &getInitialDataByRef() { }
-
+    #[\ReturnTypeWillChange]
     public function getIterator() { }
 
     public function getModel() { }
