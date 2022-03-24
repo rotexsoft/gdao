@@ -21,7 +21,7 @@ class RecordForTestingRecordsList implements \GDAO\Model\RecordInterface
     public function __toString() { }
 
     public function __unset($key) { }
-
+    #[\ReturnTypeWillChange]
     public function count() { }
 
     public function delete($set_record_objects_data_to_empty_array = false) { }
@@ -55,13 +55,13 @@ class RecordForTestingRecordsList implements \GDAO\Model\RecordInterface
     public function markAsNew() { }
 
     public function markAsNotNew() { }
-
+    #[\ReturnTypeWillChange]
     public function offsetExists($key) { }
-
+    #[\ReturnTypeWillChange]
     public function offsetGet($key) { }
-
+    #[\ReturnTypeWillChange]
     public function offsetSet($key, $val) { }
-
+    #[\ReturnTypeWillChange]
     public function offsetUnset($key) { }
 
     public function save($data_2_save = null) { }

@@ -192,6 +192,7 @@ final class RecordsList implements \Countable, \IteratorAggregate
      *
      * @return integer The number of items in the collection
      */
+    #[\ReturnTypeWillChange]
     public function count() {
         
         return count($this->_data);
@@ -204,6 +205,7 @@ final class RecordsList implements \Countable, \IteratorAggregate
      * 
      * @return \ArrayIterator
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new \ArrayIterator($this->_data);
