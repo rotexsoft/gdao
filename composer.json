@@ -4,7 +4,7 @@
     "description": "A package containing class and interface definitions that can be used as a basis for a Table Data Gateway (http://bit.ly/1F8Zjfc) and Data Mapper (http://bit.ly/1hD2qCc) implementation of a database access library that performs data manipulation (DM) tasks.",
     "keywords": [ "orm", "db", "pdo", "mysql", "postgresql", "sqlite", "database", "sql", "table","data", "gateway", "table-data-gateway", "table data gateway", "data", "mapper", "data-mapper", "data mapper"],
     "homepage": "https://github.com/rotexsoft/gdao",
-    "license": "BSD-2-Clause",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Rotimi Adegbamigbe",
