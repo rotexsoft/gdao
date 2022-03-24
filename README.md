@@ -4,11 +4,9 @@
 [![Run PHP Tests and Code Quality Tools](https://github.com/rotexsoft/gdao/actions/workflows/php.yml/badge.svg)](https://github.com/rotexsoft/gdao/actions/workflows/php.yml) &nbsp; 
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/rotexsoft/gdao)
 ![GitHub](https://img.shields.io/github/license/rotexsoft/gdao)
-
-
 [![Coverage Status](https://coveralls.io/repos/github/rotexsoft/gdao/badge.svg)](https://coveralls.io/github/rotexsoft/gdao) &nbsp; 
-![GitHub repo size](https://img.shields.io/github/repo-size/rotexsoft/gdao) &nbsp; 
-![Packagist Downloads](https://img.shields.io/packagist/dt/rotexsoft/gdao) &nbsp; 
+![GitHub repo size](https://img.shields.io/github/repo-size/rotexsoft/gdao) &nbsp;
+![Packagist Downloads](https://img.shields.io/packagist/dt/rotexsoft/gdao) &nbsp;
 ![GitHub top language](https://img.shields.io/github/languages/top/rotexsoft/gdao) &nbsp; 
 ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/rotexsoft/gdao) &nbsp; 
 ![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/rotexsoft/gdao/latest) &nbsp; 
