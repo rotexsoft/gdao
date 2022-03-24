@@ -1,6 +1,7 @@
 # Generic Data Access Objects (GDAO) 
 
 [![Build Status](https://img.shields.io/travis/rotexsoft/gdao/master.png?style=flat-square)](https://travis-ci.org/rotexsoft/gdao) &nbsp; 
+[![Run PHP Tests and Code Quality Tools](https://github.com/rotexsoft/gdao/actions/workflows/php.yml/badge.svg)](https://github.com/rotexsoft/gdao/actions/workflows/php.yml) &nbsp; 
 [![Coverage Status](https://coveralls.io/repos/github/rotexsoft/gdao/badge.svg)](https://coveralls.io/github/rotexsoft/gdao) &nbsp; 
 ![GitHub repo size](https://img.shields.io/github/repo-size/rotexsoft/gdao) &nbsp; 
 ![Packagist Downloads](https://img.shields.io/packagist/dt/rotexsoft/gdao) &nbsp; 
