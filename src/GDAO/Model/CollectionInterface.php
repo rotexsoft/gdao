@@ -240,6 +240,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @throws \GDAO\Model\CollectionCanOnlyContainGDAORecordsException
      * 
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($key, $val);
     
     /**
