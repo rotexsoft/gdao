@@ -44,7 +44,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      *                          value(s) for protected and / or private properties
      *                          of this class
      */
-	public function __construct(
+    public function __construct(
         RecordsList $data, \GDAO\Model $model, array $extra_opts=array()
     );
     
@@ -63,7 +63,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @throws \PDOException 
      * 
      */
-	public function deleteAll();
+    public function deleteAll();
     
     /**
      * 
@@ -76,7 +76,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      *               element.
      * 
      */
-	public function getColVals($col);
+    public function getColVals($col);
     
     /**
      * 
@@ -94,7 +94,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return \GDAO\Model The origin model object.
      * 
      */
-	public function getModel();
+    public function getModel();
     
     /**
      * 
@@ -103,7 +103,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return bool True if empty, false if not.
      * 
      */
-	public function isEmpty();
+    public function isEmpty();
     
     /**
      * 
@@ -119,7 +119,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return void
      * 
      */
-	public function loadData(RecordsList $data_2_load);
+    public function loadData(RecordsList $data_2_load);
     
     
     /**
@@ -130,7 +130,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return void
      * 
      */
-	public function removeAll();
+    public function removeAll();
 
     /**
      * 
@@ -175,7 +175,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return void
      * 
      */
-	public function setModel(\GDAO\Model $model);
+    public function setModel(\GDAO\Model $model);
     
     /**
      * 

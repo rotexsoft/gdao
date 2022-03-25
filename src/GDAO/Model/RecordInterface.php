@@ -83,7 +83,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      *                          value(s) for protected and / or private properties
      *                          of this class
      */
-	public function __construct(
+    public function __construct(
         array $data, \GDAO\Model $model, array $extra_opts=array()
     );
 	
@@ -195,19 +195,19 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return \GDAO\Model
      */
-	public function getModel();
+    public function getModel();
     
     /**
      * 
      * @return string name of the primary-key column of the db table this record belongs to
      */
-	public function getPrimaryCol();
+    public function getPrimaryCol();
     
     /**
      * 
      * @return mixed the value stored in the primary-key column for this record.
      */
-	public function getPrimaryVal();
+    public function getPrimaryVal();
     
     /**
      * 
@@ -220,7 +220,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * boolean true if the data is changed, boolean false if not changed.
      *  
      */
-	public function isChanged($col = null);
+    public function isChanged($col = null);
     
     /**
      * 
@@ -228,7 +228,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return bool
      */
-	public function isNew();
+    public function isNew();
     
     /**
      * 
@@ -253,7 +253,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * @throws \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
      */
-	public function loadData($data_2_load, array $cols_2_load = array());
+    public function loadData($data_2_load, array $cols_2_load = array());
     
     /**
      * 
@@ -299,7 +299,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * @return null|bool true: successful save, false: failed save, null: no changed data to save
      * 
      */
-	public function save($data_2_save = null);
+    public function save($data_2_save = null);
     
     /**
      * 
@@ -317,7 +317,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * @return bool true for a successful save, false for failed save, null: no changed data to save
      * 
      */
-	public function saveInTransaction($data_2_save = null);
+    public function saveInTransaction($data_2_save = null);
     
     /**
      * 
@@ -325,7 +325,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @param \GDAO\Model $model
      */
-	public function setModel(\GDAO\Model $model);
+    public function setModel(\GDAO\Model $model);
     
     /**
      * 
