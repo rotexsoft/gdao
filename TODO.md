@@ -1,3 +1,5 @@
+Add them to https://github.com/rotexsoft/gdao/issues moving forward. 
+
 * ~~Strive for 100% Unit Test Coverage~~ (Accomplished!)
 
 * Make API usable with tables that do not have a primary key column defined.
