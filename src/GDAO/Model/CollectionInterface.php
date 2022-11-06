@@ -102,7 +102,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @param \GDAO\Model\RecordInterface[] $data_2_load
      * 
      */
-    public function loadData(\GDAO\Model\RecordInterface ...$data_2_load): void;
+    public function loadData(\GDAO\Model\RecordInterface ...$data_2_load): self;
     
     
     /**
@@ -111,7 +111,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * from the database.
      * 
      */
-    public function removeAll():void;
+    public function removeAll():self;
 
     /**
      * 
@@ -154,7 +154,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @param \GDAO\Model $model The origin model object.
      * 
      */
-    public function setModel(\GDAO\Model $model): void;
+    public function setModel(\GDAO\Model $model): self;
     
     /**
      * 
