@@ -27,7 +27,7 @@ abstract class Model
      * @todo Work on supporting tables that don't have any primary key column defined
      * 
      */
-    protected ?string $_primary_col = null;
+    protected string $_primary_col = '';
     
     /**
      *
@@ -36,7 +36,7 @@ abstract class Model
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
      */
-    protected ?string $_table_name = null;
+    protected string $_table_name = '';
 
     /**
      *
@@ -697,9 +697,9 @@ abstract class Model
      * 
      */
     public function __construct(
-        $dsn = '',
-        $username = '', 
-        $passwd = '', 
+        string $dsn = '',
+        string $username = '', 
+        string $passwd = '', 
         array $pdo_driver_opts = [],
         array $extra_opts = []
     ) {
@@ -721,13 +721,13 @@ abstract class Model
             }
         }
         
-        if( $this->_primary_col === null || strlen($this->_primary_col) <= 0 ) {
+        if( strlen($this->_primary_col) <= 0 ) {
             
             $msg = 'Primary Key Column name ($_primary_col) not set for '.get_class($this);
             throw new ModelPrimaryColNameNotSetDuringConstructionException($msg);
         }
         
-        if( empty($this->_table_name) ) {
+        if( strlen($this->_table_name) <= 0 ) {
             
             $msg = 'Table name ($_table_name) not set for '.get_class($this);
             throw new ModelTableNameNotSetDuringConstructionException($msg);
@@ -891,312 +891,66 @@ abstract class Model
      * collections. The Model and Record classes are mandatory, the collection 
      * class is optional(php arrays are a good & natively available alternative).
      * 
-     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
+     * The methods described below must be implemented by implementers of this package
+     * These methods will help build the sql query that will be used to perform the fetch
+     * and must be called before this method is called.
+     * These methods must return the instance of this class that they were called on.
+     * If none of these methods are called before the fetch, the fetch should be done
+     * with the generic query below
+     *          SELECT * FROM $this->getTableName()
      * 
-     *  `relations_to_include`
-     *      : (array) An array of relation names as defined in  
-     *        \GDAO\Model->_relations. 
-     *        Eager-fetch related rows of data for each relation name.
+     *  `relations_to_include` a method like withRelations that accepts an array of
+     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                          Eager-fetch related rows of data for each relation name.
      * 
      *        NOTE: each key in the \GDAO\Model->_relations array is a 
      *              relation name. Eg. array_keys($this->_relations)
      *              returns an array of relation name(s) for a model.
      * 
-     *        NOTE: Implementers of this class should make the retreived related
+     *        NOTE: Implementers of this class should make the retrieved related
      *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_relations['comments'], the retreived 
+     *              $this->_relations['comments'], the retrieved 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
      *
-     *  `distinct`
-     *      : (bool) True if the DISTINCT keyword should be added to the query, 
-     *        else false if the DISTINCT keyword should be ommitted. 
+     *  `distinct` a method for adding the DISTINCT keyword to the query
      * 
-     *        NOTE: If `distinct` is not set/specified, implementers of this class 
-     *              should give it a default value of false.
-     * 
-     *  `cols`
-     *      : (array) An array of the name(s) of column(s) to be returned.
-     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
-     *        Return only these columns.
-     *        Eg. to generate SELECT col_1, col_2, col_3 ......
-     *        use: 
-     *          [
-     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
-     *          ]
+     *  `cols` method that generates db column names or expressions to return in a SELECT query
+     *      Eg: SELECT col_1, col_2, col_3
+     *      : An array of the name(s) of column(s) to be returned.
+     *        Expressions like 'COUNT(col_name) AS some_col' should be allowed as a column name.
      * 
      *        NOTE: If `cols` is not set/specified or is assigned an empty array
      *              value, implementers of this class should select all columns
      *              from the table associated with the model 
      *              (ie. SELECT * FROM models_table ..... ).
      * 
-     *  `where`
-     *      : (array) an array of parameters for building a WHERE clause, 
-     *        Eg. to generate 
+     *  `where` methods like where & orWhere for generating a WHERE clause, 
+     *        Eg:
      *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
      *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
-     * 
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *    
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'where' array or the first 
-     *              key in any of the array(s) inside the 'where' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
-     * 
-     *          #BAD 1 - first key in $array['where'] is 'OR' 
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     * 
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *          
-     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *          
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']['OR'] 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *              
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a WHERE clause 
-     *              (excluding the WHERE keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
      *
-     *  `group`
-     *      : (array) An array of the name(s) of column(s) which the results 
-     *        will be grouped by.
-     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
-     *        use the array below:
-     *          [
-     *              'group' => ['column_name_1', 'column_name_2']
-     *          ]
+     *  `groupBy` method for generating a GROUP BY clause:
+     *        Eg: GROUP BY column_name_1, column_name_2
      * 
-     *  `having`
-     *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate 
+     *  `having` methods like having & orHaving that can generate a HAVING clause.
+     *        Eg: 
      *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
      *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
      * 
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *    
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'having' array or the first 
-     *              key in any of the array(s) inside the 'having' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
+     *  `order` method
+     *      : for building an ORDER BY clause.
+     *        Eg: 'ORDER BY col_1 ASC, col_2 DESC'
      * 
-     *          #BAD 1 - first key in $array['having'] is 'OR' 
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     * 
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *          
-     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *          
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']['OR'] 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *              
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a HAVING clause 
-     *              (excluding the HAVING keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     * 
-     *  `order`
-     *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The values are the column names to ORDER BY.
-     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
-     *          [
-     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
-     *          ]
-     * 
-     *  `limit_offset`
-     *      : (int) Limit offset. Offset of the first row to return
+     * `limit` method that builds the appropriate limit clause for the db being used
+     *      `limit_offset`
+     *          : (int) Limit offset. Offset of the first row to return
      * 
      *        NOTE: Implementers of this class should use the `limit_offset` 
      *              value with the appropriate limit & offset mechanism for the 
@@ -1208,9 +962,8 @@ abstract class Model
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
-     * 
-     *  `limit_size`
-     *      : (int) Limit to a count of this many records.
+     *      `limit_size`
+     *          : (int) Limit to a count of this many records.
      * 
      *        NOTE: Implementers of this class should use the `limit_size` 
      *              value with the appropriate limit & offset mechanism for the 
@@ -1228,7 +981,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public function fetchRecordsIntoCollection(array $params = []) {
+    public function fetchRecordsIntoCollection() {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new ModelMustImplementMethodException($msg);
@@ -1239,312 +992,71 @@ abstract class Model
      * Fetch an array of records (instances of \GDAO\Model\RecordInterface or 
      * any of its sub-classes) [Eager Loading should be considered here].
      * 
-     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
+     * This method is not declared abstract in order to allow both implementers
+     * and consumers of this API to be able to implement or use this API without
+     * collections. The Model and Record classes are mandatory, the collection 
+     * class is optional(php arrays are a good & natively available alternative).
      * 
-     *  `relations_to_include`
-     *      : (array) An array of relation names as defined in any or all of 
-     *        \GDAO\Model->_relations. 
-     *        Eager-fetch related rows of data for each relation name.
+     * The methods described below must be implemented by implementers of this package
+     * These methods will help build the sql query that will be used to perform the fetch
+     * and must be called before this method is called.
+     * These methods must return the instance of this class that they were called on.
+     * If none of these methods are called before the fetch, the fetch should be done
+     * with the generic query below
+     *          SELECT * FROM $this->getTableName()
      * 
-     *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
+     *  `relations_to_include` a method like withRelations that accepts an array of
+     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                          Eager-fetch related rows of data for each relation name.
+     * 
+     *        NOTE: each key in the \GDAO\Model->_relations array is a 
      *              relation name. Eg. array_keys($this->_relations)
      *              returns an array of relation name(s) for a model.
      * 
-     *        NOTE: Implementers of this class should make the retreived related
+     *        NOTE: Implementers of this class should make the retrieved related
      *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_relations['comments'], the retreived 
+     *              $this->_relations['comments'], the retrieved 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
      *
-     *  `distinct`
-     *      : (bool) True if the DISTINCT keyword should be added to the query, 
-     *        else false if the DISTINCT keyword should be ommitted. 
+     *  `distinct` a method for adding the DISTINCT keyword to the query
      * 
-     *        NOTE: If `distinct` is not set/specified, implementers of this class 
-     *              should give it a default value of false.
-     * 
-     *  `cols`
-     *      : (array) An array of the name(s) of column(s) to be returned.
-     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
-     *        Return only these columns.
-     *        Eg. to generate SELECT col_1, col_2, col_3 ......
-     *        use: 
-     *          [
-     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
-     *          ]
+     *  `cols` method that generates db column names or expressions to return in a SELECT query
+     *      Eg: SELECT col_1, col_2, col_3
+     *      : An array of the name(s) of column(s) to be returned.
+     *        Expressions like 'COUNT(col_name) AS some_col' should be allowed as a column name.
      * 
      *        NOTE: If `cols` is not set/specified or is assigned an empty array
      *              value, implementers of this class should select all columns
      *              from the table associated with the model 
      *              (ie. SELECT * FROM models_table ..... ).
      * 
-     *  `where`
-     *      : (array) an array of parameters for building a WHERE clause, 
-     *        Eg. to generate 
+     *  `where` methods like where & orWhere for generating a WHERE clause, 
+     *        Eg:
      *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
      *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
+     *
+     *  `groupBy` method for generating a GROUP BY clause:
+     *        Eg: GROUP BY column_name_1, column_name_2
      * 
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *    
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'where' array or the first 
-     *              key in any of the array(s) inside the 'where' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
-     * 
-     *          #BAD 1 - first key in $array['where'] is 'OR' 
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     * 
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *          
-     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *          
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']['OR'] 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *              
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a WHERE clause 
-     *              (excluding the WHERE keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     * 
-     *  `group`
-     *      : (array) An array of the name(s) of column(s) which the results 
-     *        will be grouped by.
-     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
-     *        use the array below:
-     *          [
-     *              'group' => ['column_name_1', 'column_name_2']
-     *          ]
-     * 
-     *  `having`
-     *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate 
+     *  `having` methods like having & orHaving that can generate a HAVING clause.
+     *        Eg: 
      *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
      *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
      * 
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *    
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'having' array or the first 
-     *              key in any of the array(s) inside the 'having' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
+     *  `order` method
+     *      : for building an ORDER BY clause.
+     *        Eg: 'ORDER BY col_1 ASC, col_2 DESC'
      * 
-     *          #BAD 1 - first key in $array['having'] is 'OR' 
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     * 
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *          
-     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *          
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']['OR'] 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *              
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a HAVING clause 
-     *              (excluding the HAVING keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     * 
-     *  `order`
-     *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The values are the column names to ORDER BY.
-     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
-     *          [
-     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
-     *          ]
-     * 
-     *  `limit_offset`
-     *      : (int) Limit offset. Offset of the first row to return
+     * `limit` method that builds the appropriate limit clause for the db being used
+     *      `limit_offset`
+     *          : (int) Limit offset. Offset of the first row to return
      * 
      *        NOTE: Implementers of this class should use the `limit_offset` 
      *              value with the appropriate limit & offset mechanism for the 
@@ -1556,9 +1068,8 @@ abstract class Model
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
-     * 
-     *  `limit_size`
-     *      : (int) Limit to a count of this many records.
+     *      `limit_size`
+     *          : (int) Limit to a count of this many records.
      * 
      *        NOTE: Implementers of this class should use the `limit_size` 
      *              value with the appropriate limit & offset mechanism for the 
@@ -1576,341 +1087,94 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchRecordsIntoArray(array $params = []): array;
+    public abstract function fetchRecordsIntoArray(): array;
 
     /**
      *
      * Fetch an array of db data. Each record is an associative array and not an
      * instance of \GDAO\Model\RecordInterface [Eager Loading should be considered here].
      *
-     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
-     *
-     *  `relations_to_include`
-     *      : (array) An array of relation names as defined in any or all of 
-     *        \GDAO\Model->_relations. 
-     *        Eager-fetch related rows of data for each relation name.
-     *
-     *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
+     * The methods described below must be implemented by implementers of this package
+     * These methods will help build the sql query that will be used to perform the fetch
+     * and must be called before this method is called.
+     * These methods must return the instance of this class that they were called on.
+     * If none of these methods are called before the fetch, the fetch should be done
+     * with the generic query below
+     *          SELECT * FROM $this->getTableName()
+     * 
+     *  `relations_to_include` a method like withRelations that accepts an array of
+     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                          Eager-fetch related rows of data for each relation name.
+     * 
+     *        NOTE: each key in the \GDAO\Model->_relations array is a 
      *              relation name. Eg. array_keys($this->_relations)
      *              returns an array of relation name(s) for a model.
-     *
-     *        NOTE: Implementers of this class should make the retreived related
-     *              data accessible in each record via an array key named with the
+     * 
+     *        NOTE: Implementers of this class should make the retrieved related
+     *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_relations['comments'], the retreived 
+     *              $this->_relations['comments'], the retrieved 
      *              comments for each record returned by this fetch method should
-     *              be accessible via $record['comments']. Where $record is a 
+     *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
      *
-     *  `distinct`
-     *      : (bool) True if the DISTINCT keyword should be added to the query, 
-     *        else false if the DISTINCT keyword should be ommitted. 
-     *
-     *        NOTE: If `distinct` is not set/specified, implementers of this class 
-     *              should give it a default value of false.
-     *
-     *  `cols`
-     *      : (array) An array of the name(s) of column(s) to be returned.
-     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
-     *        Return only these columns.
-     *        Eg. to generate SELECT col_1, col_2, col_3 ......
-     *        use: 
-     *          [
-     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
-     *          ]
-     *
+     *  `distinct` a method for adding the DISTINCT keyword to the query
+     * 
+     *  `cols` method that generates db column names or expressions to return in a SELECT query
+     *      Eg: SELECT col_1, col_2, col_3
+     *      : An array of the name(s) of column(s) to be returned.
+     *        Expressions like 'COUNT(col_name) AS some_col' should be allowed as a column name.
+     * 
      *        NOTE: If `cols` is not set/specified or is assigned an empty array
      *              value, implementers of this class should select all columns
      *              from the table associated with the model 
      *              (ie. SELECT * FROM models_table ..... ).
-     *
-     *  `where`
-     *      : (array) an array of parameters for building a WHERE clause, 
-     *        Eg. to generate 
+     * 
+     *  `where` methods like where & orWhere for generating a WHERE clause, 
+     *        Eg:
      *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
      *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
      *
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *   
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'where' array or the first 
-     *              key in any of the array(s) inside the 'where' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
-     *
-     *          #BAD 1 - first key in $array['where'] is 'OR' 
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     *
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *         
-     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *         
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']['OR'] 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *             
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a WHERE clause 
-     *              (excluding the WHERE keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     *
-     *  `group`
-     *      : (array) An array of the name(s) of column(s) which the results 
-     *        will be grouped by.
-     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
-     *        use the array below:
-     *          [
-     *              'group' => ['column_name_1', 'column_name_2']
-     *          ]
-     *
-     *  `having`
-     *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate 
+     *  `groupBy` method for generating a GROUP BY clause:
+     *        Eg: GROUP BY column_name_1, column_name_2
+     * 
+     *  `having` methods like having & orHaving that can generate a HAVING clause.
+     *        Eg: 
      *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
      *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
-     *
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *   
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'having' array or the first 
-     *              key in any of the array(s) inside the 'having' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
-     *
-     *          #BAD 1 - first key in $array['having'] is 'OR' 
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     *
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *         
-     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *         
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']['OR'] 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *             
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a HAVING clause 
-     *              (excluding the HAVING keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     *    
-     *  `order`
-     *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The values are the column names to ORDER BY.
-     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
-     *          [
-     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
-     *          ]
-     *
-     *  `limit_offset`
-     *      : (int) Limit offset. Offset of the first row to return
-     *
+     * 
+     *  `order` method
+     *      : for building an ORDER BY clause.
+     *        Eg: 'ORDER BY col_1 ASC, col_2 DESC'
+     * 
+     * `limit` method that builds the appropriate limit clause for the db being used
+     *      `limit_offset`
+     *          : (int) Limit offset. Offset of the first row to return
+     * 
      *        NOTE: Implementers of this class should use the `limit_offset` 
      *              value with the appropriate limit & offset mechanism for the 
      *              DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     *
+     * 
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
-     *
-     *  `limit_size`
-     *      : (int) Limit to a count of this many records.
-     *
+     *      `limit_size`
+     *          : (int) Limit to a count of this many records.
+     * 
      *        NOTE: Implementers of this class should use the `limit_size` 
-     *              value with the appropriate limit & offset mechanism for 
-     *              the DB system their implementation supports. 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     *
+     * 
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
@@ -1919,976 +1183,284 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchRowsIntoArray(array $params = []): array;
+    public abstract function fetchRowsIntoArray(): array;
 
     /**
      *
      * Fetch an array of values for a specified column.
      *
-     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
+     * The methods described below must be implemented by implementers of this package
+     * These methods will help build the sql query that will be used to perform the fetch
+     * and must be called before this method is called.
+     * These methods must return the instance of this class that they were called on.
+     * If none of these methods are called before the fetch, the fetch should be done
+     * with the generic query below
+     *          SELECT * FROM $this->getTableName()
+     * 
+     *  `relations_to_include` a method like withRelations that accepts an array of
+     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                          Eager-fetch related rows of data for each relation name.
+     * 
+     *        NOTE: each key in the \GDAO\Model->_relations array is a 
+     *              relation name. Eg. array_keys($this->_relations)
+     *              returns an array of relation name(s) for a model.
+     * 
+     *        NOTE: Implementers of this class should make the retrieved related
+     *              data accessible in each record via a property named with the
+     *              same name as the relation name. For example, if there exists
+     *              $this->_relations['comments'], the retrieved 
+     *              comments for each record returned by this fetch method should
+     *              be accessible via $record->comments. Where $record is a 
+     *              reference to one of the records returned by this method.
      *
-     *  `distinct`
-     *      : (bool) True if the DISTINCT keyword should be added to the query, 
-     *        else false if the DISTINCT keyword should be ommitted. 
-     *
-     *        NOTE: If `distinct` is not set/specified, implementers of this class 
-     *              should give it a default value of false.
-     *
-     *  `cols`
-     *      : (array) An array of the name(s) of column(s) to be returned. Only 
-     *        the first one will be honored.
-     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
-     *        Eg. to generate SELECT col_1 FROM......
-     *        use: 
-     *          [
-     *              'cols' => [ 'col_1' ]
-     *          ]
-     *          OR
-     *          [
-     *              'cols' => [ 'col_1', 'col_2' ]
-     *          ]
-     *          OR
-     *          [
-     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
-     *          ]
-     *
+     *  `distinct` a method for adding the DISTINCT keyword to the query
+     * 
+     *  `cols` method that generates db column names or expressions to return in a SELECT query
+     *      Eg: SELECT col_1, col_2, col_3
+     *      : An array of the name(s) of column(s) to be returned.
+     *        Expressions like 'COUNT(col_name) AS some_col' should be allowed as a column name.
+     * 
      *        NOTE: If `cols` is not set/specified or is assigned an empty array
      *              value, implementers of this class should select all columns
      *              from the table associated with the model 
      *              (ie. SELECT * FROM models_table ..... ).
-     *
-     *  `where`
-     *      : (array) an array of parameters for building a WHERE clause, 
-     *        Eg. to generate 
+     * 
+     *  `where` methods like where & orWhere for generating a WHERE clause, 
+     *        Eg:
      *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
      *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
      *
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *   
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'where' array or the first 
-     *              key in any of the array(s) inside the 'where' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
-     *
-     *          #BAD 1 - first key in $array['where'] is 'OR' 
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     *
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *         
-     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *         
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']['OR'] 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *             
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a WHERE clause 
-     *              (excluding the WHERE keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     *
-     *  `group`
-     *      : (array) An array of the name(s) of column(s) which the results 
-     *        will be grouped by.
-     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
-     *        use the array below:
-     *          [
-     *              'group' => ['column_name_1', 'column_name_2']
-     *          ]
-     *
-     *  `having`
-     *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate 
+     *  `groupBy` method for generating a GROUP BY clause:
+     *        Eg: GROUP BY column_name_1, column_name_2
+     * 
+     *  `having` methods like having & orHaving that can generate a HAVING clause.
+     *        Eg: 
      *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
      *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
-     *
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *   
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'having' array or the first 
-     *              key in any of the array(s) inside the 'having' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
-     *
-     *          #BAD 1 - first key in $array['having'] is 'OR' 
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     *
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *         
-     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *         
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']['OR'] 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *             
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a HAVING clause 
-     *              (excluding the HAVING keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     *
-     *  `order`
-     *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The values are the column names to ORDER BY.
-     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
-     *          [
-     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
-     *          ]
-     *
-     *  `limit_offset`
-     *      : (int) Limit offset. Offset of the first row to return
-     *
+     * 
+     *  `order` method
+     *      : for building an ORDER BY clause.
+     *        Eg: 'ORDER BY col_1 ASC, col_2 DESC'
+     * 
+     * `limit` method that builds the appropriate limit clause for the db being used
+     *      `limit_offset`
+     *          : (int) Limit offset. Offset of the first row to return
+     * 
      *        NOTE: Implementers of this class should use the `limit_offset` 
      *              value with the appropriate limit & offset mechanism for the 
      *              DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     *
+     * 
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
-     *
-     *  `limit_size`
-     *      : (int) Limit to a count of this many records.
-     *
+     *      `limit_size`
+     *          : (int) Limit to a count of this many records.
+     * 
      *        NOTE: Implementers of this class should use the `limit_size` 
      *              value with the appropriate limit & offset mechanism for the 
      *              DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     *
+     * 
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      *
-     *
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchCol(array $params = []): array;
+    public abstract function fetchCol(): array;
 
     /**
      * 
      * Fetch a single record matching the specified params.
      * 
-     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
+     * The methods described below must be implemented by implementers of this package
+     * These methods will help build the sql query that will be used to perform the fetch
+     * and must be called before this method is called.
+     * These methods must return the instance of this class that they were called on.
+     * If none of these methods are called before the fetch, the fetch should be done
+     * with the generic query below (returning the first row)
+     *          SELECT * FROM $this->getTableName() 
      * 
-     *  `relations_to_include`
-     *      : (array) An array of relation names as defined in any or all of 
-     *        \GDAO\Model->_relations. 
-     *        Eager-fetch related rows of data for each relation name.
+     *  `relations_to_include` a method like withRelations that accepts an array of
+     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                          Eager-fetch related rows of data for each relation name.
      * 
-     *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
+     *        NOTE: each key in the \GDAO\Model->_relations array is a 
      *              relation name. Eg. array_keys($this->_relations)
      *              returns an array of relation name(s) for a model.
      * 
-     *        NOTE: Implementers of this class should make the retreived related
-     *              data accessible in the returned record via a property named 
-     *              with the same name as the relation name. For example, if 
-     *              there exists $this->_relations['comments'], the 
-     *              retreived comments for the record returned by this fetch 
-     *              method should be accessible via $record->comments. Where 
-     *              $record is a reference to the record returned by this method.
+     *        NOTE: Implementers of this class should make the retrieved related
+     *              data accessible in each record via a property named with the
+     *              same name as the relation name. For example, if there exists
+     *              $this->_relations['comments'], the retrieved 
+     *              comments for each record returned by this fetch method should
+     *              be accessible via $record->comments. Where $record is a 
+     *              reference to one of the records returned by this method.
      *
-     *  `distinct`
-     *      : (bool) True if the DISTINCT keyword should be added to the query, 
-     *        else false if the DISTINCT keyword should be ommitted. 
+     *  `distinct` a method for adding the DISTINCT keyword to the query
      * 
-     *        NOTE: If `distinct` is not set/specified, implementers of this class 
-     *              should give it a default value of false.
-     * 
-     *  `cols`
-     *      : (array) An array of the name(s) of column(s) to be returned.
-     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
-     *        Return only these columns.
-     *        Eg. to generate SELECT col_1, col_2, col_3 ......
-     *        use: 
-     *          [
-     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
-     *          ]
+     *  `cols` method that generates db column names or expressions to return in a SELECT query
+     *      Eg: SELECT col_1, col_2, col_3
+     *      : An array of the name(s) of column(s) to be returned.
+     *        Expressions like 'COUNT(col_name) AS some_col' should be allowed as a column name.
      * 
      *        NOTE: If `cols` is not set/specified or is assigned an empty array
      *              value, implementers of this class should select all columns
      *              from the table associated with the model 
      *              (ie. SELECT * FROM models_table ..... ).
      * 
-     *  `where`
-     *      : (array) an array of parameters for building a WHERE clause, 
-     *        Eg. to generate 
+     *  `where` methods like where & orWhere for generating a WHERE clause, 
+     *        Eg:
      *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
      *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
+     *
+     *  `groupBy` method for generating a GROUP BY clause:
+     *        Eg: GROUP BY column_name_1, column_name_2
      * 
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *    
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'where' array or the first 
-     *              key in any of the array(s) inside the 'where' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
-     * 
-     *          #BAD 1 - first key in $array['where'] is 'OR' 
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     * 
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *          
-     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *          
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']['OR'] 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *              
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a WHERE clause 
-     *              (excluding the WHERE keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     * 
-     *  `group`
-     *      : (array) An array of the name(s) of column(s) which the results 
-     *        will be grouped by.
-     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
-     *        use the array below:
-     *          [
-     *              'group' => ['column_name_1', 'column_name_2']
-     *          ]
-     * 
-     *  `having`
-     *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate 
+     *  `having` methods like having & orHaving that can generate a HAVING clause.
+     *        Eg: 
      *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
      *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
      * 
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *    
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'having' array or the first 
-     *              key in any of the array(s) inside the 'having' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
+     *  `order` method
+     *      : for building an ORDER BY clause.
+     *        Eg: 'ORDER BY col_1 ASC, col_2 DESC'
      * 
-     *          #BAD 1 - first key in $array['having'] is 'OR' 
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
+     * `limit` method that builds the appropriate limit clause for the db being used
+     *      `limit_offset`
+     *          : (int) Limit offset. Offset of the first row to return
      * 
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *          
-     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *          
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']['OR'] 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *              
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a HAVING clause 
-     *              (excluding the HAVING keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
+     *        NOTE: Implementers of this class should use the `limit_offset` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
      * 
-     *  `order`
-     *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The values are the column names to ORDER BY.
-     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
-     *          [
-     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
-     *          ]
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     *      `limit_size`
+     *          : (int) Limit to a count of this many records.
+     * 
+     *        NOTE: Implementers of this class should use the `limit_size` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
      * @return \GDAO\Model\RecordInterface|bool return a record object if found or false if no matching record was found
      * 
      * @throws \PDOException
      * 
      */
-    public abstract function fetchOneRecord(array $params = []);
+    public abstract function fetchOneRecord();
 
     /**
      *
      * Fetch an array of key-value pairs from the db table, where the 
      * 1st column's value is the key and the 2nd column's value is the value.
      *
-     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
+     * The methods described below must be implemented by implementers of this package
+     * These methods will help build the sql query that will be used to perform the fetch
+     * and must be called before this method is called.
+     * These methods must return the instance of this class that they were called on.
+     * If none of these methods are called before the fetch, the fetch should be done
+     * with the generic query below
+     *          SELECT * FROM $this->getTableName()
+     * 
+     *  `relations_to_include` a method like withRelations that accepts an array of
+     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                          Eager-fetch related rows of data for each relation name.
+     * 
+     *        NOTE: each key in the \GDAO\Model->_relations array is a 
+     *              relation name. Eg. array_keys($this->_relations)
+     *              returns an array of relation name(s) for a model.
+     * 
+     *        NOTE: Implementers of this class should make the retrieved related
+     *              data accessible in each record via a property named with the
+     *              same name as the relation name. For example, if there exists
+     *              $this->_relations['comments'], the retrieved 
+     *              comments for each record returned by this fetch method should
+     *              be accessible via $record->comments. Where $record is a 
+     *              reference to one of the records returned by this method.
      *
-     *  `distinct`
-     *      : (bool) True if the DISTINCT keyword should be added to the query, 
-     *        else false if the DISTINCT keyword should be ommitted. 
-     *
-     *        NOTE: If `distinct` is not set/specified, implementers of this class 
-     *              should give it a default value of false.
-     *
-     *  `cols`
-     *      : (array) An array of the name(s) of column(s) or aggregate sql function
-     *        calls to be returned. Only the first two array items will be honored.
-     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
-     *        Eg. to generate 'SELECT col_1, col_2 FROM.....'
-     *        use: 
-     *          [
-     *              'cols' => [ 'col_1', 'col_2' ]
-     *          ]
-     *        OR
-     *          [
-     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
-     *          ]
-     *
+     *  `distinct` a method for adding the DISTINCT keyword to the query
+     * 
+     *  `cols` method that generates db column names or expressions to return in a SELECT query
+     *      Eg: SELECT col_1, col_2, col_3
+     *      : An array of the name(s) of column(s) to be returned.
+     *        Expressions like 'COUNT(col_name) AS some_col' should be allowed as a column name.
+     * 
      *        NOTE: If `cols` is not set/specified or is assigned an empty array
      *              value, implementers of this class should select all columns
      *              from the table associated with the model 
      *              (ie. SELECT * FROM models_table ..... ).
-     *
-     *  `where`
-     *      : (array) an array of parameters for building a WHERE clause, 
-     *        Eg. to generate 
+     * 
+     *  `where` methods like where & orWhere for generating a WHERE clause, 
+     *        Eg:
      *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
      *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
      *
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *   
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'where' array or the first 
-     *              key in any of the array(s) inside the 'where' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
-     *
-     *          #BAD 1 - first key in $array['where'] is 'OR' 
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     *
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *         
-     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *         
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']['OR'] 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *             
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a WHERE clause 
-     *              (excluding the WHERE keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     *
-     *  `group`
-     *      : (array) An array of the name(s) of column(s) which the results 
-     *        will be grouped by.
-     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
-     *        use the array below:
-     *          [
-     *              'group' => ['column_name_1', 'column_name_2']
-     *          ]
-     *
-     *  `having`
-     *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate 
+     *  `groupBy` method for generating a GROUP BY clause:
+     *        Eg: GROUP BY column_name_1, column_name_2
+     * 
+     *  `having` methods like having & orHaving that can generate a HAVING clause.
+     *        Eg: 
      *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
      *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
-     *
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *   
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'having' array or the first 
-     *              key in any of the array(s) inside the 'having' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
-     *
-     *          #BAD 1 - first key in $array['having'] is 'OR' 
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     *
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *         
-     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *         
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']['OR'] 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *             
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a HAVING clause 
-     *              (excluding the HAVING keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     *   
-     *  `order`
-     *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The values are the column names to ORDER BY.
-     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
-     *          [
-     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
-     *          ]
-     *
-     *  `limit_offset`
-     *      : (int) Limit offset. Offset of the first row to return
-     *
+     * 
+     *  `order` method
+     *      : for building an ORDER BY clause.
+     *        Eg: 'ORDER BY col_1 ASC, col_2 DESC'
+     * 
+     * `limit` method that builds the appropriate limit clause for the db being used
+     *      `limit_offset`
+     *          : (int) Limit offset. Offset of the first row to return
+     * 
      *        NOTE: Implementers of this class should use the `limit_offset` 
      *              value with the appropriate limit & offset mechanism for the 
      *              DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     *
+     * 
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
-     *
-     *  `limit_size`
-     *      : (int) Limit to a count of this many records.
-     *
+     *      `limit_size`
+     *          : (int) Limit to a count of this many records.
+     * 
      *        NOTE: Implementers of this class should use the `limit_size` 
      *              value with the appropriate limit & offset mechanism for the 
      *              DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     *
+     * 
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
@@ -2897,302 +1469,96 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchPairs(array $params = []): array;
+    public abstract function fetchPairs(): array;
 
     /**
      * 
      * Fetch a single value from the db table matching params.
      * 
-     * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
+     * The methods described below must be implemented by implementers of this package
+     * These methods will help build the sql query that will be used to perform the fetch
+     * and must be called before this method is called.
+     * These methods must return the instance of this class that they were called on.
+     * If none of these methods are called before the fetch, the fetch should be done
+     * with the generic query below
+     *          SELECT * FROM $this->getTableName()
      * 
-     *  `distinct`
-     *      : (bool) True if the DISTINCT keyword should be added to the query, 
-     *        else false if the DISTINCT keyword should be ommitted. 
+     *  `relations_to_include` a method like withRelations that accepts an array of
+     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                          Eager-fetch related rows of data for each relation name.
      * 
-     *        NOTE: If `distinct` is not set/specified, implementers of this class 
-     *              should give it a default value of false.
+     *        NOTE: each key in the \GDAO\Model->_relations array is a 
+     *              relation name. Eg. array_keys($this->_relations)
+     *              returns an array of relation name(s) for a model.
      * 
-     *  `cols`
-     *      : (array) An array of the name(s) of column(s) or aggregate sql function
-     *        call(s) to be returned. Only the first one will be honored.
-     *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
-     *        Eg. Both: 
-     *          [
-     *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
-     *          ]
-     *          and
-     *          [
-     *              'cols' => [ 'col_1']
-     *          ]
-     *          will generate  'SELECT col_1 FROM .....'
+     *        NOTE: Implementers of this class should make the retrieved related
+     *              data accessible in each record via a property named with the
+     *              same name as the relation name. For example, if there exists
+     *              $this->_relations['comments'], the retrieved 
+     *              comments for each record returned by this fetch method should
+     *              be accessible via $record->comments. Where $record is a 
+     *              reference to one of the records returned by this method.
+     *
+     *  `distinct` a method for adding the DISTINCT keyword to the query
+     * 
+     *  `cols` method that generates db column names or expressions to return in a SELECT query
+     *      Eg: SELECT col_1, col_2, col_3
+     *      : An array of the name(s) of column(s) to be returned.
+     *        Expressions like 'COUNT(col_name) AS some_col' should be allowed as a column name.
      * 
      *        NOTE: If `cols` is not set/specified or is assigned an empty array
      *              value, implementers of this class should select all columns
      *              from the table associated with the model 
      *              (ie. SELECT * FROM models_table ..... ).
      * 
-     *  `where`
-     *      : (array) an array of parameters for building a WHERE clause, 
-     *        Eg. to generate 
+     *  `where` methods like where & orWhere for generating a WHERE clause, 
+     *        Eg:
      *          WHERE column_name_1 > 58 AND column_name_2 > 58
      *             OR (column_name_1 < 58 AND column_name_2 < 58)
      *            AND column_name_3 >= 58
      *             OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
+     *
+     *  `groupBy` method for generating a GROUP BY clause:
+     *        Eg: GROUP BY column_name_1, column_name_2
      * 
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *    
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'where' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'where' array or the first 
-     *              key in any of the array(s) inside the 'where' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
-     * 
-     *          #BAD 1 - first key in $array['where'] is 'OR' 
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
-     * 
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']
-     *          $array = [
-     *              'where' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['where']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *          
-     *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *          
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['where']['OR'] 
-     *          $array = [
-     *             'where' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['where']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *              
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a WHERE clause 
-     *              (excluding the WHERE keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     * 
-     *  `group`
-     *      : (array) An array of the name(s) of column(s) which the result
-     *        will be grouped by.
-     *        Eg. to generate ' GROUP BY column_name_1, column_name_2 '
-     *        use the array below:
-     *          [
-     *              'group' => ['column_name_1', 'column_name_2']
-     *          ]
-     * 
-     *  `having`
-     *      : (array) An array of parameters for building a HAVING clause.
-     *        Eg. to generate 
+     *  `having` methods like having & orHaving that can generate a HAVING clause.
+     *        Eg: 
      *          HAVING column_name_1 > 58 AND column_name_2 > 58
      *              OR (column_name_1 < 58 AND column_name_2 < 58)
      *             AND column_name_3 >= 58
      *              OR (column_name_4 = 58 AND column_name_5 = 58)
-     *        use:
-     *          [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                   [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                   'OR'=> [
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR#2'=> [
-     *                              [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ],
-     *                          ]
-     *                ]
-     *          ]
      * 
-     *        The 'op' could be assigned any one of these values:
-     *          [ 
-     *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
-     *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
-     *          ]
-     *    
-     *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
-     *              append a # and a unique string after the # so that the 
-     *              subsequent OR conditions do not override the previous ones.
-     *              Implementers of this class just need to check if an array 
-     *              key inside the 'having' array starts with OR or OR# in order
-     *              to add the condition as an OR condition. 
-     *        NOTE: Consumers of any implementation of this class should be careful 
-     *              not to make the first key in the 'having' array or the first 
-     *              key in any of the array(s) inside the 'having' array an 'OR' 
-     *              or 'OR#...' key. Below are some bad examples and their
-     *              corrected equivalents
+     *  `order` method
+     *      : for building an ORDER BY clause.
+     *        Eg: 'ORDER BY col_1 ASC, col_2 DESC'
      * 
-     *          #BAD 1 - first key in $array['having'] is 'OR' 
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   'OR'=> [ //offending entry. should not be the first item here
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                ]
-     *          ]
+     * `limit` method that builds the appropriate limit clause for the db being used
+     *      `limit_offset`
+     *          : (int) Limit offset. Offset of the first row to return
      * 
-     *          #GOOD 1 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']
-     *          $array = [
-     *              'having' => 
-     *                [
-     *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *                   'OR'=> [ //Fixed. No longer the first item in $array['having']
-     *                              [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                              [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ]
-     *                          ],
-     *                ]
-     *          ]
-     *          
-     *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             'OR'=> [ //offending entry. should not be the first item here
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *          
-     *          #GOOD 2 - moved the entry with 'OR' key away from first position 
-     *                    in $array['having']['OR'] 
-     *          $array = [
-     *             'having' => 
-     *               [
-     *                  [ 'col'=>'column_name_1', 'op'=>'>', 'val'=>58 ],
-     *                  [ 'col'=>'column_name_2', 'op'=>'>', 'val'=>58 ],
-     *                  'OR'=> [
-     *                             [ 'col'=>'column_name_4', 'op'=>'=', 'val'=>58 ],
-     *                             'OR'=> [ //Fixed. No longer the first item in $array['having']['OR']
-     *                                         [ 'col'=>'column_name_1', 'op'=>'<', 'val'=>58 ],
-     *                                         [ 'col'=>'column_name_2', 'op'=>'<', 'val'=>58 ],
-     *                                    ],
-     *                             [ 'col'=>'column_name_5', 'op'=>'=', 'val'=>58 ]
-     *                         ],
-     *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
-     *               ]
-     *         ]
-     *              
-     *        NOTE: Implementers of this class should convert each operator to the 
-     *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
-     *              'IS NOT NULL'.
-     *        NOTE: For any sub-array containing an item with a key named 'op' 
-     *              with a value of either 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-     *              any item in that sub-array with a key named 'val', but there must
-     *              be a corresponding item with a key named 'col' with a string value.
-     *        NOTE: The operators: 'in' and 'not-in' allow 'val' to be set to an array
-     *              or string value. If 'val' is a string, it must be a valid
-     *              value that a NOT IN or IN operator expects including the opening
-     *              and closing brackets. Eg. "( 1, 2, 3 )" or "( '4', '5', '6' )".
-     *        NOTE: Implementers of this class can validate the structure of 
-     *              this sub-array by passing it to
-     *              \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     *        NOTE: Implementers of this class can generate a HAVING clause 
-     *              (excluding the HAVING keyword) from this sub-array by passing 
-     *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     *    
-     *  `order`
-     *      : (array) an array of parameters for building an ORDER BY clause.
-     *        The values are the column names to ORDER BY.
-     *        Eg. to generate 'ORDER BY col_1 ASC, col_2 DESC' use:
-     *          [
-     *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
-     *          ]
+     *        NOTE: Implementers of this class should use the `limit_offset` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     *      `limit_size`
+     *          : (int) Limit to a count of this many records.
+     * 
+     *        NOTE: Implementers of this class should use the `limit_size` 
+     *              value with the appropriate limit & offset mechanism for the 
+     *              DB system their implementation supports. 
+     *              Eg. for MySQL: 
+     *                      LIMIT $params['limit_size']
+     *                      OFFSET $params['limit_offset']
+     * 
+     *                  for MSSQL Server:
+     *                      OFFSET $params['limit_offset'] ROWS
+     *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
      * @return mixed A single value either from a column in a row of the db table 
      *               associated with this model or the result of a sql aggregate
@@ -3202,7 +1568,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchValue(array $params = []);
+    public abstract function fetchValue();
 
     /**
      * 
@@ -3402,9 +1768,9 @@ abstract class Model
      *
      * Get the value of $this->_table_name.
      *
-     * @return string|null the value of $this->_table_name.
+     * @return string the value of $this->_table_name.
      */
-    public function getTableName(): ?string {
+    public function getTableName(): string {
 
         return $this->_table_name;
     }
@@ -3416,7 +1782,7 @@ abstract class Model
      * @return array an array of table column names.
      * 
      */
-    public function getTableColNames() {
+    public function getTableColNames(): array {
 
         $keys = array_keys($this->_table_cols);
         
@@ -3428,18 +1794,21 @@ abstract class Model
 
         } else {
             
-            $keys_are_strings = true;
+            $keys_2_return = [];
             
-            foreach($keys as $key) {
+            foreach($this->_table_cols as $key => $potential_col_metadata) {
                 
-                if( !is_string($key) ) {
+                if( is_string($key) ) {
                     
-                    $keys_are_strings = false;
-                    break;
+                    $keys_2_return[] = $key;
+                    
+                } elseif( is_string($potential_col_metadata) ) {
+                    
+                    $keys_2_return[] = $potential_col_metadata;
                 }
             }
 
-            return ($keys_are_strings)? array_keys($this->_table_cols): [];
+            return $keys_2_return;
         }
     }
 

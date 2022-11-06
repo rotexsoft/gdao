@@ -226,7 +226,6 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Is the record new? (I.e. its data has never been saved to the db)
      * 
-     * @return bool
      */
     public function isNew(): bool;
     
@@ -319,7 +318,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @param \GDAO\Model\RecordInterface|array $data_2_save
      * 
-     * @return bool true for a successful save, false for failed save, null: no changed data to save
+     * @return bool|null true for a successful save, false for failed save, null: no changed data to save
      * 
      */
     public function saveInTransaction($data_2_save = null): ?bool;
@@ -364,9 +363,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * say the key is set, even if the key value is null or otherwise empty.
      * 
      * @param string $key The requested data key.
-     * 
-     * @return bool
-     * 
+     *  
      */
     public function __isset($key): bool;
 
@@ -377,8 +374,6 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * @param string $key The requested data key.
      * 
      * @param mixed $val The value to set the data to.
-     * 
-     * @return void
      * 
      */
     public function __set($key, $val): void;
@@ -399,8 +394,6 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * Removes a key and its value in the data.
      * 
      * @param string $key The requested data key.
-     * 
-     * @return void
      * 
      */
     public function __unset($key): void;

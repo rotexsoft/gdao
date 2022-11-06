@@ -13,16 +13,16 @@ class ModelTest extends \PHPUnit\Framework\TestCase
     protected $_mock_model_obj_with_memory_sqlite_connection;
 
     protected function setUp(): void {
-        
+
         parent::setUp();
 
         $this->_mock_model_obj_with_no_db_connection = 
             new \ModelForTestingNonAbstractMethods('', '', '', [], []);
-        
+
         ////////////////////////////////////////////////////////////////////////
         $this->_mock_model_obj_with_memory_sqlite_connection = 
             new \ModelForTestingNonAbstractMethods('', '', '', [], []);
-        
+
         $pdo = new \PDO("sqlite::memory:");
         $this->_mock_model_obj_with_memory_sqlite_connection->setPDO($pdo);
         ////////////////////////////////////////////////////////////////////////
@@ -32,7 +32,7 @@ class ModelTest extends \PHPUnit\Framework\TestCase
 // Start Tests for \GDAO\Model::__construct(....)
 ////////////////////////////////////////////////////////////////////////////////
     
-    public function testThatConstructorSetsFirstFourParamsCorrectly() {
+    public function testThatConstructorSetsFirstFourParamsCorrectly(): void {
         
         $model = new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
@@ -56,11 +56,11 @@ class ModelTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($model_obj_as_array['_pdo_driver_opts'] === [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'], $msg);
     }
 
-    public function testThatConstructorThrowsExceptionForEmptyPrimaryColName() {
+    public function testThatConstructorThrowsExceptionForEmptyPrimaryColName(): void {
         
         $this->expectException(\GDAO\ModelPrimaryColNameNotSetDuringConstructionException::class);
         
-        $model = new \ModelForTestingNonAbstractMethods(
+        new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
                     'test_username',
                     'test_passwd',
@@ -72,11 +72,11 @@ class ModelTest extends \PHPUnit\Framework\TestCase
                 );
     }
 
-    public function testThatConstructorThrowsExceptionForEmptyTableName() {
+    public function testThatConstructorThrowsExceptionForEmptyTableName(): void {
         
         $this->expectException(\GDAO\ModelTableNameNotSetDuringConstructionException::class);
         
-        $model = new \ModelForTestingNonAbstractMethods(
+        new \ModelForTestingNonAbstractMethods(
                     'test_dsn',
                     'test_username',
                     'test_passwd',
@@ -88,7 +88,7 @@ class ModelTest extends \PHPUnit\Framework\TestCase
                 );
     }
     
-    public function testThatConstructorSetsModelPropertiesCorrectlyViaTheExtraoptsArray() {
+    public function testThatConstructorSetsModelPropertiesCorrectlyViaTheExtraoptsArray(): void {
 
         $rel = [
             'a_relation_name'=> [
@@ -190,7 +190,7 @@ class ModelTest extends \PHPUnit\Framework\TestCase
 // End of Tests for \GDAO\Model::__construct(....)
 ////////////////////////////////////////////////////////////////////////////////
 
-    public function testThat__toStringWorksAsExpected() {
+    public function testThat__toStringWorksAsExpected(): void {
         
         $model = new \ModelForTestingNonAbstractMethods(
             'test_dsn',
@@ -230,7 +230,7 @@ EOT;
         PHP_OS_FAMILY !== 'Windows' && $this->assertStringContainsString($sub_str, $model->__toString());
     }
     
-    public function testThatToArrayWorksAsExpected() {
+    public function testThatToArrayWorksAsExpected(): void {
         
         $model = new \ModelForTestingNonAbstractMethods(
             'test_dsn',
@@ -262,7 +262,7 @@ EOT;
         $this->assertTrue( $expected_array === $model->toArray(), $msg);
     }
 
-    public function testThat__callThrowsException() {
+    public function testThat__callThrowsException(): void {
         
         $this->expectException(\GDAO\ModelMustImplementMethodException::class);
         
@@ -280,7 +280,7 @@ EOT;
         $model->__call('', '');
     }
 
-    public function testThat__getThrowsException() {
+    public function testThat__getThrowsException(): void {
         
         $this->expectException(\GDAO\ModelMustImplementMethodException::class);
         
@@ -298,7 +298,7 @@ EOT;
         $model->__get('');
     }
 
-    public function testThatCreateNewCollectionThrowsException() {
+    public function testThatCreateNewCollectionThrowsException(): void {
         
         $this->expectException(\GDAO\ModelMustImplementMethodException::class);
         
@@ -316,7 +316,7 @@ EOT;
         $model->createNewCollection();
     }
 
-    public function testThatFetchRecordsIntoCollectionThrowsException() {
+    public function testThatFetchRecordsIntoCollectionThrowsException(): void {
         
         $this->expectException(\GDAO\ModelMustImplementMethodException::class);
         
@@ -334,7 +334,7 @@ EOT;
         $model->fetchRecordsIntoCollection();
     }
     
-    public function testThatGetCreatedTimestampColumnNameWorksAsExpected() {
+    public function testThatGetCreatedTimestampColumnNameWorksAsExpected(): void {
 
         //create model setting property values with exact property names
         $model = new \ModelForTestingNonAbstractMethods(
@@ -349,7 +349,7 @@ EOT;
         $this->assertTrue($model->getCreatedTimestampColumnName() === 'test_c_col_name', $msg);
     }
     
-    public function testThatGetUpdatedTimestampColumnNameWorksAsExpected() {
+    public function testThatGetUpdatedTimestampColumnNameWorksAsExpected(): void {
 
         //create model setting property values with exact property names
         $model = new \ModelForTestingNonAbstractMethods(
@@ -364,7 +364,7 @@ EOT;
         $this->assertTrue($model->getUpdatedTimestampColumnName() === 'test_u_col_name', $msg);
     }
     
-    public function testThatGetPrimaryColNameWorksAsExpected() {
+    public function testThatGetPrimaryColNameWorksAsExpected(): void {
 
         //create model setting property values with exact property names
         $model = new \ModelForTestingNonAbstractMethods(
@@ -379,7 +379,7 @@ EOT;
         $this->assertTrue($model->getPrimaryColName(true) === 'components.component_id', $msg);
     }
     
-    public function testThatGetTableNameWorksAsExpected() {
+    public function testThatGetTableNameWorksAsExpected(): void {
 
         //create model setting property values with exact property names
         $model = new \ModelForTestingNonAbstractMethods(
@@ -393,7 +393,7 @@ EOT;
         $this->assertTrue($model->getTableName() === 'components', $msg);
     }
     
-    public function testThatGetTableColNamesWorksAsExpected() {
+    public function testThatGetTableColNamesWorksAsExpected(): void {
         
         //create model setting property values with exact property names
         $model = new \ModelForTestingNonAbstractMethods(
@@ -421,12 +421,29 @@ EOT;
                                 ],
                 ]
             );
+        $model3 = new \ModelForTestingNonAbstractMethods(
+                '',
+                '',
+                '',
+                [],
+                [
+                    '_primary_col'=>'component_id', 
+                    '_table_name'=>'components',
+                    '_table_cols'=>[
+                                    'col1'=>['sub array with metadata for col1'], 
+                                    'col2'=>['sub array with metadata for col2'],
+                                    'col3',
+                                    'col4'=>['sub array with metadata for col4']
+                                ],
+                ]
+            );
         $msg = __METHOD__;
         $this->assertTrue(['col1', 'col2'] === $model->getTableColNames(), $msg);
         $this->assertTrue(['col1', 'col2'] === $model2->getTableColNames(), $msg);
+        $this->assertTrue(['col1', 'col2', 'col3', 'col4'] === $model3->getTableColNames(), $msg);
     }
     
-    public function testThatGetRelationNamesWorksAsExpected() {
+    public function testThatGetRelationNamesWorksAsExpected(): void {
 
         $rel = [
             'a_relation_name'=> [
@@ -484,7 +501,7 @@ EOT;
         $this->assertTrue(['a_relation_name', 'a_relation_name2'] === $model->getRelationNames(), $msg);
     }
 
-    protected function _isHhvm() {
+    protected function _isHhvm(): bool {
         
         return defined('HHVM_VERSION');
     }
