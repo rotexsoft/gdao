@@ -61,4 +61,4 @@ and other data manipulation (DM) tasks that cannot be accomplished via this API.
 
 ## Dev Notes
 
-* Old versions have branches corresponding to their version numbers (e.g. 1.X) while the most current / actively being developed version is on the master branch
+* Old versions have branches corresponding to their version numbers (e.g. 1.X) while the most current / actively being developed version is on the master branch.
