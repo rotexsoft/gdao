@@ -1277,7 +1277,7 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchCol(?object $query=null, array $relations_to_include=[]): array;
+    public abstract function fetchCol(?object $query=null): array;
 
     /**
      * 
@@ -1469,7 +1469,7 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchPairs(?object $query=null, array $relations_to_include=[]): array;
+    public abstract function fetchPairs(?object $query=null): array;
 
     /**
      * 
@@ -1568,7 +1568,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchValue(?object $query=null, array $relations_to_include=[]);
+    public abstract function fetchValue(?object $query=null);
 
     /**
      * 
