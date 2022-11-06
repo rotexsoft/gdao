@@ -981,7 +981,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public function fetchRecordsIntoCollection() {
+    public function fetchRecordsIntoCollection(?object $query=null) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new ModelMustImplementMethodException($msg);
@@ -1087,7 +1087,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchRecordsIntoArray(): array;
+    public abstract function fetchRecordsIntoArray(?object $query=null): array;
 
     /**
      *
@@ -1183,7 +1183,7 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchRowsIntoArray(): array;
+    public abstract function fetchRowsIntoArray(?object $query=null): array;
 
     /**
      *
@@ -1277,7 +1277,7 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchCol(): array;
+    public abstract function fetchCol(?object $query=null): array;
 
     /**
      * 
@@ -1373,7 +1373,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchOneRecord();
+    public abstract function fetchOneRecord(?object $query=null);
 
     /**
      *
@@ -1469,7 +1469,7 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchPairs(): array;
+    public abstract function fetchPairs(?object $query=null): array;
 
     /**
      * 
@@ -1568,7 +1568,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchValue();
+    public abstract function fetchValue(?object $query=null);
 
     /**
      * 
