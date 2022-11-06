@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace GDAO;
 
 /**
@@ -12,7 +12,7 @@ namespace GDAO;
  * the future. 
  * 
  * @author Rotimi Adegbamigbe
- * @copyright (c) 2015, Rotimi Adegbamigbe
+ * @copyright (c) 2022, Rotexsoft
  * 
  */
 abstract class Model
@@ -26,10 +26,8 @@ abstract class Model
      * 
      * @todo Work on supporting tables that don't have any primary key column defined
      * 
-     * @var string
-     * 
      */
-    protected $_primary_col = null;
+    protected ?string $_primary_col = null;
     
     /**
      *
@@ -37,10 +35,8 @@ abstract class Model
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
-     * @var string
-     * 
      */
-    protected $_table_name = null;
+    protected ?string $_table_name = null;
 
     /**
      *
@@ -140,11 +136,9 @@ abstract class Model
      * be easily used to populate $this->_table_cols. 
      * Db schema meta-data could also easily be queried using the PDO object 
      * available via $this->getPDO().
-     * 
-     * @var array
-     * 
+     *  
      */
-    protected $_table_cols = array();
+    protected array $_table_cols = [];
 
     /**
      * 
@@ -160,10 +154,8 @@ abstract class Model
      * has a valid value before attempting to use it inside method(s) they are 
      * implementing.
      * 
-     * @var string
-     * 
      */
-    protected $_collection_class_name = null;
+    protected ?string $_collection_class_name = null;
 
     /**
      * 
@@ -172,10 +164,8 @@ abstract class Model
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
-     * @var string
-     * 
      */
-    protected $_record_class_name = null;
+    protected ?string $_record_class_name = null;
 
     /**
      *
@@ -196,10 +186,8 @@ abstract class Model
      * implement functionality that automatically updates the db column that
      * tracks the time a row of data was initially inserted into a db table.
      * 
-     * @var string
-     * 
      */
-    protected $_created_timestamp_column_name = null;
+    protected ?string $_created_timestamp_column_name = null;
 
     /**
      *
@@ -220,10 +208,8 @@ abstract class Model
      * implement functionality that automatically updates the db column that
      * tracks the time a row of data was last updated in a db table.
      * 
-     * @var string
-     * 
      */
-    protected $_updated_timestamp_column_name = null; //string
+    protected ?string $_updated_timestamp_column_name = null; //string
     
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -640,48 +626,40 @@ abstract class Model
      *       \GDAO\Model->_relations['relation_name']['foreign_table'].
      *       'relation_name' should be substituted with 'tags' in this case.
      * 
-     * @var array
-     * 
      */
-    protected $_relations = array();
+    protected array $_relations = [];
     
-    const RELATION_TYPE_HAS_ONE = 'rt_ho';
-    const RELATION_TYPE_HAS_MANY = 'rt_hm';
-    const RELATION_TYPE_BELONGS_TO = 'rt_bt';
-    const RELATION_TYPE_HAS_MANY_THROUGH = 'rt_hmt';
+    public const RELATION_TYPE_HAS_ONE = 'rt_ho';
+    public const RELATION_TYPE_HAS_MANY = 'rt_hm';
+    public const RELATION_TYPE_BELONGS_TO = 'rt_bt';
+    public const RELATION_TYPE_HAS_MANY_THROUGH = 'rt_hmt';
 
     /**
      * 
      * A PDO compliant Data Source Name (DSN) string containing the information 
-     * required to connect to a desired database. 
-     * 
-     * @var string
+     * required to connect to a desired database.
      * 
      * @see \PDO::__construct() See description of the 1st parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
      *                          this Model will indeed be powered by a PDO instance
      * 
      */
-    protected $_dsn = '';
+    protected string $_dsn = '';
     
     /**
      *
      * The username for the database to be connected to.
-     * 
-     * @var string
      * 
      * @see \PDO::__construct() See description of the 2nd parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
      *                          this Model will indeed be powered by a PDO instance
      * 
      */
-    protected $_username = ''; 
+    protected string $_username = ''; 
     
     /**
      *
      * The password for the database to be connected to.
-     * 
-     * @var string
      * 
      * @see \PDO::__construct() See description of the 3rd parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
@@ -689,37 +667,18 @@ abstract class Model
      *                          instance
      * 
      */
-    protected $_passwd = '';
+    protected string $_passwd = '';
     
     /**
      *
      * An array of options for a PDO driver
-     * 
-     * @var array
      * 
      * @see \PDO::__construct() See description of the 4th parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
      *                          this Model will indeed be powered by a PDO instance
      * 
      */
-    protected $_pdo_driver_opts = array();
-    
-    protected static $_where_or_having_ops_2_dbms_ops = array(
-        '='         => '=', 
-        '>'         => '>', 
-        '>='        => '>=', 
-        '<'         => '<', 
-        '<='        => '<=', 
-        'in'        => 'IN', 
-        'is-null'   => 'IS NULL',
-        'is-empty-string'   => "= ''",
-        'like'      => 'LIKE', 
-        '!='        => '<>', 
-        'not-in'    => 'NOT IN',
-        'not-like'  => 'NOT LIKE', 
-        'not-null'  => 'IS NOT NULL',
-        'not-empty-string'  => "<> ''",
-    );
+    protected array $_pdo_driver_opts = [];
     
     /**
      * 
@@ -741,31 +700,28 @@ abstract class Model
         $dsn = '',
         $username = '', 
         $passwd = '', 
-        array $pdo_driver_opts = array(),
-        array $extra_opts = array()
+        array $pdo_driver_opts = [],
+        array $extra_opts = []
     ) {
         $this->_dsn = $dsn;
         $this->_username = $username;
         $this->_passwd = $passwd;
         $this->_pdo_driver_opts = $pdo_driver_opts;
         
-        if(count($extra_opts) > 0) {
-            
-            //set properties of this class specified in $extra_opts
-            foreach($extra_opts as $e_opt_key => $e_opt_val) {
+        //set properties of this class specified in $extra_opts
+        foreach($extra_opts as $e_opt_key => $e_opt_val) {
   
-                if ( property_exists($this, $e_opt_key) ) {
-                    
-                    $this->$e_opt_key = $e_opt_val;
+            if ( property_exists($this, $e_opt_key) ) {
+                
+                $this->$e_opt_key = $e_opt_val;
 
-                } elseif ( property_exists($this, '_'.$e_opt_key) ) {
+            } elseif ( property_exists($this, '_'.$e_opt_key) ) {
 
-                    $this->{"_$e_opt_key"} = $e_opt_val;
-                }
+                $this->{"_$e_opt_key"} = $e_opt_val;
             }
         }
         
-        if( empty($this->_primary_col) || strlen($this->_primary_col) <= 0 ) {
+        if( $this->_primary_col === null || strlen($this->_primary_col) <= 0 ) {
             
             $msg = 'Primary Key Column name ($_primary_col) not set for '.get_class($this);
             throw new ModelPrimaryColNameNotSetDuringConstructionException($msg);
@@ -826,13 +782,9 @@ abstract class Model
     }
 
     /**
-     * 
      * Returns a string representation of an instance of this class.
-     * 
-     * @return string
-     * 
      */
-    public function __toString() {
+    public function __toString(): string {
 
         return var_export($this->toArray(), true);
     }
@@ -844,7 +796,7 @@ abstract class Model
      * @return array an array representation of an instance of this class.
      * 
      */
-    public function toArray() {
+    public function toArray(): array {
 
         return get_object_vars($this);
     }
@@ -858,14 +810,14 @@ abstract class Model
      * collections. The Model and Record classes are mandatory, the collection 
      * class is optional(php arrays are a good & natively available alternative).
      * 
-     * @param \GDAO\Model\RecordsList $list_of_records 
      * @param array $extra_opts an array of other parameters that may be needed 
      *                          in creating an instance of \GDAO\Model\Collection
+     * @param \GDAO\Model\RecordInterface[] $list_of_records 
      * 
      * @return \GDAO\Model\CollectionInterface a collection of instances of \GDAO\Model\RecordInterface.
      * 
      */
-    public function createNewCollection(\GDAO\Model\RecordsList $list_of_records, array $extra_opts=array()) {
+    public function createNewCollection(array $extra_opts=[], \GDAO\Model\RecordInterface ...$list_of_records): \GDAO\Model\CollectionInterface {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new ModelMustImplementMethodException($msg);
@@ -882,7 +834,7 @@ abstract class Model
      * @return \GDAO\Model\RecordInterface new record with specified values.
      * 
      */
-    public abstract function createNewRecord(array $col_names_and_values = array(), array $extra_opts=array());
+    public abstract function createNewRecord(array $col_names_and_values = [], array $extra_opts=[]): \GDAO\Model\RecordInterface;
 
     /**
      * 
@@ -907,7 +859,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function deleteMatchingDbTableRows(array $cols_n_vals=array());
+    public abstract function deleteMatchingDbTableRows(array $cols_n_vals=[]): ?int;
 
     /**
      * Delete the specified record from the database.
@@ -926,695 +878,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record);
-
-    /**
-     * 
-     * Validates the structure of an array that is meant to contain definitions
-     * for building a WHERE or HAVING clause for an SQL statement.
-     * 
-     * Usage:
-     * For example if you have an array like this
-     * 
-     *  $params = [ 'cols'=>[.....], 'where'=>[.....], ...., 'having'=>[.....] ];
-     * 
-     * which is the type of $params array expected by \GDAO\Model::fetch*($params),
-     * to validate $params['where'] and $params['having'], make the calls below
-     * 
-     *  $this->_validateWhereOrHavingParamsArray($params['where']);
-     *  $this->_validateWhereOrHavingParamsArray($params['having']);
-     * 
-     * @see \GDAO\Model::fetchRecordsIntoCollection(array $params) for 
-     *      the definition of a valid 'where' or 'having' array
-     * 
-     * @param array $array 
-     * @return bool true if the array has a valid structure
-     * @throws \GDAO\ModelBadWhereOrHavingParamSuppliedException
-     */
-    protected function _validateWhereOrHavingParamsArray(array $array) {
-
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveArrayIterator($array),
-            \RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        $_1st_level_keys_in_array = array_keys($array);
-        $first_key = $_1st_level_keys_in_array[0];
-
-        if (
-                $first_key === "OR" || substr($first_key, 0, 3) === "OR#"
-        ) {
-            //The first key in the first iteration of the loop must !== 'OR' 
-            //and not start with 'OR#'
-            //Badly structured where / having params array supplied.
-            //Where / having params array cannot have its first 
-            //entry with a key value starting with 'OR' or 'OR#'. 
-            $msg = 'ERROR: Bad where param array supplied to '
-                    . get_class($this) . '::' . __FUNCTION__ . '(...). ' 
-                    . PHP_EOL . 'The first key in the where param array '
-                    . 'cannot start with \'OR\' or \'OR#\'' . PHP_EOL
-                    . 'The array passed to ' 
-                    . get_class($this) . '::' . __FUNCTION__ . '(...):' 
-                    . PHP_EOL . var_export($array, true). PHP_EOL;
-
-            throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-        }
-
-        $previous_key = null;
-        $previous_value = null;
-
-        foreach ($iterator as $key => $value) {
-
-            $_1st_key_in_curr_value_subarray = '';
-
-            if ( is_array($value) && count($value) > 0 ) {
-
-                $keys_in_current_value_subarray = array_keys($value);
-                $_1st_key_in_curr_value_subarray = 
-                                  $keys_in_current_value_subarray[0];
-            }
-
-            if ( is_array($value) && count($value) <= 0 ) {
-
-                //An empty array. Validation failed.
-                //No value in a valid where / having 
-                //params array should be an empty array.
-                $msg = "ERROR: Bad where param array with an empty sub-array"
-                        . " with a key named '{$key}' supplied to "
-                        . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                        . PHP_EOL . 'The array passed to ' 
-                        . get_class($this) . '::' . __FUNCTION__ . '(...):' 
-                        . PHP_EOL . var_export($array, true). PHP_EOL;
-
-                throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-            }
-
-            if ( $key === 'col' && !is_string($value) ) {
-
-                //if $key === 'col' then $value must be a string
-                $msg = "ERROR: Bad where param array having an entry with a key"
-                        . " named 'col' with a non-string value of "
-                        . var_export($value, true) . PHP_EOL
-                        . "inside the a sub-array in the array passed to "
-                        . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                        . PHP_EOL . var_export($array, true). PHP_EOL;
-
-                throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                
-            } else if (
-                    $key === 'op' 
-                    && !in_array( 
-                            $value, array_keys(static::$_where_or_having_ops_2_dbms_ops)
-                        )
-            ) {
-                //$key === 'op' then $value must be in valid expected
-                // operators
-                $msg = "ERROR: Bad where param array having an entry with a key"
-                        . " named 'op' with a non-expected value of "
-                        . PHP_EOL . var_export($value, true) . PHP_EOL
-                        . "inside the array passed to " 
-                        . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                        . PHP_EOL . 'Below are the expected values for an array'
-                        . ' entry with a key named \'op\' ' . PHP_EOL 
-                        . var_export(
-                                 array_keys(static::$_where_or_having_ops_2_dbms_ops),
-                                true
-                            )
-                        . PHP_EOL;
-
-                throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                
-            } else if (
-                    $key === 'val' &&
-                    (
-                        (
-                            !is_numeric($value) 
-                            && !is_string($value) 
-                            && !is_array($value)
-                            && !is_bool($value)
-                        ) 
-                        ||
-                        (
-                            is_string($value) && $value === ''
-                        ) 
-                        ||
-                        (
-                            is_array($value) && count($value) <= 0
-                        )
-                    )
-            ) {
-                //$key === 'val' must be either numeric, a non-empty string or 
-                //a non-empty array or a boolean value 
-                $msg = "ERROR: Bad where param array having an entry with a key"
-                        . " named 'val' with a non-expected value of "
-                        . PHP_EOL . var_export($value, true) . PHP_EOL
-                        . "inside the array passed to "
-                        . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                        . PHP_EOL . 'Only numeric, non-empty string, boolean or'
-                        . ' non-empty array values are allowed for an array entry'
-                        . ' with a key named \'val\'.'. PHP_EOL;
-
-                throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                
-            } else if (
-                is_numeric($key) || $key === "OR" || substr($key, 0, 3) === "OR#"
-            ) {
-                $has_a_val_key = 
-                        (is_array($value)) && array_key_exists('val', $value);
-
-                $has_a_col_and_an_op_key = 
-                                    (is_array($value)) 
-                                        && array_key_exists('col', $value) 
-                                        && array_key_exists('op', $value);
-                                        
-                if ( 
-                	!is_array($value) 
-                	&& $previous_key !== 'val' 
-                	&& !( is_numeric($key) && is_numeric($previous_key) && !is_array($previous_value) ) 
-                ) {
-                    //$key is numeric or $key === 'OR' or starts with 'OR#' 
-                    //then $value must be an array except, if the current key 
-                    //is inside a sub-array referenced by a key named 'val' 
-                    //ie. if this key is numeric and is inside an array referenced by a 
-                    //key named 'val' 
-                    //( 'val'=>array(...) is allowed when 'op'=>'in' & 'op'=>'not-in' )
-                    $msg = "ERROR: Bad where param array having an entry with a"
-                            . " key named '{$key}' with a non-expected value of"
-                            . PHP_EOL . var_export($value, true) . PHP_EOL
-                            . "inside the array passed to "
-                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                            . PHP_EOL . "Any array entry with a numeric key or "
-                            . "a key named 'OR' or a key that starts with 'OR#'"
-                            . " must have a value that is an array.". PHP_EOL;
-
-                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                    
-                } else if (
-                	substr($_1st_key_in_curr_value_subarray, 0, 3) === "OR#"
-                        || $_1st_key_in_curr_value_subarray === "OR"                        
-                ) {
-                    //$key is numeric or $key === 'OR' or starts with 'OR#' then 
-                    //$value must be an array whose first item's key 
-                    //(is not 'OR' or starts with 'OR#')
-                    $msg = "ERROR: Bad where param array having an entry with a"
-                            . " key named '{$key}' with a non-expected value of"
-                            . PHP_EOL . var_export($value, true) . PHP_EOL
-                            . "inside the array passed to "
-                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                            . PHP_EOL . "The first key in any of the sub-arrays"
-                            . " in the array passed to "
-                            . get_class($this) . '::' . __FUNCTION__ . '(...) '
-                            . "cannot start with 'OR' or 'OR#'.". PHP_EOL;
-
-                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                    
-                } else if (
-                        ( $has_a_col_and_an_op_key || $has_a_val_key ) 
-                        &&
-                        count(
-                            array_filter(
-                                    array_keys($value),
-                                    function($v) {
-                                        return 
-                                            is_numeric($v) 
-                                            || 
-                                            (
-                                            	is_string($v)
-                                            	&& !in_array( $v, array('col', 'op', 'val') )
-                                            )
-                                            ;
-                                    }
-                                )
-                        ) > 0
-                ) {
-                    //Failed Requirement below
-                    //If any of the expected keys ('col', 'op' or 'val') 
-                    //is present, then no other type of key is allowed in the 
-                    //particular sub-array
-                    $msg = "ERROR: Incorect where condition definition in a"
-                            . " sub-array referenced via a key named '{$key}'."
-                            . " Sub-array:". PHP_EOL 
-                            . var_export($value, true) . PHP_EOL
-                            . "inside the array passed to "
-                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                            . PHP_EOL . "Because one or more of these keys"
-                            . " ('col', 'op' or 'val') are present," 
-                            . PHP_EOL . "no other type of key is allowed in the"
-                            . " array in which they are present.". PHP_EOL;
-
-                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                    
-                } else if (
-                        $has_a_col_and_an_op_key 
-                        && !$has_a_val_key 
-                        && !in_array($value['op'], array('is-null', 'not-null', 'is-empty-string', 'not-empty-string'))
-                ) {
-                    //Failed Requirement below
-                    //If the $value array is has these 2 keys 'col' & 'op' 
-                    //the operator's value must be either 'is-null' or 'not-null'
-                    // or 'is-empty-string' or 'not-empty-string'
-                    $msg = "ERROR: Incorect where condition definition in a"
-                            . " sub-array referenced via a key named '{$key}'. "
-                            . PHP_EOL . var_export($value, true) . PHP_EOL
-                            . "inside the array passed to "
-                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                            . PHP_EOL . 'A sub-array containing keys named'
-                            . ' \'col\' and \'op\' without a key named'
-                            . ' \'val\' is valid if and only if the entry with'
-                            . ' a key named \'op\' has a value of'
-                            . ' \'is-null\' or \'not-null\' or \'is-empty-string\' or \'not-empty-string\' '. PHP_EOL;
-
-                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                    
-                } else if (
-                        $has_a_col_and_an_op_key 
-                        && $has_a_val_key 
-                        && in_array($value['op'], array('is-null', 'not-null', 'is-empty-string', 'not-empty-string'))
-                ) {
-                    //Failed Requirement below
-                    //For any sub-array containing an item with a key named 'op' 
-                    //with a value of 'not-null' or 'is-null' or 'is-empty-string' or 'not-empty-string', there must not be
-                    //any item in that sub-array with a key named 'val', but there must
-                    //be a corresponding item with a key named 'col' with a string value.
-                    $msg = "ERROR: Incorect where condition definition in a"
-                            . " sub-array referenced via a key named '{$key}'. "
-                            . PHP_EOL . var_export($value, true) . PHP_EOL
-                            . "inside the array passed to "
-                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                            . PHP_EOL . 'A sub-array containing a key named'
-                            . ' \'op\' with a value of \''
-                            . $value['op'].'\' cannot also contain a'
-                            . ' key named \'val\'. Please remove the item'
-                            . ' with the key named \'val\' from the sub-array.'
-                            . PHP_EOL;
-
-                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                    
-                } elseif ( !$has_a_col_and_an_op_key && $has_a_val_key ) {
-
-                    //Failed Requirement below
-                    //Missing keys ('col' & 'op') when key named 'val' 
-                    //is present
-                    $msg = "ERROR: Incorect where condition definition in a"
-                            . " sub-array referenced via a key named '{$key}'. "
-                            . PHP_EOL . var_export($value, true) . PHP_EOL
-                            . "inside the array passed to "
-                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                            . PHP_EOL . 'A sub-array containing key named'
-                            . ' \'val\' without two other entries with keys'
-                            . ' named \'col\' and \'op\' '
-                            . PHP_EOL;
-
-                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                    
-                } else if (
-                        $has_a_col_and_an_op_key 
-                        && $has_a_val_key 
-                        && in_array($value['op'], array('in', 'not-in'))
-                        && !is_array($value['val'])
-                        && !is_string($value['val'])
-                        && !is_numeric($value['val'])
-                ) {
-                    //Failed Requirement below
-                    //For any sub-array containing an item with a key named 'op' 
-                    //with a value of either 'in' or 'not-in', there must be another
-                    //item in that sub-array with a key named 'val' with either a 
-                    //numeric, string or an array value.
-                    $msg = "ERROR: Incorect where condition definition in a"
-                            . " sub-array referenced via a key named '{$key}'. "
-                            . PHP_EOL . var_export($value, true) . PHP_EOL
-                            . "inside the array passed to "
-                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                            . PHP_EOL . 'A sub-array containing a key named'
-                            . ' \'op\' with a value of \''
-                            . $value['op'].'\' contains an item with'
-                            . ' a key named \'val\' whose value '
-                            . var_export($value['val'], true)
-                            . ' is not numeric or a string or an array. Please supply a'
-                            . ' numeric or an array or a string value for the item with'
-                            . ' the key named \'val\' in the sub-array.'
-                            . PHP_EOL;
-
-                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                    
-                } else if (
-                        $has_a_col_and_an_op_key 
-                        && $has_a_val_key 
-                        && in_array( $value['op'], array('like', 'not-like') )
-                        && !is_string($value['val'])
-                ) {
-                    //Failed Requirement below
-                    //For any sub-array containing an item with a key named 'op' 
-                    //with a value of either 'like' or 'not-like', there must be another
-                    //item in that sub-array with a key named 'val' with a string value.
-                    $msg = "ERROR: Incorect where condition definition in a"
-                            . " sub-array referenced via a key named '{$key}'. "
-                            . PHP_EOL . var_export($value, true) . PHP_EOL
-                            . "inside the array passed to "
-                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                            . PHP_EOL . 'A sub-array containing a key named'
-                            . ' \'op\' with a value of \''
-                            . $value['op'].'\' contains an item with'
-                            . ' a key named \'val\' whose value '
-                            . var_export($value['val'], true)
-                            . ' is not a string. Please supply a'
-                            . ' string value for the item with the'
-                            . ' key named \'val\' in the sub-array.'
-                            . PHP_EOL;
-
-                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                    
-                } else if (
-                        $has_a_col_and_an_op_key 
-                        && $has_a_val_key 
-                        && in_array( $value['op'], array('=', '>', '>=', '<', '<=', '!=') )
-                        && !is_string($value['val'])
-                        && !is_numeric($value['val'])
-                ) {
-                    //Failed Requirement below
-                    //For any sub-array containing an item with a key named 'op' 
-                    //with any of the following values: '=', '>', '>=', '<', '<=' or '!=', 
-                    //there must be another item in that sub-array with a key named 'val' 
-                    //with either a numeric or string value.
-                    $msg = "ERROR: Incorect where condition definition in a"
-                            . " sub-array referenced via a key named '{$key}'. "
-                            . PHP_EOL . var_export($value, true) . PHP_EOL
-                            . "inside the array passed to "
-                            . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                            . PHP_EOL . 'A sub-array containing a key named'
-                            . ' \'op\' with a value of \''
-                            . $value['op'].'\' contains an item with'
-                            . ' a key named \'val\' whose value '
-                            . var_export($value['val'], true)
-                            . ' is not a string or numeric. Please supply a'
-                            . ' numeric or string value for the item with the'
-                            . ' key named \'val\' in the sub-array.'
-                            . PHP_EOL;
-
-                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                }
-                
-            } else if (
-                    !is_numeric($key) 
-                    && !in_array($key, array('col', 'op', 'val', 'OR')) 
-                    && substr($key, 0, 3) !== "OR#"
-            ) {
-                //The key is not in the range of allowable values
-                $msg = "ERROR: Bad where param array having an entry with a"
-                        . " non-expected key named '{$key}' with a value of "
-                        . PHP_EOL . var_export($value, true) . PHP_EOL
-                        . "inside the array passed to "
-                        . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                        . PHP_EOL . "Allowed keys are as follows:" . PHP_EOL
-                        . "Any of these keys ('col', 'op', 'val' or 'OR')"
-                        . " or the key must be a numeric key or a string that"
-                        . " starts with 'OR#'.". PHP_EOL;
-
-                throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-            }
-            
-            $previous_key = $key;
-            $previous_value = $value;
-            
-        }//foreach ($iterator as $key => $value)
-        
-        //if we got this far, then the array must be valid
-        return true;
-    }
-    
-    /**
-     * 
-     * This method builds a valid WHERE or HAVING clause (excluding the WHERE 
-     * and HAVING keywords) that can be appended after the WHERE or HAVING
-     * section of any SELECT, INSERT, UPDATE or DELETE sql statements.
-     * 
-     * It returns a two element array with the first item being the clause and
-     * the second item being an array of values to be bound to the clause (or
-     * an empty array if there are no parameters to be bound).
-     * 
-     * For Example:
-     *  Given the array below
-     * $data = [
-     *     'where' => 
-     *         [
-     *             0 => [ 'col' => 'col_1', 'op' => '<', 'val' => 58],
-     *             1 => [ 'col' => 'col_2', 'op' => '<', 'val' => 68],
-     *             [
-     *                 0 => [ 'col' => 'col_11', 'op' => '>', 'val' => 581],
-     *                 1 => [ 'col' => 'col_21', 'op' => '>', 'val' => 681],
-     *                 'OR#3' => [
-     *                     0 => [ 'col' => 'col_12', 'op' => '<', 'val' => 582],
-     *                     1 => [ 'col' => 'col_22', 'op' => '<', 'val' => 682]
-     *                 ],
-     *                 2 => [ 'col' => 'col_31', 'op' => '>=', 'val' => 583],
-     *                 'OR#4' => [
-     *                     0 => [ 'col' => 'col_4', 'op' => '=', 'val' => 584],
-     *                     1 => [ 'col' => 'col_5', 'op' => '=', 'val' => 684],
-     *                 ]
-     *             ],
-     *             3 => [ 'col' => 'column_name_44', 'op' => '<', 'val' => 777],
-     *             4 => [ 'col' => 'column_name_55', 'op' => 'is-null'],
-     *         ]
-     * ];
-     * 
-     * $this->_getWhereOrHavingClauseWithParams($data['where']); 
-     * 
-     * will return an array whose first item is the string below:
-     *  
-     *      "(
-     *      	col_1 > :_1_ 
-     *      	AND
-     *      	col_2 > :_2_ 
-     *      	AND
-     *      	(
-     *      		col_11 > :_3_ 
-     *      		AND
-     *      		col_21 > :_4_ 
-     *      		OR
-     *      		(
-     *      			col_12 > :_5_ 
-     *      			AND
-     *      			col_22 > :_6_ 
-     *      		)
-     *      		AND
-     *      		col_31 >= :_7_ 
-     *      		OR
-     *      		(
-     *      			col_4 = :_8_ 
-     *      			AND
-     *      			col_5 = :_9_ 
-     *      		)
-     *      	)
-     *      	AND
-     *      	column_name_44 > :_10_ 
-     *      	AND
-     *      	column_name_55 IS NULL
-     *      )";
-     * 
-     *  and whose second item is the array below:
-     * 
-     *  [
-     *    '_1_' => 58, '_2_' => 68, '_3_' => 581, '_4_' => 681, '_5_' => 582,
-     *    '_6_' => 682, '_7_' => 583, '_8_' => 584, '_9_' => 684, '_10_' => 777
-     *  ];
-     * 
-     * VERY STRONGLY SUGGESTED USAGE PATTERN:
-     * 
-     *      if( $this->_validateWhereOrHavingParamsArray($data['where']) ) 
-     *      {
-     *          $clause_and_params = 
-     *              $this->_getWhereOrHavingClauseWithParams($data['where']);
-     *      
-     *          $sql = "SELECT * FROM some_table WHERE " . $clause_and_params[0];
-     *          $params_2_bind_2_sql = $clause_and_params[1];
-     * 
-     *          // a PDO connection
-     *          $pdo = new PDO(...);
-     *      
-     *          // prepare the statment
-     *          $sth = $pdo->prepare($sql);
-     *      
-     *          // bind the values and execute
-     *          $sth->execute($params_2_bind_2_sql);
-     *      
-     *          // get the results back as an associative array
-     *          $result = $sth->fetch(PDO::FETCH_ASSOC);
-     *      }
-     * 
-     * Callers of this method should first validate $array via
-     * $this->_validateWhereOrHavingParamsArray($array) before calling this 
-     * method (like in the usage pattern code snippet above).
-     * 
-     * @param array $array an array of where or having condition(s) definition as
-     *                     specified in the params documentation of the fetch* methods
-     * @param int $indent_level the number of tab characters to add to the sql clause
-     * 
-     * @return array an array of two items, the first is the having or where 
-     *               clause sql string and the second item is an associative
-     *               array of parameters to bind to the query
-     * 
-     * @throws ModelBadWhereOrHavingParamSuppliedException
-     * 
-     * @see \GDAO\Model::_validateWhereOrHavingParamsArray(array $array)
-     * 
-     */
-    protected function _getWhereOrHavingClauseWithParams(array &$array, $indent_level=0) {
-
-        static $bind_params_index;
-
-        if( !isset($bind_params_index) ) {
-
-            $bind_params_index = 0;
-        }
-
-        $i = 0;
-        $result_sql = '';
-        $result_bind_params = array();
-        $result_sql .= str_repeat("\t", $indent_level). '('. PHP_EOL;
-
-        foreach ( $array as $key => $value ) {
-
-            if ( is_numeric($key) || $key === "OR" || substr($key, 0, 3) === "OR#" ) {
-
-                $and_or = ( is_numeric($key) ) ? 'AND' : 'OR' ;
-
-                if( $i > 0 ) {
-
-                    //not the first item
-                    $result_sql .= str_repeat("\t", ($indent_level + 1) ). $and_or. PHP_EOL;
-                }
-
-                if( is_array($value) ) {
-
-                    $has_a_val_key = 
-                        (is_array($value)) && array_key_exists('val', $value);
-
-                    $has_a_col_and_an_op_key = 
-                        (is_array($value)) 
-                        && array_key_exists('col', $value) 
-                        && array_key_exists('op', $value);
-
-                    if( $has_a_col_and_an_op_key ) {
-                        
-                        $op_is_in_or_not_in = 
-                            in_array($value['op'], array('not-in', 'in'));
-
-                        $db_specific_op = 
-                            static::$_where_or_having_ops_2_dbms_ops[$value['op']];
-
-                        if( 
-                            !$has_a_val_key 
-                            ||  in_array( $value['op'], array('not-null', 'is-null', 'is-empty-string', 'not-empty-string') ) 
-                        ) {
-                            $result_sql .= str_repeat("\t", ($indent_level + 1) )
-                                     . "{$value['col']} $db_specific_op" . PHP_EOL;
-
-                        } else if( $has_a_val_key ) {
-
-                            //$value['val'] should be pdo quoted only if it's an array.
-                            //in this case it needs to be converted to a string that
-                            //will be the value for an IN or NOT IN statement.
-                            //It will not be added to the array of named parameters
-                            //to be returned by this method, that's why we need to 
-                            //pdo quote it.
-                            $quoted_val = '';
-                            
-                            if (is_array($value['val'])) {
-
-                                //quote all string values
-                                array_walk(
-                                        
-                                    $value['val'],
-
-                                    function(&$val, $key, $pdo) {
-                                        
-                                        if( is_string($val) ) {
-                                            
-                                            $val = $pdo->quote($val);
-                                        }
-                                    },
-
-                                    $this->getPDO()
-                                );
-
-                                $quoted_val = 
-                                    " (" . implode(',', $value['val']) . ") ";
-                            } else {
-
-                                //no need to quote, since it will be a value
-                                //for a named parameter that will be passed to 
-                                //pdo statement
-                                $quoted_val = $value['val'];
-                                
-                                if($op_is_in_or_not_in) {
-                                    
-                                    if(
-                                        is_numeric($value['val'])
-                                        ||
-                                        (
-                                            is_string($value['val'])
-                                            && strpos($value['val'], '(') === false
-                                            && strpos($value['val'], ')') === false
-                                        )
-                                    ) { 
-                                        if( is_string($value['val']) ) {
-                                            
-                                            $quoted_val = "('$quoted_val')";
-                                            
-                                        } else {
-                                            
-                                            $quoted_val = "($quoted_val)";
-                                        }
-                                    }
-                                }
-                            }
-                            
-                            if( !$op_is_in_or_not_in ) {
-                                
-                                $bind_params_index++;
-                                
-                                $result_sql .= str_repeat("\t", ($indent_level + 1) )
-                                         . "{$value['col']} $db_specific_op :_{$bind_params_index}_ " 
-                                         . PHP_EOL;
-                                $result_bind_params["_{$bind_params_index}_"] = $quoted_val;
-
-                            } else {
-                                //no need for named place holder just place the
-                                //quoted val directly.
-                                $result_sql .= str_repeat("\t", ($indent_level + 1) )
-                                         . "{$value['col']} $db_specific_op $quoted_val " 
-                                         . PHP_EOL;
-                            }
-                        }
-                    } else {
-                        //a sub-array of more conditions, recurse
-                        $full_result = $this->_getWhereOrHavingClauseWithParams($value, ($indent_level + 1) );
-                        
-                        $result_sql .= $full_result[0];
-                        $result_bind_params = array_merge($result_bind_params, $full_result[1]);
-                    }
-                } else {
-                    //throw exception badly structured array
-                    $msg = "ERROR: Bad where param array having an entry with a"
-                           . " key named '$key' with a non-expected value of "
-                           . PHP_EOL . var_export($value, true) . PHP_EOL
-                           . "inside the array: "
-                           . PHP_EOL . var_export($array, true) . PHP_EOL
-                           . " passed to " 
-                           . get_class($this) . '::' . __FUNCTION__ . '(...).' 
-                           . PHP_EOL;
-
-                    throw new ModelBadWhereOrHavingParamSuppliedException($msg);
-                }
-            }
-            $i++;
-        }
-        
-        return array( 
-                    $result_sql.str_repeat("\t", $indent_level) . ')' . PHP_EOL,
-                    $result_bind_params
-               );
-    }
+    public abstract function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record): ?bool;
     
     /**
      * 
@@ -1964,7 +1228,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public function fetchRecordsIntoCollection(array $params = array()) {
+    public function fetchRecordsIntoCollection(array $params = []) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new ModelMustImplementMethodException($msg);
@@ -2312,24 +1576,24 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchRecordsIntoArray(array $params = array());
+    public abstract function fetchRecordsIntoArray(array $params = []): array;
 
     /**
-     * 
+     *
      * Fetch an array of db data. Each record is an associative array and not an
      * instance of \GDAO\Model\RecordInterface [Eager Loading should be considered here].
-     * 
+     *
      * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
-     * 
+     *
      *  `relations_to_include`
      *      : (array) An array of relation names as defined in any or all of 
      *        \GDAO\Model->_relations. 
      *        Eager-fetch related rows of data for each relation name.
-     * 
+     *
      *        NOTE: each key in the \GDAO\Model->_*_relationships arrays is a 
      *              relation name. Eg. array_keys($this->_relations)
      *              returns an array of relation name(s) for a model.
-     * 
+     *
      *        NOTE: Implementers of this class should make the retreived related
      *              data accessible in each record via an array key named with the
      *              same name as the relation name. For example, if there exists
@@ -2341,10 +1605,10 @@ abstract class Model
      *  `distinct`
      *      : (bool) True if the DISTINCT keyword should be added to the query, 
      *        else false if the DISTINCT keyword should be ommitted. 
-     * 
+     *
      *        NOTE: If `distinct` is not set/specified, implementers of this class 
      *              should give it a default value of false.
-     * 
+     *
      *  `cols`
      *      : (array) An array of the name(s) of column(s) to be returned.
      *        Expressions like 'COUNT(col_name) AS some_col' are allowed as a column name.
@@ -2354,12 +1618,12 @@ abstract class Model
      *          [
      *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
      *          ]
-     * 
+     *
      *        NOTE: If `cols` is not set/specified or is assigned an empty array
      *              value, implementers of this class should select all columns
      *              from the table associated with the model 
      *              (ie. SELECT * FROM models_table ..... ).
-     * 
+     *
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
@@ -2384,13 +1648,13 @@ abstract class Model
      *                          ]
      *                ]
      *          ]
-     * 
+     *
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
-     *    
+     *   
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
@@ -2402,7 +1666,7 @@ abstract class Model
      *              key in any of the array(s) inside the 'where' array an 'OR' 
      *              or 'OR#...' key. Below are some bad examples and their
      *              corrected equivalents
-     * 
+     *
      *          #BAD 1 - first key in $array['where'] is 'OR' 
      *          $array = [
      *              'where' => 
@@ -2414,7 +1678,7 @@ abstract class Model
      *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
-     * 
+     *
      *          #GOOD 1 - moved the entry with 'OR' key away from first position 
      *                    in $array['where']
      *          $array = [
@@ -2427,7 +1691,7 @@ abstract class Model
      *                          ],
      *                ]
      *          ]
-     *          
+     *         
      *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
      *          $array = [
      *             'where' => 
@@ -2445,7 +1709,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *          
+     *         
      *          #GOOD 2 - moved the entry with 'OR' key away from first position 
      *                    in $array['where']['OR'] 
      *          $array = [
@@ -2464,7 +1728,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *              
+     *             
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -2482,7 +1746,7 @@ abstract class Model
      *        NOTE: Implementers of this class can generate a WHERE clause 
      *              (excluding the WHERE keyword) from this sub-array by passing 
      *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     * 
+     *
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
      *        will be grouped by.
@@ -2491,7 +1755,7 @@ abstract class Model
      *          [
      *              'group' => ['column_name_1', 'column_name_2']
      *          ]
-     * 
+     *
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
      *        Eg. to generate 
@@ -2516,13 +1780,13 @@ abstract class Model
      *                          ]
      *                ]
      *          ]
-     * 
+     *
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
-     *    
+     *   
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
@@ -2534,7 +1798,7 @@ abstract class Model
      *              key in any of the array(s) inside the 'having' array an 'OR' 
      *              or 'OR#...' key. Below are some bad examples and their
      *              corrected equivalents
-     * 
+     *
      *          #BAD 1 - first key in $array['having'] is 'OR' 
      *          $array = [
      *              'having' => 
@@ -2546,7 +1810,7 @@ abstract class Model
      *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
-     * 
+     *
      *          #GOOD 1 - moved the entry with 'OR' key away from first position 
      *                    in $array['having']
      *          $array = [
@@ -2559,7 +1823,7 @@ abstract class Model
      *                          ],
      *                ]
      *          ]
-     *          
+     *         
      *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
      *          $array = [
      *             'having' => 
@@ -2577,7 +1841,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *          
+     *         
      *          #GOOD 2 - moved the entry with 'OR' key away from first position 
      *                    in $array['having']['OR'] 
      *          $array = [
@@ -2596,7 +1860,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *              
+     *             
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -2614,7 +1878,7 @@ abstract class Model
      *        NOTE: Implementers of this class can generate a HAVING clause 
      *              (excluding the HAVING keyword) from this sub-array by passing 
      *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     *     
+     *    
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
      *        The values are the column names to ORDER BY.
@@ -2622,55 +1886,54 @@ abstract class Model
      *          [
      *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
-     * 
+     *
      *  `limit_offset`
      *      : (int) Limit offset. Offset of the first row to return
-     * 
+     *
      *        NOTE: Implementers of this class should use the `limit_offset` 
      *              value with the appropriate limit & offset mechanism for the 
      *              DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     * 
+     *
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
-     * 
+     *
      *  `limit_size`
      *      : (int) Limit to a count of this many records.
-     * 
+     *
      *        NOTE: Implementers of this class should use the `limit_size` 
      *              value with the appropriate limit & offset mechanism for 
      *              the DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     * 
+     *
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
-     * 
-     * @return array
-     * 
+     *
+     *
      * @throws \PDOException
-     * 
+     * @return mixed[]
      */
-    public abstract function fetchRowsIntoArray(array $params = array());
+    public abstract function fetchRowsIntoArray(array $params = []): array;
 
     /**
-     * 
+     *
      * Fetch an array of values for a specified column.
-     * 
+     *
      * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
-     * 
+     *
      *  `distinct`
      *      : (bool) True if the DISTINCT keyword should be added to the query, 
      *        else false if the DISTINCT keyword should be ommitted. 
-     * 
+     *
      *        NOTE: If `distinct` is not set/specified, implementers of this class 
      *              should give it a default value of false.
-     * 
+     *
      *  `cols`
      *      : (array) An array of the name(s) of column(s) to be returned. Only 
      *        the first one will be honored.
@@ -2688,12 +1951,12 @@ abstract class Model
      *          [
      *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
      *          ]
-     * 
+     *
      *        NOTE: If `cols` is not set/specified or is assigned an empty array
      *              value, implementers of this class should select all columns
      *              from the table associated with the model 
      *              (ie. SELECT * FROM models_table ..... ).
-     * 
+     *
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
@@ -2718,13 +1981,13 @@ abstract class Model
      *                          ]
      *                ]
      *          ]
-     * 
+     *
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
-     *    
+     *   
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
@@ -2736,7 +1999,7 @@ abstract class Model
      *              key in any of the array(s) inside the 'where' array an 'OR' 
      *              or 'OR#...' key. Below are some bad examples and their
      *              corrected equivalents
-     * 
+     *
      *          #BAD 1 - first key in $array['where'] is 'OR' 
      *          $array = [
      *              'where' => 
@@ -2748,7 +2011,7 @@ abstract class Model
      *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
-     * 
+     *
      *          #GOOD 1 - moved the entry with 'OR' key away from first position 
      *                    in $array['where']
      *          $array = [
@@ -2761,7 +2024,7 @@ abstract class Model
      *                          ],
      *                ]
      *          ]
-     *          
+     *         
      *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
      *          $array = [
      *             'where' => 
@@ -2779,7 +2042,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *          
+     *         
      *          #GOOD 2 - moved the entry with 'OR' key away from first position 
      *                    in $array['where']['OR'] 
      *          $array = [
@@ -2798,7 +2061,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *              
+     *             
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -2816,7 +2079,7 @@ abstract class Model
      *        NOTE: Implementers of this class can generate a WHERE clause 
      *              (excluding the WHERE keyword) from this sub-array by passing 
      *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     * 
+     *
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
      *        will be grouped by.
@@ -2825,7 +2088,7 @@ abstract class Model
      *          [
      *              'group' => ['column_name_1', 'column_name_2']
      *          ]
-     * 
+     *
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
      *        Eg. to generate 
@@ -2850,13 +2113,13 @@ abstract class Model
      *                          ]
      *                ]
      *          ]
-     * 
+     *
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
-     *    
+     *   
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
@@ -2868,7 +2131,7 @@ abstract class Model
      *              key in any of the array(s) inside the 'having' array an 'OR' 
      *              or 'OR#...' key. Below are some bad examples and their
      *              corrected equivalents
-     * 
+     *
      *          #BAD 1 - first key in $array['having'] is 'OR' 
      *          $array = [
      *              'having' => 
@@ -2880,7 +2143,7 @@ abstract class Model
      *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
-     * 
+     *
      *          #GOOD 1 - moved the entry with 'OR' key away from first position 
      *                    in $array['having']
      *          $array = [
@@ -2893,7 +2156,7 @@ abstract class Model
      *                          ],
      *                ]
      *          ]
-     *          
+     *         
      *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
      *          $array = [
      *             'having' => 
@@ -2911,7 +2174,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *          
+     *         
      *          #GOOD 2 - moved the entry with 'OR' key away from first position 
      *                    in $array['having']['OR'] 
      *          $array = [
@@ -2930,7 +2193,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *              
+     *             
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -2948,7 +2211,7 @@ abstract class Model
      *        NOTE: Implementers of this class can generate a HAVING clause 
      *              (excluding the HAVING keyword) from this sub-array by passing 
      *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     * 
+     *
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
      *        The values are the column names to ORDER BY.
@@ -2956,41 +2219,40 @@ abstract class Model
      *          [
      *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
-     * 
+     *
      *  `limit_offset`
      *      : (int) Limit offset. Offset of the first row to return
-     * 
+     *
      *        NOTE: Implementers of this class should use the `limit_offset` 
      *              value with the appropriate limit & offset mechanism for the 
      *              DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     * 
+     *
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
-     * 
+     *
      *  `limit_size`
      *      : (int) Limit to a count of this many records.
-     * 
+     *
      *        NOTE: Implementers of this class should use the `limit_size` 
      *              value with the appropriate limit & offset mechanism for the 
      *              DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     * 
+     *
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
-     * 
-     * @return array
-     * 
+     *
+     *
      * @throws \PDOException
-     * 
+     * @return mixed[]
      */
-    public abstract function fetchCol(array $params = array());
+    public abstract function fetchCol(array $params = []): array;
 
     /**
      * 
@@ -3305,22 +2567,22 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchOneRecord(array $params = array());
+    public abstract function fetchOneRecord(array $params = []);
 
     /**
-     * 
+     *
      * Fetch an array of key-value pairs from the db table, where the 
      * 1st column's value is the key and the 2nd column's value is the value.
-     * 
+     *
      * @param array $params an array of parameters for the fetch with the keys (case-sensitive) below
      *
      *  `distinct`
      *      : (bool) True if the DISTINCT keyword should be added to the query, 
      *        else false if the DISTINCT keyword should be ommitted. 
-     * 
+     *
      *        NOTE: If `distinct` is not set/specified, implementers of this class 
      *              should give it a default value of false.
-     * 
+     *
      *  `cols`
      *      : (array) An array of the name(s) of column(s) or aggregate sql function
      *        calls to be returned. Only the first two array items will be honored.
@@ -3334,12 +2596,12 @@ abstract class Model
      *          [
      *              'cols' => [ 'col_1', 'col_2', 'col_3' ]
      *          ]
-     * 
+     *
      *        NOTE: If `cols` is not set/specified or is assigned an empty array
      *              value, implementers of this class should select all columns
      *              from the table associated with the model 
      *              (ie. SELECT * FROM models_table ..... ).
-     * 
+     *
      *  `where`
      *      : (array) an array of parameters for building a WHERE clause, 
      *        Eg. to generate 
@@ -3364,13 +2626,13 @@ abstract class Model
      *                          ]
      *                ]
      *          ]
-     * 
+     *
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
-     *    
+     *   
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
@@ -3382,7 +2644,7 @@ abstract class Model
      *              key in any of the array(s) inside the 'where' array an 'OR' 
      *              or 'OR#...' key. Below are some bad examples and their
      *              corrected equivalents
-     * 
+     *
      *          #BAD 1 - first key in $array['where'] is 'OR' 
      *          $array = [
      *              'where' => 
@@ -3394,7 +2656,7 @@ abstract class Model
      *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
-     * 
+     *
      *          #GOOD 1 - moved the entry with 'OR' key away from first position 
      *                    in $array['where']
      *          $array = [
@@ -3407,7 +2669,7 @@ abstract class Model
      *                          ],
      *                ]
      *          ]
-     *          
+     *         
      *          #BAD 2 - first key in $array['where']['OR'] is 'OR' 
      *          $array = [
      *             'where' => 
@@ -3425,7 +2687,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *          
+     *         
      *          #GOOD 2 - moved the entry with 'OR' key away from first position 
      *                    in $array['where']['OR'] 
      *          $array = [
@@ -3444,7 +2706,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *              
+     *             
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -3462,7 +2724,7 @@ abstract class Model
      *        NOTE: Implementers of this class can generate a WHERE clause 
      *              (excluding the WHERE keyword) from this sub-array by passing 
      *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     * 
+     *
      *  `group`
      *      : (array) An array of the name(s) of column(s) which the results 
      *        will be grouped by.
@@ -3471,7 +2733,7 @@ abstract class Model
      *          [
      *              'group' => ['column_name_1', 'column_name_2']
      *          ]
-     * 
+     *
      *  `having`
      *      : (array) An array of parameters for building a HAVING clause.
      *        Eg. to generate 
@@ -3496,13 +2758,13 @@ abstract class Model
      *                          ]
      *                ]
      *          ]
-     * 
+     *
      *        The 'op' could be assigned any one of these values:
      *          [ 
      *              '=', '>', '>=', '<', '<=', 'in', 'is-null', 'like',  
      *              '!=', 'not-in', 'not-like', 'not-null', 'is-empty-string', 'not-empty-string'
      *          ]
-     *    
+     *   
      *        NOTE: To add OR conditions add an OR key. For multiple OR conditions
      *              append a # and a unique string after the # so that the 
      *              subsequent OR conditions do not override the previous ones.
@@ -3514,7 +2776,7 @@ abstract class Model
      *              key in any of the array(s) inside the 'having' array an 'OR' 
      *              or 'OR#...' key. Below are some bad examples and their
      *              corrected equivalents
-     * 
+     *
      *          #BAD 1 - first key in $array['having'] is 'OR' 
      *          $array = [
      *              'having' => 
@@ -3526,7 +2788,7 @@ abstract class Model
      *                   [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *                ]
      *          ]
-     * 
+     *
      *          #GOOD 1 - moved the entry with 'OR' key away from first position 
      *                    in $array['having']
      *          $array = [
@@ -3539,7 +2801,7 @@ abstract class Model
      *                          ],
      *                ]
      *          ]
-     *          
+     *         
      *          #BAD 2 - first key in $array['having']['OR'] is 'OR' 
      *          $array = [
      *             'having' => 
@@ -3557,7 +2819,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *          
+     *         
      *          #GOOD 2 - moved the entry with 'OR' key away from first position 
      *                    in $array['having']['OR'] 
      *          $array = [
@@ -3576,7 +2838,7 @@ abstract class Model
      *                  [ 'col'=>'column_name_3', 'op'=>'>=', 'val'=>58 ],
      *               ]
      *         ]
-     *              
+     *             
      *        NOTE: Implementers of this class should convert each operator to the 
      *              DB specific operator. Eg. for MySQL, convert 'not-null' to 
      *              'IS NOT NULL'.
@@ -3594,7 +2856,7 @@ abstract class Model
      *        NOTE: Implementers of this class can generate a HAVING clause 
      *              (excluding the HAVING keyword) from this sub-array by passing 
      *              it to \GDAO\Model::_getWhereOrHavingClauseWithParams(...)
-     *    
+     *   
      *  `order`
      *      : (array) an array of parameters for building an ORDER BY clause.
      *        The values are the column names to ORDER BY.
@@ -3602,41 +2864,40 @@ abstract class Model
      *          [
      *              'order' => [ 'col_1 ASC', 'col_2 DESC' ] 
      *          ]
-     * 
+     *
      *  `limit_offset`
      *      : (int) Limit offset. Offset of the first row to return
-     * 
+     *
      *        NOTE: Implementers of this class should use the `limit_offset` 
      *              value with the appropriate limit & offset mechanism for the 
      *              DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     * 
+     *
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
-     * 
+     *
      *  `limit_size`
      *      : (int) Limit to a count of this many records.
-     * 
+     *
      *        NOTE: Implementers of this class should use the `limit_size` 
      *              value with the appropriate limit & offset mechanism for the 
      *              DB system their implementation supports. 
      *              Eg. for MySQL: 
      *                      LIMIT $params['limit_size']
      *                      OFFSET $params['limit_offset']
-     * 
+     *
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
-     * 
-     * @return array
-     * 
+     *
+     *
      * @throws \PDOException
-     * 
+     * @return mixed[]
      */
-    public abstract function fetchPairs(array $params = array());
+    public abstract function fetchPairs(array $params = []): array;
 
     /**
      * 
@@ -3941,7 +3202,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchValue(array $params = array());
+    public abstract function fetchValue(array $params = []);
 
     /**
      * 
@@ -3953,7 +3214,7 @@ abstract class Model
      * @throws \GDAO\ModelRequiresPdoInstanceException
      * 
      */
-    public abstract function getPDO();
+    public abstract function getPDO(): \PDO;
 
     /**
      * 
@@ -3991,7 +3252,7 @@ abstract class Model
      * @throws \GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException
      * 
      */
-    public abstract function insert(array $data_2_insert=array());
+    public abstract function insert(array $data_2_insert=[]);
 
     /**
      * 
@@ -4043,7 +3304,7 @@ abstract class Model
      * @throws \GDAO\ModelInvalidInsertValueSuppliedException
      * 
      */
-    public abstract function insertMany(array $rows_of_data_2_insert=array());
+    public abstract function insertMany(array $rows_of_data_2_insert=[]);
 
     /**
      * 
@@ -4087,8 +3348,8 @@ abstract class Model
      * 
      */
     public abstract function updateMatchingDbTableRows(
-        array $col_names_n_values_2_save = array(), 
-        array $col_names_n_values_2_match = array()
+        array $col_names_n_values_2_save = [], 
+        array $col_names_n_values_2_match = []
     );
     
     /**
@@ -4105,20 +3366,18 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record);
+    public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): bool;
     
     //////////////////////////////////////
     // Getters for non-public properties
     //////////////////////////////////////
-    
     /**
-     * 
+     *
      * Get the value of $this->_created_timestamp_column_name.
-     * 
-     * @return string the value of $this->_created_timestamp_column_name.
-     * 
+     *
+     * @return string|null the value of $this->_created_timestamp_column_name.
      */
-    public function getCreatedTimestampColumnName() {
+    public function getCreatedTimestampColumnName(): ?string {
 
         return $this->_created_timestamp_column_name;
     }
@@ -4133,20 +3392,19 @@ abstract class Model
      * @return string the value of $this->_primary_col.
      * 
      */
-    public function getPrimaryColName($prepend_table_name=false) {
+    public function getPrimaryColName(bool $prepend_table_name=false): string {
 
         return $prepend_table_name ?
                 "{$this->_table_name}.{$this->_primary_col}" : $this->_primary_col;
     }
 
     /**
-     * 
+     *
      * Get the value of $this->_table_name.
-     * 
-     * @return string the value of $this->_table_name.
-     * 
+     *
+     * @return string|null the value of $this->_table_name.
      */
-    public function getTableName() {
+    public function getTableName(): ?string {
 
         return $this->_table_name;
     }
@@ -4181,7 +3439,7 @@ abstract class Model
                 }
             }
 
-            return ($keys_are_strings)? array_keys($this->_table_cols): array();
+            return ($keys_are_strings)? array_keys($this->_table_cols): [];
         }
     }
 
@@ -4192,19 +3450,18 @@ abstract class Model
      * @return array an array of relation names defined in $this->_relations.
      * 
      */
-    public function getRelationNames() {
+    public function getRelationNames(): array {
 
         return array_keys($this->_relations);
     }
 
     /**
-     * 
+     *
      * Get the value of $this->_updated_timestamp_column_name.
-     * 
-     * @return string the value of $this->_updated_timestamp_column_name.
-     * 
+     *
+     * @return string|null the value of $this->_updated_timestamp_column_name.
      */
-    public function getUpdatedTimestampColumnName() {
+    public function getUpdatedTimestampColumnName(): ?string {
 
         return $this->_updated_timestamp_column_name;
     }

@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace GDAO\Model;
 
 /**
@@ -7,7 +7,7 @@ namespace GDAO\Model;
  * Represents a collection of \GDAO\Model\RecordInterface objects.
  *
  * @author Rotimi Adegbamigbe
- * @copyright (c) 2015, Rotimi Adegbamigbe
+ * @copyright (c) 2022, Rotexsoft
  * 
  */
 interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggregate
@@ -38,14 +38,14 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * \GDAO\Model\RecordsList->toArray() to get at the underlying array
      * \GDAO\Model\RecordsList uses to store items.
      * 
-     * @param \GDAO\Model\RecordsList $data list of instances of \GDAO\Model\RecordInterface
      * @param \GDAO\Model $model The model object that transfers data between the db and this collection.
      * @param array $extra_opts an array that may be used to pass initialization 
      *                          value(s) for protected and / or private properties
      *                          of this class
+     * @param \GDAO\Model\RecordInterface[] $data instances of \GDAO\Model\RecordInterface
      */
     public function __construct(
-        RecordsList $data, \GDAO\Model $model, array $extra_opts=array()
+        \GDAO\Model $model, array $extra_opts=[], \GDAO\Model\RecordInterface ...$data
     );
     
     /**
@@ -76,16 +76,15 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      *               element.
      * 
      */
-    public function getColVals($col);
+    public function getColVals($col): array;
     
     /**
      * 
      * Returns all the keys for this collection.
      * 
-     * @return array
-     * 
+     * @return string|int[]
      */
-    public function getKeys();
+    public function getKeys(): array;
     
     /**
      * 
@@ -94,7 +93,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return \GDAO\Model The origin model object.
      * 
      */
-    public function getModel();
+    public function getModel(): \GDAO\Model;
     
     /**
      * 
@@ -103,7 +102,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return bool True if empty, false if not.
      * 
      */
-    public function isEmpty();
+    public function isEmpty(): bool;
     
     /**
      * 
@@ -114,12 +113,10 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * or its descendants. We only ever want instances of \GDAO\Model\RecordInterface or
      * its descendants inside a collection.
      * 
-     * @param \GDAO\Model\RecordsList $data_2_load
-     * 
-     * @return void
+     * @param \GDAO\Model\RecordInterface[] $data_2_load
      * 
      */
-    public function loadData(RecordsList $data_2_load);
+    public function loadData(\GDAO\Model\RecordInterface ...$data_2_load): void;
     
     
     /**
@@ -127,10 +124,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * Removes all records from the collection but **does not** delete them
      * from the database.
      * 
-     * @return void
-     * 
      */
-    public function removeAll();
+    public function removeAll():void;
 
     /**
      * 
@@ -172,10 +167,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * @param \GDAO\Model $model The origin model object.
      * 
-     * @return void
-     * 
      */
-    public function setModel(\GDAO\Model $model);
+    public function setModel(\GDAO\Model $model): void;
     
     /**
      * 
@@ -184,7 +177,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @return array an array representation of an instance of this class.
      * 
      */
-    public function toArray();
+    public function toArray(): array;
     
     /**
      * 
@@ -193,10 +186,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @param int|string $key The sequential or associative key value for the
      *                        record.
      * 
-     * @return \GDAO\Model\RecordInterface
-     * 
      */
-    public function __get($key);
+    public function __get($key): \GDAO\Model\RecordInterface;
 
     /**
      * 
@@ -204,10 +195,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * @param string $key The requested data key.
      * 
-     * @return void
-     * 
      */
-    public function __isset($key);
+    public function __isset($key): bool;
 
     /**
      * 
@@ -216,11 +205,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @param string $key The requested key.
      * @param \GDAO\Model\RecordInterface $val The value to set it to.
      * 
-     * @return void
-     * 
-     * 
      */
-    public function __set($key, \GDAO\Model\RecordInterface $val);
+    public function __set($key, \GDAO\Model\RecordInterface $val): void;
 
     /**
      * 
@@ -235,22 +221,19 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * @param \GDAO\Model\RecordInterface $val The value to set it to.
      * 
-     * @return void
-     * 
      * @throws \GDAO\Model\CollectionCanOnlyContainGDAORecordsException
      * 
      */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($key, $val);
+    public function offsetSet($key, $val): void;
     
     /**
      * 
      * Returns a string representation of an instance of this class.
      * 
-     * @return array a string representation of an instance of this class.
+     * @return a string representation of an instance of this class.
      * 
      */
-    public function __toString();
+    public function __toString(): string;
 
     /**
      * 
@@ -258,10 +241,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * @param string $key The requested data key.
      * 
-     * @return void
-     * 
      */
-    public function __unset($key);
+    public function __unset($key): void;
     
     //Hooks
     
@@ -272,10 +253,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * Implementers of this class should add a call to this method as the 
      * first line of code in their implementation of $this->deleteAll()
      * 
-     * @return void
-     * 
      */
-    public function _preDeleteAll();
+    public function _preDeleteAll(): void;
     
     /**
      * 
@@ -284,10 +263,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * Implementers of this class should add a call to this method as the 
      * last line of code in their implementation of $this->deleteAll()
      * 
-     * @return void
-     * 
      */
-    public function _postDeleteAll();
+    public function _postDeleteAll(): void;
     
     /**
      * 
@@ -296,10 +273,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * Implementers of this class should add a call to this method as the 
      * first line of code in their implementation of $this->save(...)
      * 
-     * @return void
-     * 
      */
-    public function _preSaveAll($group_inserts_together=false);
+    public function _preSaveAll($group_inserts_together=false): void;
     
     /**
      * 
@@ -308,9 +283,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * Implementers of this class should add a call to this method as the 
      * last line of code in their implementation of $this->save(...)
      * 
-     * @return void
-     * 
      */
-    public function _postSaveAll($save_all_result, $group_inserts_together=false);
+    public function _postSaveAll($save_all_result, $group_inserts_together=false): void;
 }
 

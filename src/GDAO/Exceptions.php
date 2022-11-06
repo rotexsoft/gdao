@@ -1,12 +1,11 @@
 <?php
-
+declare(strict_types=1);
 namespace GDAO {
 
     class ModelRequiresPdoInstanceException extends \Exception{}
     class ModelMustImplementMethodException extends \Exception{}
     class ModelInvalidInsertValueSuppliedException extends \Exception{}
     class ModelInvalidUpdateValueSuppliedException extends \Exception{}
-    class ModelBadWhereOrHavingParamSuppliedException extends \Exception{}
     class ModelTableNameNotSetDuringConstructionException extends \Exception {}
     class ModelPrimaryColNameNotSetDuringConstructionException extends \Exception {}
     class ModelPrimaryColValueNotRetrievableAfterInsertException extends \Exception {}

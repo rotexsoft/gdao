@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /**
  * 
  * A Model Class for testing non-abstract methods in the abstract class (\GDAO\Model).
@@ -8,7 +8,7 @@
  */
 class ModelForTestingNonAbstractMethods extends \GDAO\Model
 {
-    protected $_primary_col = null;
+    protected ?string $_primary_col = null;
     
     /**
      * 
@@ -29,13 +29,13 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
 
     public function createNewRecord( 
         array $col_names_and_values = [], array $extra_opts = []
-    ) { }
+    ): \GDAO\Model\RecordInterface { }
 
-    public function deleteMatchingDbTableRows(array $cols_n_vals=[]) { }
+    public function deleteMatchingDbTableRows(array $cols_n_vals=[]): ?int { }
 
-    public function fetchRecordsIntoArray(array $params = []) { }
+    public function fetchRecordsIntoArray(array $params = []): array { }
 
-    public function getPDO() {
+    public function getPDO(): \PDO {
         
         return $this->_pdo;
     }
@@ -56,15 +56,15 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
         return $this->_getWhereOrHavingClauseWithParams($array, $indent_level);
     }
 
-    public function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record) { }
+    public function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record): ?bool { }
 
-    public function fetchRowsIntoArray(array $params = []) { }
+    public function fetchRowsIntoArray(array $params = []): array { }
 
-    public function fetchCol(array $params = []) { }
+    public function fetchCol(array $params = []): array { }
 
     public function fetchOneRecord(array $params = []) { }
 
-    public function fetchPairs(array $params = []) { }
+    public function fetchPairs(array $params = []): array { }
 
     public function fetchValue(array $params = []) { }
 
@@ -77,5 +77,5 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
         array $col_names_n_values_2_match = []
     ) { }
 
-    public function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record) { }
+    public function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): bool { }
 }
