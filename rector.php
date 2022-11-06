@@ -1,8 +1,6 @@
 <?php
-
 declare(strict_types=1);
 
-use Rector\Php74\Rector\Property\TypedPropertyRector;
 use Rector\Set\ValueObject\SetList;
 use Rector\Config\RectorConfig;
 
@@ -36,5 +34,5 @@ return static function (RectorConfig $rectorConfigurator): void {
     $services = $rectorConfigurator->services();
     
     //TODO:PHP8 comment once PHP 8 becomes minimum version
-    $services->remove(Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector::class);
+    (PHP_MAJOR_VERSION < 8) && $services->remove(Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector::class);
 };
