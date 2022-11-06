@@ -1725,14 +1725,14 @@ abstract class Model
      * 
      * @param \GDAO\Model\RecordInterface $record
      * 
-     * @return bool true for a successful update, false for a failed update 
-     *              OR null if supplied record is a record that has never been
-     *              saved to the db.
+     * @return bool|null true for a successful update, false for a failed update 
+     *                   OR null if supplied record is a record that has never been
+     *                   saved to the db.
      * 
      * @throws \PDOException
      * 
      */
-    public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): bool;
+    public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): ?bool;
     
     //////////////////////////////////////
     // Getters for non-public properties
