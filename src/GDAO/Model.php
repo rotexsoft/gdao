@@ -981,7 +981,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public function fetchRecordsIntoCollection(?object $query=null) {
+    public function fetchRecordsIntoCollection(?object $query=null, array $relations_to_include=[]) {
         
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new ModelMustImplementMethodException($msg);
@@ -1087,7 +1087,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchRecordsIntoArray(?object $query=null): array;
+    public abstract function fetchRecordsIntoArray(?object $query=null, array $relations_to_include=[]): array;
 
     /**
      *
@@ -1183,7 +1183,7 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchRowsIntoArray(?object $query=null): array;
+    public abstract function fetchRowsIntoArray(?object $query=null, array $relations_to_include=[]): array;
 
     /**
      *
@@ -1277,7 +1277,7 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchCol(?object $query=null): array;
+    public abstract function fetchCol(?object $query=null, array $relations_to_include=[]): array;
 
     /**
      * 
@@ -1373,7 +1373,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchOneRecord(?object $query=null);
+    public abstract function fetchOneRecord(?object $query=null, array $relations_to_include=[]);
 
     /**
      *
@@ -1469,7 +1469,7 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchPairs(?object $query=null): array;
+    public abstract function fetchPairs(?object $query=null, array $relations_to_include=[]): array;
 
     /**
      * 
@@ -1568,7 +1568,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchValue(?object $query=null);
+    public abstract function fetchValue(?object $query=null, array $relations_to_include=[]);
 
     /**
      * 
