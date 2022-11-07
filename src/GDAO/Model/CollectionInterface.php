@@ -272,4 +272,3 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      */
     public function _postSaveAll($save_all_result, $group_inserts_together=false): void;
 }
-
