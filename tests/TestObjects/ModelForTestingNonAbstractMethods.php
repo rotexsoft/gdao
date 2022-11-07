@@ -31,7 +31,7 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
 
     public function deleteMatchingDbTableRows(array $cols_n_vals=[]): ?int { }
 
-    public function fetchRecordsIntoArray(array $params = []): array { }
+    public function fetchRecordsIntoArray(?object $query=null, array $relations_to_include=[]): array { }
 
     public function getPDO(): \PDO {
         
@@ -48,23 +48,23 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
     /**
      * @return mixed[]
      */
-    public function fetchRowsIntoArray(array $params = []): array { return []; }
+    public function fetchRowsIntoArray(?object $query=null, array $relations_to_include=[]): array { return []; }
 
     /**
      * @return mixed[]
      */
-    public function fetchCol(array $params = []): array { return []; }
+    public function fetchCol(?object $query=null): array { return []; }
 
     /**
      * @noRector
      * @return \GDAO\Model\RecordInterface|bool
      */
-    public function fetchOneRecord(array $params = []) { return false; }
+    public function fetchOneRecord(?object $query=null, array $relations_to_include=[]) { return false; }
 
     /**
      * @return mixed[]
      */
-    public function fetchPairs(array $params = []): array { return []; }
+    public function fetchPairs(?object $query=null): array { return []; }
 
     
     /**
@@ -72,7 +72,7 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
      * @noRector
      * @return mixed
      */
-    public function fetchValue(array $params = []) { return 1; }
+    public function fetchValue(?object $query=null) { return 1; }
 
     /**
      * @noRector 
