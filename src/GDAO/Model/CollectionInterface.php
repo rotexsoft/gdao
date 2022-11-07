@@ -73,7 +73,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * Returns all the keys for this collection.
      * 
-     * @return string|int[]
+     * @return array<string|int, string|int>
      */
     public function getKeys(): array;
     
@@ -216,7 +216,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * Returns a string representation of an instance of this class.
      * 
-     * @return a string representation of an instance of this class.
+     * @return string a string representation of an instance of this class.
      * 
      */
     public function __toString(): string;
@@ -260,7 +260,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * first line of code in their implementation of $this->save(...)
      * 
      */
-    public function _preSaveAll($group_inserts_together=false): void;
+    public function _preSaveAll(bool $group_inserts_together=false): void;
     
     /**
      * 
@@ -269,6 +269,8 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * Implementers of this class should add a call to this method as the 
      * last line of code in their implementation of $this->save(...)
      * 
+     * @param bool|array $save_all_result result returned from $this->saveAll(..)
+     * @param bool $group_inserts_together exact value passed to $this->saveAll($group_inserts_together)
      */
-    public function _postSaveAll($save_all_result, $group_inserts_together=false): void;
+    public function _postSaveAll($save_all_result, bool $group_inserts_together=false): void;
 }

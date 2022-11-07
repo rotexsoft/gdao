@@ -362,16 +362,11 @@ abstract class Model
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //The entry below can be used to modify the sql query for retrieving data from
      *          //$this->_relations['relation_name1']['foreign_table'].
-     *          //See the documentation for the $params parameter for 
-     *          //$this->fetchRecordsIntoCollection(..) in order to understand 
-     *          //the expected value(s) that should be set for 
-     *          //$this->_relations['relation_name1']['foreign_table_sql_params']
-     *          //NOTE: that the `relations_to_include`, `limit_offset` and
-     *          //      `limit_size` entries acceptable in the $params parameter 
-     *          //      for $this->fetchRecordsIntoCollection(..) should not be included in the  
-     *          //      value to be set for $this->_relations['relation_name1']['foreign_table_sql_params']
-     * 
-     *          'foreign_table_sql_params'=> [....]
+     *          
+     *          'sql_query_modifier'=> an anonymous function that accepts a query object & returns a query object
+     *                                 this modifier should be called on the query object for fetching related data
+     *                                 just before the query is executed so that it can make final modifications to the 
+     *                                 query for fetching the related data before the data is fetched.
      * 
      *          /////////////////////////////////////////////////////////////////////////////////
      *          // An Array of optional extra options to be passed to the foreign model's
@@ -682,9 +677,9 @@ abstract class Model
     
     /**
      * 
-     * @param string $dsn
-     * @param string $username
-     * @param string $passwd
+     * @param string $dsn a dsn string see $dsn parameter for \PDO::__construct(..) https://www.php.net/manual/en/pdo.construct.php
+     * @param string $username username for the connection if applicable
+     * @param string $passwd password for the connection if applicable
      * @param array $pdo_driver_opts see \PDO::setAttribute(..) documentation
      * @param array $extra_opts an array that may be used to pass initialization 
      *                          value(s) for protected and / or private properties
@@ -709,11 +704,12 @@ abstract class Model
         $this->_pdo_driver_opts = $pdo_driver_opts;
         
         //set properties of this class specified in $extra_opts
+        /** @var mixed $e_opt_val */
         foreach($extra_opts as $e_opt_key => $e_opt_val) {
   
-            if ( property_exists($this, $e_opt_key) ) {
+            if ( property_exists($this, ''.$e_opt_key) ) {
                 
-                $this->$e_opt_key = $e_opt_val;
+                $this->{''.$e_opt_key} = $e_opt_val;
 
             } elseif ( property_exists($this, '_'.$e_opt_key) ) {
 
@@ -891,17 +887,14 @@ abstract class Model
      * collections. The Model and Record classes are mandatory, the collection 
      * class is optional(php arrays are a good & natively available alternative).
      * 
-     * The methods described below must be implemented by implementers of this package
+     * The methods described below must be available via the $query object
      * These methods will help build the sql query that will be used to perform the fetch
      * and must be called before this method is called.
      * These methods must return the instance of this class that they were called on.
      * If none of these methods are called before the fetch, the fetch should be done
      * with the generic query below
      *          SELECT * FROM $this->getTableName()
-     * 
-     *  `relations_to_include` a method like withRelations that accepts an array of
-     *                         relation names as defined in \GDAO\Model->_relations. 
-     *                          Eager-fetch related rows of data for each relation name.
+     *
      * 
      *        NOTE: each key in the \GDAO\Model->_relations array is a 
      *              relation name. Eg. array_keys($this->_relations)
@@ -975,6 +968,9 @@ abstract class Model
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     * 
+     * @param null|object $query an object that can be used to build a select query
+     * @param string[] $relations_to_include array of the relationship names (keys from $this->_relations) for related data to add to this fetch
      * 
      * @return \GDAO\Model\CollectionInterface|bool return a collection of matched record object(s) or false if no matching record(s) were found 
      * 
@@ -992,12 +988,7 @@ abstract class Model
      * Fetch an array of records (instances of \GDAO\Model\RecordInterface or 
      * any of its sub-classes) [Eager Loading should be considered here].
      * 
-     * This method is not declared abstract in order to allow both implementers
-     * and consumers of this API to be able to implement or use this API without
-     * collections. The Model and Record classes are mandatory, the collection 
-     * class is optional(php arrays are a good & natively available alternative).
-     * 
-     * The methods described below must be implemented by implementers of this package
+     * The methods described below must be available via the $query object
      * These methods will help build the sql query that will be used to perform the fetch
      * and must be called before this method is called.
      * These methods must return the instance of this class that they were called on.
@@ -1081,6 +1072,9 @@ abstract class Model
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     * 
+     * @param null|object $query an object that can be used to build a select query
+     * @param string[] $relations_to_include array of the relationship names (keys from $this->_relations) for related data to add to this fetch
      * 
      * @return array of records (instances of \GDAO\Model\RecordInterface).
      * 
@@ -1094,7 +1088,7 @@ abstract class Model
      * Fetch an array of db data. Each record is an associative array and not an
      * instance of \GDAO\Model\RecordInterface [Eager Loading should be considered here].
      *
-     * The methods described below must be implemented by implementers of this package
+     * The methods described below must be available via the $query object
      * These methods will help build the sql query that will be used to perform the fetch
      * and must be called before this method is called.
      * These methods must return the instance of this class that they were called on.
@@ -1179,7 +1173,9 @@ abstract class Model
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      *
-     *
+     * @param null|object $query an object that can be used to build a select query
+     * @param string[] $relations_to_include array of the relationship names (keys from $this->_relations) for related data to add to this fetch
+     * 
      * @throws \PDOException
      * @return mixed[]
      */
@@ -1189,7 +1185,7 @@ abstract class Model
      *
      * Fetch an array of values for a specified column.
      *
-     * The methods described below must be implemented by implementers of this package
+     * The methods described below must be available via the $query object
      * These methods will help build the sql query that will be used to perform the fetch
      * and must be called before this method is called.
      * These methods must return the instance of this class that they were called on.
@@ -1274,6 +1270,8 @@ abstract class Model
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      *
+     * @param null|object $query an object that can be used to build a select query
+     * 
      * @throws \PDOException
      * @return mixed[]
      */
@@ -1283,7 +1281,7 @@ abstract class Model
      * 
      * Fetch a single record matching the specified params.
      * 
-     * The methods described below must be implemented by implementers of this package
+     * The methods described below must be available via the $query object
      * These methods will help build the sql query that will be used to perform the fetch
      * and must be called before this method is called.
      * These methods must return the instance of this class that they were called on.
@@ -1368,6 +1366,9 @@ abstract class Model
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
+     * @param null|object $query an object that can be used to build a select query
+     * @param string[] $relations_to_include array of the relationship names (keys from $this->_relations) for related data to add to this fetch
+     * 
      * @return \GDAO\Model\RecordInterface|bool return a record object if found or false if no matching record was found
      * 
      * @throws \PDOException
@@ -1380,7 +1381,7 @@ abstract class Model
      * Fetch an array of key-value pairs from the db table, where the 
      * 1st column's value is the key and the 2nd column's value is the value.
      *
-     * The methods described below must be implemented by implementers of this package
+     * The methods described below must be available via the $query object
      * These methods will help build the sql query that will be used to perform the fetch
      * and must be called before this method is called.
      * These methods must return the instance of this class that they were called on.
@@ -1465,7 +1466,8 @@ abstract class Model
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      *
-     *
+     * @param null|object $query an object that can be used to build a select query
+     * 
      * @throws \PDOException
      * @return mixed[]
      */
@@ -1475,7 +1477,7 @@ abstract class Model
      * 
      * Fetch a single value from the db table matching params.
      * 
-     * The methods described below must be implemented by implementers of this package
+     * The methods described below must be available via the $query object
      * These methods will help build the sql query that will be used to perform the fetch
      * and must be called before this method is called.
      * These methods must return the instance of this class that they were called on.
@@ -1559,6 +1561,8 @@ abstract class Model
      *                  for MSSQL Server:
      *                      OFFSET $params['limit_offset'] ROWS
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
+     * 
+     * @param null|object $query an object that can be used to build a select query
      * 
      * @return mixed A single value either from a column in a row of the db table 
      *               associated with this model or the result of a sql aggregate
@@ -1796,6 +1800,7 @@ abstract class Model
             
             $keys_2_return = [];
             
+            /** @var string|array $potential_col_metadata */
             foreach($this->_table_cols as $key => $potential_col_metadata) {
                 
                 if( is_string($key) ) {
