@@ -39,6 +39,8 @@ This package isn't meant to perform database schema management tasks like creati
 However, it exposes a PDO object (via **\GDAO\Model->getPDO()**) that can be used to perform such tasks 
 and other data manipulation (DM) tasks that cannot be accomplished via this API.
 
+![GDAO Classes & Interfaces](class-diagram.svg)
+
 
 ## Assumptions and Conventions in this API. 
 
