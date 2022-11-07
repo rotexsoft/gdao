@@ -1581,8 +1581,6 @@ abstract class Model
      * 
      * @return \PDO the PDO object powering this model.
      * 
-     * @throws \GDAO\ModelRequiresPdoInstanceException
-     * 
      */
     public abstract function getPDO(): \PDO;
 
