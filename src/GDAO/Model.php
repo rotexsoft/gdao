@@ -731,53 +731,6 @@ abstract class Model
     }
 
     /**
-     * 
-     * Implementers of this class can implement magic methods by overriding this method.
-     * 
-     * For example $this->fetchOneByIdAndTitle(1, 'A title!') will lead to this 
-     * method being called (since fetchOneByIdAndTitle() doesn't exist in this
-     * class) with the following values:
-     *      $method === 'fetchOneByIdAndTitle'
-     *      $params === [0 => 1, 1 => 'A title!']
-     * 
-     * The string 'fetchOneByIdAndTitle' can be parsed to extract 'Id' & 'Title'.
-     * 
-     * @param string $method name of a method that does not exist in this class 
-     *                       that is being called
-     * @param array $params arguments passed to the non-existent method
-     * 
-     * @return mixed the return value of the magic method's implementation
-     * 
-     * @throws \GDAO\ModelMustImplementMethodException
-     * 
-     */
-    public function __call($method, $params) {
-
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new ModelMustImplementMethodException($msg);
-    }
-
-    /**
-     * 
-     * Implementers of this class can use this method to provide access to 
-     * non-existent or publicly inaccessible (eg. protected) properties of 
-     * an instance of this class.
-     * 
-     * @param string $property_name
-     * 
-     * @return mixed value of a non-existent or publicly inaccessible property of
-     *               an instance of this class.
-     * 
-     * @throws \GDAO\ModelMustImplementMethodException
-     * 
-     */
-    public function __get($property_name) {
-        
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
-        throw new ModelMustImplementMethodException($msg);
-    }
-
-    /**
      * Returns a string representation of an instance of this class.
      */
     public function __toString(): string {
