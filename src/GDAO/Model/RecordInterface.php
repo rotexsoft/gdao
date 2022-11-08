@@ -247,7 +247,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @param \GDAO\Model\RecordInterface|array $data_2_load
      * @param array $cols_2_load name of field to load from $data_2_load. 
-     *                           If null, load all fields in $data_2_load.
+     *                           If empty, load all fields in $data_2_load.
      * 
      * @throws \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
