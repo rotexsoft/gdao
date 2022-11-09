@@ -262,42 +262,6 @@ EOT;
         $this->assertTrue( $expected_array === $model->toArray(), $msg);
     }
 
-    public function testThat__callThrowsException(): void {
-        
-        $this->expectException(\GDAO\ModelMustImplementMethodException::class);
-        
-        $model = new \ModelForTestingNonAbstractMethods(
-                    'test_dsn',
-                    'test_username',
-                    'test_passwd',
-                    [],
-                    [
-                        '_primary_col'=>'component_id', 
-                        '_table_name'=>'components',
-                    ]
-                );
-        
-        $model->__call('', '');
-    }
-
-    public function testThat__getThrowsException(): void {
-        
-        $this->expectException(\GDAO\ModelMustImplementMethodException::class);
-        
-        $model = new \ModelForTestingNonAbstractMethods(
-                    'test_dsn',
-                    'test_username',
-                    'test_passwd',
-                    [],
-                    [
-                        '_primary_col'=>'component_id', 
-                        '_table_name'=>'components',
-                    ]
-                );
-        
-        $model->__get('');
-    }
-
     public function testThatCreateNewCollectionThrowsException(): void {
         
         $this->expectException(\GDAO\ModelMustImplementMethodException::class);
