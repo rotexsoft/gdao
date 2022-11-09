@@ -28,7 +28,7 @@ abstract class Model
      * 
      */
     protected string $_primary_col = '';
-    
+
     /**
      *
      * Name of the db table associated with this model
@@ -210,7 +210,7 @@ abstract class Model
      * 
      */
     protected ?string $_updated_timestamp_column_name = null; //string
-    
+
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
     //* The array below ($this->_relations) is for modeling relationships.   *//
@@ -229,7 +229,7 @@ abstract class Model
     //* using these relationship definitions.                                *//
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-  
+
     /**
      * 
      * A 2-dimensional array meant to hold definitions of Belongs-To, Has-One,
@@ -623,10 +623,25 @@ abstract class Model
      * 
      */
     protected array $_relations = [];
-    
+
+    /**
+     * @var string
+     */
     public const RELATION_TYPE_HAS_ONE = 'rt_ho';
+
+    /**
+     * @var string
+     */
     public const RELATION_TYPE_HAS_MANY = 'rt_hm';
+
+    /**
+     * @var string
+     */
     public const RELATION_TYPE_BELONGS_TO = 'rt_bt';
+
+    /**
+     * @var string
+     */
     public const RELATION_TYPE_HAS_MANY_THROUGH = 'rt_hmt';
 
     /**
@@ -640,7 +655,7 @@ abstract class Model
      * 
      */
     protected string $_dsn = '';
-    
+
     /**
      *
      * The username for the database to be connected to.
@@ -651,7 +666,7 @@ abstract class Model
      * 
      */
     protected string $_username = ''; 
-    
+
     /**
      *
      * The password for the database to be connected to.
@@ -663,7 +678,7 @@ abstract class Model
      * 
      */
     protected string $_passwd = '';
-    
+
     /**
      *
      * An array of options for a PDO driver
@@ -674,7 +689,7 @@ abstract class Model
      * 
      */
     protected array $_pdo_driver_opts = [];
-    
+
     /**
      * 
      * @param string $dsn a dsn string see $dsn parameter for \PDO::__construct(..) https://www.php.net/manual/en/pdo.construct.php
@@ -702,29 +717,29 @@ abstract class Model
         $this->_username = $username;
         $this->_passwd = $passwd;
         $this->_pdo_driver_opts = $pdo_driver_opts;
-        
+
         //set properties of this class specified in $extra_opts
         /** @var mixed $e_opt_val */
         foreach($extra_opts as $e_opt_key => $e_opt_val) {
-  
+
             if ( property_exists($this, ''.$e_opt_key) ) {
-                
+
                 $this->{''.$e_opt_key} = $e_opt_val;
 
             } elseif ( property_exists($this, '_'.$e_opt_key) ) {
 
-                $this->{"_$e_opt_key"} = $e_opt_val;
+                $this->{"_{$e_opt_key}"} = $e_opt_val;
             }
         }
-        
+
         if( strlen($this->_primary_col) <= 0 ) {
-            
+
             $msg = 'Primary Key Column name ($_primary_col) not set for '.get_class($this);
             throw new ModelPrimaryColNameNotSetDuringConstructionException($msg);
         }
-        
+
         if( strlen($this->_table_name) <= 0 ) {
-            
+
             $msg = 'Table name ($_table_name) not set for '.get_class($this);
             throw new ModelTableNameNotSetDuringConstructionException($msg);
         }
@@ -749,7 +764,7 @@ abstract class Model
 
         return get_object_vars($this);
     }
-    
+
     /**
      * 
      * Create and return a new collection of zero or more records (instances of \GDAO\Model\RecordInterface).
@@ -767,11 +782,11 @@ abstract class Model
      * 
      */
     public function createNewCollection(array $extra_opts=[], \GDAO\Model\RecordInterface ...$list_of_records): \GDAO\Model\CollectionInterface {
-        
+
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new ModelMustImplementMethodException($msg);
     }
-    
+
     /**
      * 
      * Create and return a new record with specified values.
@@ -828,7 +843,7 @@ abstract class Model
      * 
      */
     public abstract function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record): ?bool;
-    
+
     /**
      * 
      * Fetch a collection (an instance of GDAO\Model\CollectionInterface) of 
@@ -931,7 +946,7 @@ abstract class Model
      * 
      */
     public function fetchRecordsIntoCollection(?object $query=null, array $relations_to_include=[]) {
-        
+
         $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
         throw new ModelMustImplementMethodException($msg);
     }
@@ -1672,7 +1687,7 @@ abstract class Model
         array $col_names_n_values_2_save = [], 
         array $col_names_n_values_2_match = []
     );
-    
+
     /**
      * 
      * Update the specified record in the database.
@@ -1688,7 +1703,7 @@ abstract class Model
      * 
      */
     public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): ?bool;
-    
+
     //////////////////////////////////////
     // Getters for non-public properties
     //////////////////////////////////////
@@ -1702,7 +1717,7 @@ abstract class Model
 
         return $this->_created_timestamp_column_name;
     }
-    
+
     /**
      * 
      * Get the value of $this->_primary_col.
@@ -1729,7 +1744,7 @@ abstract class Model
 
         return $this->_table_name;
     }
-    
+
     /**
      * 
      * Get an array of table column names.
@@ -1740,26 +1755,26 @@ abstract class Model
     public function getTableColNames(): array {
 
         $keys = array_keys($this->_table_cols);
-        
+
         if( $keys === range(0, count($this->_table_cols) - 1) ) {
-            
+
             //$this->_table_cols is a sequential array with numeric keys
             //its values are most likely to be column names
             return $this->_table_cols;
 
         } else {
-            
+
             $keys_2_return = [];
-            
+
             /** @var string|array $potential_col_metadata */
             foreach($this->_table_cols as $key => $potential_col_metadata) {
-                
+
                 if( is_string($key) ) {
-                    
+
                     $keys_2_return[] = $key;
-                    
+
                 } elseif( is_string($potential_col_metadata) ) {
-                    
+
                     $keys_2_return[] = $potential_col_metadata;
                 }
             }
