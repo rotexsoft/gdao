@@ -27,7 +27,7 @@ abstract class Model
      * @todo Work on supporting tables that don't have any primary key column defined
      * 
      */
-    protected string $_primary_col = '';
+    protected string $primary_col = '';
 
     /**
      *
@@ -36,7 +36,7 @@ abstract class Model
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
      */
-    protected string $_table_name = '';
+    protected string $table_name = '';
 
     /**
      *
@@ -138,7 +138,7 @@ abstract class Model
      * available via $this->getPDO().
      *  
      */
-    protected array $_table_cols = [];
+    protected array $table_cols = [];
 
     /**
      * 
@@ -155,7 +155,7 @@ abstract class Model
      * implementing.
      * 
      */
-    protected ?string $_collection_class_name = null;
+    protected ?string $collection_class_name = null;
 
     /**
      * 
@@ -165,7 +165,7 @@ abstract class Model
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
      */
-    protected ?string $_record_class_name = null;
+    protected ?string $record_class_name = null;
 
     /**
      *
@@ -187,7 +187,7 @@ abstract class Model
      * tracks the time a row of data was initially inserted into a db table.
      * 
      */
-    protected ?string $_created_timestamp_column_name = null;
+    protected ?string $created_timestamp_column_name = null;
 
     /**
      *
@@ -209,7 +209,7 @@ abstract class Model
      * tracks the time a row of data was last updated in a db table.
      * 
      */
-    protected ?string $_updated_timestamp_column_name = null; //string
+    protected ?string $updated_timestamp_column_name = null; //string
 
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
@@ -622,7 +622,7 @@ abstract class Model
      *       'relation_name' should be substituted with 'tags' in this case.
      * 
      */
-    protected array $_relations = [];
+    protected array $relations = [];
 
     /**
      * @var string
@@ -654,7 +654,7 @@ abstract class Model
      *                          this Model will indeed be powered by a PDO instance
      * 
      */
-    protected string $_dsn = '';
+    protected string $dsn = '';
 
     /**
      *
@@ -665,7 +665,7 @@ abstract class Model
      *                          this Model will indeed be powered by a PDO instance
      * 
      */
-    protected string $_username = ''; 
+    protected string $username = ''; 
 
     /**
      *
@@ -677,7 +677,7 @@ abstract class Model
      *                          instance
      * 
      */
-    protected string $_passwd = '';
+    protected string $passwd = '';
 
     /**
      *
@@ -688,7 +688,7 @@ abstract class Model
      *                          this Model will indeed be powered by a PDO instance
      * 
      */
-    protected array $_pdo_driver_opts = [];
+    protected array $pdo_driver_opts = [];
 
     /**
      * 
@@ -713,10 +713,10 @@ abstract class Model
         array $pdo_driver_opts = [],
         array $extra_opts = []
     ) {
-        $this->_dsn = $dsn;
-        $this->_username = $username;
-        $this->_passwd = $passwd;
-        $this->_pdo_driver_opts = $pdo_driver_opts;
+        $this->dsn = $dsn;
+        $this->username = $username;
+        $this->passwd = $passwd;
+        $this->pdo_driver_opts = $pdo_driver_opts;
 
         //set properties of this class specified in $extra_opts
         /** @var mixed $e_opt_val */
@@ -726,21 +726,18 @@ abstract class Model
 
                 $this->{''.$e_opt_key} = $e_opt_val;
 
-            } elseif ( property_exists($this, '_'.$e_opt_key) ) {
-
-                $this->{"_{$e_opt_key}"} = $e_opt_val;
             }
         }
 
-        if( strlen($this->_primary_col) <= 0 ) {
+        if( strlen($this->primary_col) <= 0 ) {
 
-            $msg = 'Primary Key Column name ($_primary_col) not set for '.get_class($this);
+            $msg = 'Primary Key Column name not set for '.get_class($this);
             throw new ModelPrimaryColNameNotSetDuringConstructionException($msg);
         }
 
-        if( strlen($this->_table_name) <= 0 ) {
+        if( strlen($this->table_name) <= 0 ) {
 
-            $msg = 'Table name ($_table_name) not set for '.get_class($this);
+            $msg = 'Table name not set for '.get_class($this);
             throw new ModelTableNameNotSetDuringConstructionException($msg);
         }
     }
@@ -1715,7 +1712,7 @@ abstract class Model
      */
     public function getCreatedTimestampColumnName(): ?string {
 
-        return $this->_created_timestamp_column_name;
+        return $this->created_timestamp_column_name;
     }
 
     /**
@@ -1731,7 +1728,7 @@ abstract class Model
     public function getPrimaryColName(bool $prepend_table_name=false): string {
 
         return $prepend_table_name ?
-                "{$this->_table_name}.{$this->_primary_col}" : $this->_primary_col;
+                "{$this->table_name}.{$this->primary_col}" : $this->primary_col;
     }
 
     /**
@@ -1742,7 +1739,7 @@ abstract class Model
      */
     public function getTableName(): string {
 
-        return $this->_table_name;
+        return $this->table_name;
     }
 
     /**
@@ -1754,20 +1751,20 @@ abstract class Model
      */
     public function getTableColNames(): array {
 
-        $keys = array_keys($this->_table_cols);
+        $keys = array_keys($this->table_cols);
 
-        if( $keys === range(0, count($this->_table_cols) - 1) ) {
+        if( $keys === range(0, count($this->table_cols) - 1) ) {
 
             //$this->_table_cols is a sequential array with numeric keys
             //its values are most likely to be column names
-            return $this->_table_cols;
+            return $this->table_cols;
 
         } else {
 
             $keys_2_return = [];
 
             /** @var string|array $potential_col_metadata */
-            foreach($this->_table_cols as $key => $potential_col_metadata) {
+            foreach($this->table_cols as $key => $potential_col_metadata) {
 
                 if( is_string($key) ) {
 
@@ -1792,7 +1789,7 @@ abstract class Model
      */
     public function getRelationNames(): array {
 
-        return array_keys($this->_relations);
+        return array_keys($this->relations);
     }
 
     /**
@@ -1803,6 +1800,6 @@ abstract class Model
      */
     public function getUpdatedTimestampColumnName(): ?string {
 
-        return $this->_updated_timestamp_column_name;
+        return $this->updated_timestamp_column_name;
     }
 }

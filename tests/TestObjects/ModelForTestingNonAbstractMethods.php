@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 class ModelForTestingNonAbstractMethods extends \GDAO\Model
 {
-    protected string $_primary_col = '';
+    protected string $primary_col = '';
     
     /**
      * 
@@ -35,12 +35,12 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
 
     public function getPDO(): \PDO {
         
-        return $this->_pdo;
+        return $this->pdo;
     }
     
     public function setPDO(\PDO $pdo): void {
         
-        $this->_pdo = $pdo;
+        $this->pdo = $pdo;
     }
 
     public function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record): ?bool { return null; }

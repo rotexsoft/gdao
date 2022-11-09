@@ -35,25 +35,25 @@ class ModelTest extends \PHPUnit\Framework\TestCase
     public function testThatConstructorSetsFirstFourParamsCorrectly(): void {
         
         $model = new \ModelForTestingNonAbstractMethods(
-                    'test_dsn',
-                    'test_username',
-                    'test_passwd',
+                    'testdsn',
+                    'testusername',
+                    'testpasswd',
                     [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
                     [
-                        '_primary_col'=>'component_id', 
-                        '_table_name'=>'components',
+                        'primary_col'=>'component_id', 
+                        'table_name'=>'components',
                     ]
                 );
                 
         $msg = __METHOD__;
         
         $model_obj_as_array = $model->toArray();
-        $this->assertTrue($model_obj_as_array['_primary_col'] === 'component_id', $msg);
-        $this->assertTrue($model_obj_as_array['_table_name'] === 'components', $msg);
-        $this->assertTrue($model_obj_as_array['_dsn'] === 'test_dsn', $msg);
-        $this->assertTrue($model_obj_as_array['_username'] === 'test_username', $msg);
-        $this->assertTrue($model_obj_as_array['_passwd'] === 'test_passwd', $msg);
-        $this->assertTrue($model_obj_as_array['_pdo_driver_opts'] === [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'], $msg);
+        $this->assertTrue($model_obj_as_array['primary_col'] === 'component_id', $msg);
+        $this->assertTrue($model_obj_as_array['table_name'] === 'components', $msg);
+        $this->assertTrue($model_obj_as_array['dsn'] === 'testdsn', $msg);
+        $this->assertTrue($model_obj_as_array['username'] === 'testusername', $msg);
+        $this->assertTrue($model_obj_as_array['passwd'] === 'testpasswd', $msg);
+        $this->assertTrue($model_obj_as_array['pdo_driver_opts'] === [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'], $msg);
     }
 
     public function testThatConstructorThrowsExceptionForEmptyPrimaryColName(): void {
@@ -61,13 +61,13 @@ class ModelTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\GDAO\ModelPrimaryColNameNotSetDuringConstructionException::class);
         
         new \ModelForTestingNonAbstractMethods(
-                    'test_dsn',
-                    'test_username',
-                    'test_passwd',
+                    'testdsn',
+                    'testusername',
+                    'testpasswd',
                     [],
                     [
-                        //'_primary_col'=>'component_id', 
-                        '_table_name'=>'components',
+                        //'primary_col'=>'component_id', 
+                        'table_name'=>'components',
                     ]
                 );
     }
@@ -77,13 +77,13 @@ class ModelTest extends \PHPUnit\Framework\TestCase
         $this->expectException(\GDAO\ModelTableNameNotSetDuringConstructionException::class);
         
         new \ModelForTestingNonAbstractMethods(
-                    'test_dsn',
-                    'test_username',
-                    'test_passwd',
+                    'testdsn',
+                    'testusername',
+                    'testpasswd',
                     [],
                     [
-                        '_primary_col'=>'component_id', 
-                        //'_table_name'=>'components',
+                        'primary_col'=>'component_id', 
+                        //'table_name'=>'components',
                     ]
                 );
     }
@@ -98,8 +98,8 @@ class ModelTest extends \PHPUnit\Framework\TestCase
                 'foreign_key_col_in_foreign_table' => 'output_id',
                 'primary_key_col_in_foreign_table' => 'output_id',
                 'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName',
-                'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
-                'foreign_models_record_class_name' => '\StdClass',
+                'foreign_modelscollection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
+                'foreign_modelsrecord_class_name' => '\StdClass',
                 'foreign_table_sql_params' => [
                     'cols' => ['project_outputs.deliverable_id', 'component_deliverables.deliverable', 'component_deliverables.component_id'],
                     'where' => [
@@ -118,18 +118,18 @@ class ModelTest extends \PHPUnit\Framework\TestCase
                 '',
                 [],
                 [
-                    '_primary_col'=>'component_id', 
-                    '_table_name'=>'components', 
-                    '_relations'=>$rel,
-                    '_collection_class_name'=>'TestCollectionClassName',
-                    '_record_class_name'=>'TestRecordClassName',
-                    '_table_cols'=>['col1', 'col2'],
-                    '_created_timestamp_column_name'=> 'test_c_col_name',
-                    '_updated_timestamp_column_name'=> 'test_u_col_name',
-                    '_dsn'=> 'test_dsn',
-                    '_username'=> 'test_username',
-                    '_passwd'=> 'test_passwd',
-                    '_pdo_driver_opts'=> [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
+                    'primary_col'=>'component_id', 
+                    'table_name'=>'components', 
+                    'relations'=>$rel,
+                    'collection_class_name'=>'TestCollectionClassName',
+                    'record_class_name'=>'TestRecordClassName',
+                    'table_cols'=>['col1', 'col2'],
+                    'created_timestamp_column_name'=> 'test_c_col_name',
+                    'updated_timestamp_column_name'=> 'test_u_col_name',
+                    'dsn'=> 'testdsn',
+                    'username'=> 'testusername',
+                    'passwd'=> 'testpasswd',
+                    'pdo_driver_opts'=> [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
                 ]
             );
         
@@ -148,9 +148,9 @@ class ModelTest extends \PHPUnit\Framework\TestCase
                     'table_cols'=>['col1', 'col2'],
                     'created_timestamp_column_name'=> 'test_c_col_name',
                     'updated_timestamp_column_name'=> 'test_u_col_name',
-                    'dsn'=> 'test_dsn',
-                    'username'=> 'test_username',
-                    'passwd'=> 'test_passwd',
+                    'dsn'=> 'testdsn',
+                    'username'=> 'testusername',
+                    'passwd'=> 'testpasswd',
                     'pdo_driver_opts'=> [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
                 ]
             );
@@ -158,32 +158,32 @@ class ModelTest extends \PHPUnit\Framework\TestCase
         $msg = __METHOD__;
         
         $model_obj_as_array = $model->toArray();
-        $this->assertTrue($model_obj_as_array['_primary_col'] === 'component_id', $msg);
-        $this->assertTrue($model_obj_as_array['_table_name'] === 'components', $msg);
-        $this->assertTrue($model_obj_as_array['_relations'] === $rel, $msg);
-        $this->assertTrue($model_obj_as_array['_collection_class_name'] === 'TestCollectionClassName', $msg);
-        $this->assertTrue($model_obj_as_array['_record_class_name'] === 'TestRecordClassName', $msg);
-        $this->assertTrue($model_obj_as_array['_table_cols'] === ['col1', 'col2'], $msg);
-        $this->assertTrue($model_obj_as_array['_created_timestamp_column_name'] === 'test_c_col_name', $msg);
-        $this->assertTrue($model_obj_as_array['_updated_timestamp_column_name'] === 'test_u_col_name', $msg);
-        $this->assertTrue($model_obj_as_array['_dsn'] === 'test_dsn', $msg);
-        $this->assertTrue($model_obj_as_array['_username'] === 'test_username', $msg);
-        $this->assertTrue($model_obj_as_array['_passwd'] === 'test_passwd', $msg);
-        $this->assertTrue($model_obj_as_array['_pdo_driver_opts'] === [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'], $msg);
+        $this->assertTrue($model_obj_as_array['primary_col'] === 'component_id', $msg);
+        $this->assertTrue($model_obj_as_array['table_name'] === 'components', $msg);
+        $this->assertTrue($model_obj_as_array['relations'] === $rel, $msg);
+        $this->assertTrue($model_obj_as_array['collection_class_name'] === 'TestCollectionClassName', $msg);
+        $this->assertTrue($model_obj_as_array['record_class_name'] === 'TestRecordClassName', $msg);
+        $this->assertTrue($model_obj_as_array['table_cols'] === ['col1', 'col2'], $msg);
+        $this->assertTrue($model_obj_as_array['created_timestamp_column_name'] === 'test_c_col_name', $msg);
+        $this->assertTrue($model_obj_as_array['updated_timestamp_column_name'] === 'test_u_col_name', $msg);
+        $this->assertTrue($model_obj_as_array['dsn'] === 'testdsn', $msg);
+        $this->assertTrue($model_obj_as_array['username'] === 'testusername', $msg);
+        $this->assertTrue($model_obj_as_array['passwd'] === 'testpasswd', $msg);
+        $this->assertTrue($model_obj_as_array['pdo_driver_opts'] === [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'], $msg);
         
         $model2_obj_as_array = $model2->toArray();
-        $this->assertTrue($model2_obj_as_array['_primary_col'] === 'component_id', $msg);
-        $this->assertTrue($model2_obj_as_array['_table_name'] === 'components', $msg);
-        $this->assertTrue($model2_obj_as_array['_relations'] === $rel, $msg);
-        $this->assertTrue($model2_obj_as_array['_collection_class_name'] === 'TestCollectionClassName', $msg);
-        $this->assertTrue($model2_obj_as_array['_record_class_name'] === 'TestRecordClassName', $msg);
-        $this->assertTrue($model2_obj_as_array['_table_cols'] === ['col1', 'col2'], $msg);
-        $this->assertTrue($model2_obj_as_array['_created_timestamp_column_name'] === 'test_c_col_name', $msg);
-        $this->assertTrue($model2_obj_as_array['_updated_timestamp_column_name'] === 'test_u_col_name', $msg);
-        $this->assertTrue($model2_obj_as_array['_dsn'] === 'test_dsn', $msg);
-        $this->assertTrue($model2_obj_as_array['_username'] === 'test_username', $msg);
-        $this->assertTrue($model2_obj_as_array['_passwd'] === 'test_passwd', $msg);
-        $this->assertTrue($model2_obj_as_array['_pdo_driver_opts'] === [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'], $msg);
+        $this->assertTrue($model2_obj_as_array['primary_col'] === 'component_id', $msg);
+        $this->assertTrue($model2_obj_as_array['table_name'] === 'components', $msg);
+        $this->assertTrue($model2_obj_as_array['relations'] === $rel, $msg);
+        $this->assertTrue($model2_obj_as_array['collection_class_name'] === 'TestCollectionClassName', $msg);
+        $this->assertTrue($model2_obj_as_array['record_class_name'] === 'TestRecordClassName', $msg);
+        $this->assertTrue($model2_obj_as_array['table_cols'] === ['col1', 'col2'], $msg);
+        $this->assertTrue($model2_obj_as_array['created_timestamp_column_name'] === 'test_c_col_name', $msg);
+        $this->assertTrue($model2_obj_as_array['updated_timestamp_column_name'] === 'test_u_col_name', $msg);
+        $this->assertTrue($model2_obj_as_array['dsn'] === 'testdsn', $msg);
+        $this->assertTrue($model2_obj_as_array['username'] === 'testusername', $msg);
+        $this->assertTrue($model2_obj_as_array['passwd'] === 'testpasswd', $msg);
+        $this->assertTrue($model2_obj_as_array['pdo_driver_opts'] === [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'], $msg);
     }
     
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,34 +193,34 @@ class ModelTest extends \PHPUnit\Framework\TestCase
     public function testThat__toStringWorksAsExpected(): void {
         
         $model = new \ModelForTestingNonAbstractMethods(
-            'test_dsn',
-            'test_username',
-            'test_passwd',
+            'testdsn',
+            'testusername',
+            'testpasswd',
             [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
             [
-                '_primary_col'=>'component_id', 
-                '_table_name'=>'components',
+                'primary_col'=>'component_id', 
+                'table_name'=>'components',
             ]
         );
         
         $sub_str = <<<EOT
 array (
-  '_primary_col' => 'component_id',
-  '_table_name' => 'components',
-  '_table_cols' => 
+  'primary_col' => 'component_id',
+  'table_name' => 'components',
+  'table_cols' => 
   array (
   ),
-  '_collection_class_name' => NULL,
-  '_record_class_name' => NULL,
-  '_created_timestamp_column_name' => NULL,
-  '_updated_timestamp_column_name' => NULL,
-  '_relations' => 
+  'collection_class_name' => NULL,
+  'record_class_name' => NULL,
+  'created_timestamp_column_name' => NULL,
+  'updated_timestamp_column_name' => NULL,
+  'relations' => 
   array (
   ),
-  '_dsn' => 'test_dsn',
-  '_username' => 'test_username',
-  '_passwd' => 'test_passwd',
-  '_pdo_driver_opts' => 
+  'dsn' => 'testdsn',
+  'username' => 'testusername',
+  'passwd' => 'testpasswd',
+  'pdo_driver_opts' => 
   array (
     1002 => 'SET NAMES utf8',
   ),
@@ -233,29 +233,29 @@ EOT;
     public function testThatToArrayWorksAsExpected(): void {
         
         $model = new \ModelForTestingNonAbstractMethods(
-            'test_dsn',
-            'test_username',
-            'test_passwd',
+            'testdsn',
+            'testusername',
+            'testpasswd',
             [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'],
             [
-                '_primary_col'=>'component_id', 
-                '_table_name'=>'components',
+                'primary_col'=>'component_id', 
+                'table_name'=>'components',
             ]
         );
         
         $expected_array = [
-            '_primary_col' => 'component_id',
-            '_table_name' => 'components',
-            '_table_cols' => [],
-            '_collection_class_name' => null,
-            '_record_class_name' => null,
-            '_created_timestamp_column_name' => null,
-            '_updated_timestamp_column_name' => null,
-            '_relations' => [],
-            '_dsn' => 'test_dsn',
-            '_username' => 'test_username',
-            '_passwd' => 'test_passwd',
-            '_pdo_driver_opts' => [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8']
+            'primary_col' => 'component_id',
+            'table_name' => 'components',
+            'table_cols' => [],
+            'collection_class_name' => null,
+            'record_class_name' => null,
+            'created_timestamp_column_name' => null,
+            'updated_timestamp_column_name' => null,
+            'relations' => [],
+            'dsn' => 'testdsn',
+            'username' => 'testusername',
+            'passwd' => 'testpasswd',
+            'pdo_driver_opts' => [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8']
         ];
 
         $msg = __METHOD__;
@@ -267,13 +267,13 @@ EOT;
         $this->expectException(\GDAO\ModelMustImplementMethodException::class);
         
         $model = new \ModelForTestingNonAbstractMethods(
-                    'test_dsn',
-                    'test_username',
-                    'test_passwd',
+                    'testdsn',
+                    'testusername',
+                    'testpasswd',
                     [],
                     [
-                        '_primary_col'=>'component_id', 
-                        '_table_name'=>'components',
+                        'primary_col'=>'component_id', 
+                        'table_name'=>'components',
                     ]
                 );
         
@@ -285,13 +285,13 @@ EOT;
         $this->expectException(\GDAO\ModelMustImplementMethodException::class);
         
         $model = new \ModelForTestingNonAbstractMethods(
-                    'test_dsn',
-                    'test_username',
-                    'test_passwd',
+                    'testdsn',
+                    'testusername',
+                    'testpasswd',
                     [],
                     [
-                        '_primary_col'=>'component_id', 
-                        '_table_name'=>'components',
+                        'primary_col'=>'component_id', 
+                        'table_name'=>'components',
                     ]
                 );
         
@@ -304,9 +304,9 @@ EOT;
         $model = new \ModelForTestingNonAbstractMethods(
                     '', '', '', [],
                     [
-                        '_primary_col'=>'component_id', 
-                        '_table_name'=>'components',
-                        '_created_timestamp_column_name'=> 'test_c_col_name',
+                        'primary_col'=>'component_id', 
+                        'table_name'=>'components',
+                        'created_timestamp_column_name'=> 'test_c_col_name',
                     ]
                 );
         $msg = __METHOD__;
@@ -319,9 +319,9 @@ EOT;
         $model = new \ModelForTestingNonAbstractMethods(
                     '', '', '', [],
                     [
-                        '_primary_col'=>'component_id', 
-                        '_table_name'=>'components',
-                        '_updated_timestamp_column_name'=> 'test_u_col_name',
+                        'primary_col'=>'component_id', 
+                        'table_name'=>'components',
+                        'updated_timestamp_column_name'=> 'test_u_col_name',
                     ]
                 );
         $msg = __METHOD__;
@@ -334,8 +334,8 @@ EOT;
         $model = new \ModelForTestingNonAbstractMethods(
                     '', '', '', [],
                     [
-                        '_primary_col'=>'component_id', 
-                        '_table_name'=>'components',
+                        'primary_col'=>'component_id', 
+                        'table_name'=>'components',
                     ]
                 );
         $msg = __METHOD__;
@@ -349,8 +349,8 @@ EOT;
         $model = new \ModelForTestingNonAbstractMethods(
                     '', '', '', [],
                     [
-                        '_primary_col'=>'component_id', 
-                        '_table_name'=>'components',
+                        'primary_col'=>'component_id', 
+                        'table_name'=>'components',
                     ]
                 );
         $msg = __METHOD__;
@@ -366,9 +366,9 @@ EOT;
                 '',
                 [],
                 [
-                    '_primary_col'=>'component_id', 
-                    '_table_name'=>'components',
-                    '_table_cols'=>['col1', 'col2'],
+                    'primary_col'=>'component_id', 
+                    'table_name'=>'components',
+                    'table_cols'=>['col1', 'col2'],
                 ]
             );
         $model2 = new \ModelForTestingNonAbstractMethods(
@@ -377,9 +377,9 @@ EOT;
                 '',
                 [],
                 [
-                    '_primary_col'=>'component_id', 
-                    '_table_name'=>'components',
-                    '_table_cols'=>[
+                    'primary_col'=>'component_id', 
+                    'table_name'=>'components',
+                    'table_cols'=>[
                                     'col1'=>['sub array with metadata for col1'], 
                                     'col2'=>['sub array with metadata for col2']
                                 ],
@@ -391,9 +391,9 @@ EOT;
                 '',
                 [],
                 [
-                    '_primary_col'=>'component_id', 
-                    '_table_name'=>'components',
-                    '_table_cols'=>[
+                    'primary_col'=>'component_id', 
+                    'table_name'=>'components',
+                    'table_cols'=>[
                                     'col1'=>['sub array with metadata for col1'], 
                                     'col2'=>['sub array with metadata for col2'],
                                     'col3',
@@ -417,8 +417,8 @@ EOT;
                 'foreign_key_col_in_foreign_table' => 'output_id',
                 'primary_key_col_in_foreign_table' => 'output_id',
                 'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName',
-                'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
-                'foreign_models_record_class_name' => '\StdClass',
+                'foreign_modelscollection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
+                'foreign_modelsrecord_class_name' => '\StdClass',
                 'foreign_table_sql_params' => [
                     'cols' => ['project_outputs.deliverable_id', 'component_deliverables.deliverable', 'component_deliverables.component_id'],
                     'where' => [
@@ -435,8 +435,8 @@ EOT;
                 'foreign_key_col_in_foreign_table' => 'output_id',
                 'primary_key_col_in_foreign_table' => 'output_id',
                 'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName',
-                'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
-                'foreign_models_record_class_name' => '\StdClass',
+                'foreign_modelscollection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
+                'foreign_modelsrecord_class_name' => '\StdClass',
                 'foreign_table_sql_params' => [
                     'cols' => ['project_outputs.deliverable_id', 'component_deliverables.deliverable', 'component_deliverables.component_id'],
                     'where' => [
@@ -455,10 +455,10 @@ EOT;
                 '',
                 [],
                 [
-                    '_primary_col'=>'component_id', 
-                    '_table_name'=>'components', 
-                    '_relations'=>$rel,
-                    '_table_cols'=>['col1', 'col2'],
+                    'primary_col'=>'component_id', 
+                    'table_name'=>'components', 
+                    'relations'=>$rel,
+                    'table_cols'=>['col1', 'col2'],
                 ]
             );
         $msg = __METHOD__;
