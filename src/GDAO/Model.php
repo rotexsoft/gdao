@@ -757,12 +757,12 @@ abstract class Model {
      *                             ['id'=>[5,6,7], 'title'=>'yipeedoo'] should generate the sql below:
      *                             DELETE FROM `x` WHERE id IN (5,6,7)  AND title = 'yipeedoo'
      *
-     * @return int|null the number of rows deleted if deletion was successful, 
-     *                  OR null if nothing was deleted (no matching records).
+     * @return int the number of rows deleted if deletion was successful, 
+     *             OR zero if nothing was deleted (no matching records).
      * 
      * @throws \PDOException
      */
-    public abstract function deleteMatchingDbTableRows(array $cols_n_vals = []): ?int;
+    public abstract function deleteMatchingDbTableRows(array $cols_n_vals): int;
 
     /**
      * Delete the specified record from the database.
