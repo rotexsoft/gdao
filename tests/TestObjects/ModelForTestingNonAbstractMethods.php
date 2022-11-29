@@ -17,16 +17,21 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
     private ?\PDO $_pdo = null;
     
     public function __construct(
-        string $dsn = '', string $uname = '', string $pswd = '', array $pdo_drv_opts = [], array $ext_opts = []
+        string $dsn = '', 
+        string $uname = '', 
+        string $pswd = '', 
+        array $pdo_drv_opts = [],
+        string $primary_col_name='',
+        string $table_name=''
     ) {
-        if ($dsn || $uname || $pswd || $pdo_drv_opts || $ext_opts) {
+        if ($dsn || $uname || $pswd || $pdo_drv_opts || $primary_col_name || $table_name) {
 
-            parent::__construct($dsn, $uname, $pswd, $pdo_drv_opts, $ext_opts);
+            parent::__construct($dsn, $uname, $pswd, $pdo_drv_opts, $primary_col_name, $table_name);
         }
     }
 
     public function createNewRecord( 
-        array $col_names_and_values = [], array $extra_opts = []
+        array $col_names_and_values = []
     ): \GDAO\Model\RecordInterface { }
 
     public function deleteMatchingDbTableRows(array $cols_n_vals=[]): ?int { }

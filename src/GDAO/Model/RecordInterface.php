@@ -22,7 +22,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     ////   property should be set via 
     ////   $this->loadData($data_2_load, array $cols_2_load = array()).
     ////   For documentation purposes this property will be refered to as
-    ////   $this->_data (with an assumption that it is an array).
+    ////   $this->data (with an assumption that it is an array).
     ////   
     //// * Another property of the same data type as the one described above should
     ////   be present in the class implementing this interface. This property should 
@@ -36,7 +36,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     ////   be set ONCE via $this->loadData($data_2_load, array $cols_2_load = array())
     ////   the first time loadData is called on a record.
     ////   For documentation purposes this property will be refered to as
-    ////   $this->_initial_data (with an assumption that it is an array).
+    ////   $this->initial_data (with an assumption that it is an array).
     ////   
     //// * Another property should be present in the class implementing this 
     ////   interface. This property should hold data related to a record (ie.
@@ -45,7 +45,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     ////   & $this->getRelatedDataByRef(). Data contained in this property should 
     ////   be set via $this->setRelatedData($key, $value).
     ////   For documentation purposes this property will be refered to as
-    ////   $this->_related_data (with an assumption that it is an array).
+    ////   $this->related_data (with an assumption that it is an array).
     ////   
     //// * Another property should be present in the class implementing this 
     ////   interface. This property should hold other data for a record instance 
@@ -53,19 +53,19 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     ////   Data from this property should be returned via $this->getNonTableColAndNonRelatedData()
     ////   & $this->getNonTableColAndNonRelatedDataByRef().
     ////   For documentation purposes this property will be refered to as
-    ////   $this->_non_table_col_and_non_related_data (with an assumption that it is an array).
+    ////   $this->non_table_col_and_non_related_data (with an assumption that it is an array).
     ////   
     //// * A boolean property should be present in the class implementing this 
     ////   interface. This property should be set to true if a record is new
     ////   (ie. its data has never been saved to the DB), else false.
     ////   For documentation purposes this property will be refered to as
-    ////   $this->_is_new.
+    ////   $this->is_new.
     ////   
     //// * A property of type \GDAO\Model should be present in a class implementing
     ////   this interface. This is the model object that will perform database 
     ////   operations on behalf of the record.
     ////   For documentation purposes this property will be refered to as
-    ////   $this->_model
+    ////   $this->model
     ////   
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////    
@@ -80,13 +80,8 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      *                      'col_nameN'=>'value_for_colN'
      *                    ]
      * @param \GDAO\Model $model The model object that transfers data between the db and this record.
-     * @param array $extra_opts an array that may be used to pass initialization 
-     *                          value(s) for protected and / or private properties
-     *                          of this class
      */
-    public function __construct(
-        array $data, \GDAO\Model $model, array $extra_opts=[]
-    );
+    public function __construct(array $data, \GDAO\Model $model);
 	
     /**
      * 
@@ -96,8 +91,8 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * table is auto-incrementing, then unset the primary key field in the data 
      * contained in the record object.
      * 
-     * NOTE: data contained in the record include $this->_data, $this->_related_data
-     *       and $this->_initial_data.
+     * NOTE: data contained in the record include $this->data, $this->related_data
+     *       and $this->initial_data.
      * 
      * @param bool $set_record_objects_data_to_empty_array true to reset the record object's data to an empty array if db deletion was successful, false to keep record object's data
      * 
@@ -296,7 +291,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Save the specified or already existing data for this record to the db.
      * Since this record can only talk to the db via its model property (_model)
-     * the save operation will actually be done via $this->_model.
+     * the save operation will actually be done via $this->model.
      * 
      * @param \GDAO\Model\RecordInterface|array $data_2_save
      * 
@@ -309,7 +304,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * Save the specified or already existing data for this record to the db.
      * Since this record can only talk to the db via its model property (_model)
-     * the save operation will actually be done via $this->_model.
+     * the save operation will actually be done via $this->model.
      * This save operation shoould be gaurded by the PDO transaction mechanism
      * if available or another transaction mechanism. If the save operation 
      * fails all changes should be rolled back. If there is not transaction

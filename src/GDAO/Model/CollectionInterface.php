@@ -28,15 +28,12 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
     ////////////////////////////////////////////////////////////////////////////    
     
     /**
-     *      * 
+     * 
      * @param \GDAO\Model $model The model object that transfers data between the db and this collection.
-     * @param array $extra_opts an array that may be used to pass initialization 
-     *                          value(s) for protected and / or private properties
-     *                          of this class
      * @param \GDAO\Model\RecordInterface[] $data instances of \GDAO\Model\RecordInterface
      */
     public function __construct(
-        \GDAO\Model $model, array $extra_opts=[], \GDAO\Model\RecordInterface ...$data
+        \GDAO\Model $model, \GDAO\Model\RecordInterface ...$data
     );
     
     /**

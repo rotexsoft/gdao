@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace GDAO;
 
 /**
@@ -15,8 +17,8 @@ namespace GDAO;
  * @copyright (c) 2022, Rotexsoft
  * 
  */
-abstract class Model
-{
+abstract class Model {
+
     /**
      * 
      * Name of the primary key column in the db table associated with this model
@@ -75,18 +77,18 @@ abstract class Model
      * method that returns an array of column names for this Model using code 
      * like this:
      * 
-     * if( $this->_table_cols is not empty ) {
+     * if( $this->table_cols is not empty ) {
      * 
-     *      if( $this->_table_cols has numeric keys ) {
+     *      if( $this->table_cols has numeric keys ) {
      *          
-     *          return $this->_table_cols;
+     *          return $this->table_cols;
      * 
      *      } else {
      *          
      *          //the keys are non-numeric and must be strings that represent
      *          //the column names we're looking for
      *          
-     *          return array_keys($this->_table_cols);
+     *          return array_keys($this->table_cols);
      *      }
      * }
      * 
@@ -95,7 +97,7 @@ abstract class Model
      * a two-dimensional array as defined above. Definitions like the one below 
      * should either be rejected (an exception could be thrown) or corrected (by 
      * implementers of this class in parts of their code that access
-     * $this->_table_cols).
+     * $this->table_cols).
      * 
      * Bad Definition:
      * [
@@ -106,10 +108,10 @@ abstract class Model
      * ]
      * 
      * Solution
-     * 1. Throw an exception stating that $this->_table_cols has missing metadata
+     * 1. Throw an exception stating that $this->table_cols has missing metadata
      *    for the 'id' and 'body' columns.
      * 
-     * 2. Correct by either converting $this->_table_cols to a one-dimensional
+     * 2. Correct by either converting $this->table_cols to a one-dimensional
      *    array or a two-dimensional array like below:
      * 
      *    One-dimensional (meta-data for 'title' is discarded):
@@ -128,12 +130,12 @@ abstract class Model
      * 
      * Solution 1, seems to be the best way to go since it involves less code 
      * and would force consumers of implementations of this class to get into
-     * the habit of properly populating $this->_table_cols in the recommended
+     * the habit of properly populating $this->table_cols in the recommended
      * formats (1-d or 2-d).
      * 
      * Aura.SqlSchema (https://github.com/auraphp/Aura.SqlSchema , 
      * https://packagist.org/packages/aura/sqlschema ) is a php package that can 
-     * be easily used to populate $this->_table_cols. 
+     * be easily used to populate $this->table_cols. 
      * Db schema meta-data could also easily be queried using the PDO object 
      * available via $this->getPDO().
      *  
@@ -150,7 +152,7 @@ abstract class Model
      * \GDAO\Model\CollectionInterface or that accept instance(s) of 
      * \GDAO\Model\CollectionInterface as parameters.
      * 
-     * Implementers of this class should check that $this->_collection_class_name 
+     * Implementers of this class should check that $this->collection_class_name 
      * has a valid value before attempting to use it inside method(s) they are 
      * implementing.
      * 
@@ -173,7 +175,7 @@ abstract class Model
      * to keep track of the time when a row of data was initially inserted into
      * a db table. 
      * 
-     * The column whose name is assigned to $this->_created_timestamp_column_name
+     * The column whose name is assigned to $this->created_timestamp_column_name
      * should be of a timestamp data-type (i.e. it must be able to store day,
      * month, year, hour, minute and second information. Eg. DATETIME / TIMESTAMP 
      * in MySQL, timestamp in Postgresql, datetime2 / datetimeoffset in MSSqlServer).
@@ -195,7 +197,7 @@ abstract class Model
      * to keep track of the time when a row of data was last updated in a db 
      * table.
      * 
-     * The column whose name is assigned to $this->_updated_timestamp_column_name
+     * The column whose name is assigned to $this->updated_timestamp_column_name
      * should be of a timestamp data-type (i.e. it must be able to store day,
      * month, year, hour, minute and second information. Eg. DATETIME / TIMESTAMP 
      * in MySQL, timestamp in Postgresql, datetime2 / datetimeoffset in MSSqlServer).
@@ -210,10 +212,11 @@ abstract class Model
      * 
      */
     protected ?string $updated_timestamp_column_name = null; //string
-
+    
+    
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    //* The array below ($this->_relations) is for modeling relationships.   *//
+    //* The array below ($this->relations) is for modeling relationships.   *//
     //*                                                                      *//
     //* Four types of relationships are supported:                           *//
     //*  - One-To-One (eg. 1 Post has exactly 1 Summary) a.k.a Has-One       *//
@@ -237,7 +240,7 @@ abstract class Model
      * with the current model has with other tables in the database.
      * 
      * The Implementers of this class can use the definition(s) in 
-     * \GDAO\Model->_relations to implement retrieval of data from
+     * \GDAO\Model->relations to implement retrieval of data from
      * db tables associated with other models related to this model.
      * 
      * This is an OPTIONAL field & may be set by consumers of this class if 
@@ -255,7 +258,7 @@ abstract class Model
      *       as each name is a valid name that can be used for naming the property of
      *       any php class.
      * 
-     * \GDAO\Model->_relations = 
+     * \GDAO\Model->relations = 
      *  [
      *      'relation_name1' => 
      *       [
@@ -324,17 +327,17 @@ abstract class Model
      *          // returned using arrays.
      *          //
      *          // Each related record will be stored in an instance of 
-     *          // $this->_relations['relation_name1']['foreign_models_record_class_name']
+     *          // $this->relations['relation_name1']['foreign_models_record_class_name']
      *          // if set.
      *          //
      *          // The related records for each record of this model will be stored in
      *          // an instance of 
-     *          // $this->_relations['relation_name1']['foreign_models_collection_class_name']
+     *          // $this->relations['relation_name1']['foreign_models_collection_class_name']
      *          // if set.
      *          //
      *          // The records and collections will have their corresponding model set to
      *          // an instance of
-     *          // $this->_relations['relation_name1']['foreign_models_class_name']
+     *          // $this->relations['relation_name1']['foreign_models_class_name']
      *          // if set.
      *          // 
      *          // The value associated with 'foreign_models_class_name', must 
@@ -361,19 +364,12 @@ abstract class Model
      * 
      *          /////////////////////////////////////////////////////////////////////////////////
      *          //The entry below can be used to modify the sql query for retrieving data from
-     *          //$this->_relations['relation_name1']['foreign_table'].
+     *          //$this->relations['relation_name1']['foreign_table'].
      *          
      *          'sql_query_modifier'=> an anonymous function that accepts a query object & returns a query object
      *                                 this modifier should be called on the query object for fetching related data
      *                                 just before the query is executed so that it can make final modifications to the 
      *                                 query for fetching the related data before the data is fetched.
-     * 
-     *          /////////////////////////////////////////////////////////////////////////////////
-     *          // An Array of optional extra options to be passed to the foreign model's
-     *          // constructor.
-     * 
-     *          'extra_opts_for_foreign_model'=> [....]
-     *          /////////////////////////////////////////////////////////////////////////////////
      *       ],
      *      ......,
      *      ......,
@@ -410,11 +406,11 @@ abstract class Model
      *            enforce the rule that a post can have only one summary and to 
      *            also improve query performance.
      * 
-     * To specify that a model with a \GDAO\Model->_table_name value of 
+     * To specify that a model with a \GDAO\Model->table_name value of 
      * 'posts' has one summary for each post record (based on the schema above),
-     * modify \GDAO\Model->_relations like below:
+     * modify \GDAO\Model->relations like below:
      * 
-     * \GDAO\Model->_relations['summary'] = 
+     * \GDAO\Model->relations['summary'] = 
      *      [
      *          'relation_type' => \GDAO\Model::RELATION_TYPE_HAS_ONE,
      *  
@@ -436,7 +432,7 @@ abstract class Model
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model
      *       class whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['foreign_table'].
+     *       \GDAO\Model->relations['relation_name']['foreign_table'].
      *       'relation_name' should be substituted with 'summary' in this case.
      * 
      * Example Schema for a `Belongs-To` relationship
@@ -468,11 +464,11 @@ abstract class Model
      *      NOTE: the post_id column in the posts table is an
      *            auto-incrementing integer primary key.
      * 
-     * To specify that a model with a \GDAO\Model->_table_name value of 
+     * To specify that a model with a \GDAO\Model->table_name value of 
      * 'posts' has each of its post records belonging to one author (based on 
-     * the schema above), modify \GDAO\Model->_relations like below:
+     * the schema above), modify \GDAO\Model->relations like below:
      * 
-     * \GDAO\Model->_relations['author'] = 
+     * \GDAO\Model->relations['author'] = 
      *      [
      *          'relation_type' => \GDAO\Model::RELATION_TYPE_BELONGS_TO,
      * 
@@ -494,7 +490,7 @@ abstract class Model
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model
      *       class whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['foreign_table'].
+     *       \GDAO\Model->relations['relation_name']['foreign_table'].
      *       'relation_name' should be substituted with 'author' in this case.
      * 
      * Example Schema for a `Has-Many` relationship
@@ -526,11 +522,11 @@ abstract class Model
      *      NOTE: the comment_id column in the comments table is an
      *            auto-incrementing integer primary key.
      *
-     * To specify that a model with a \GDAO\Model->_table_name value of 
+     * To specify that a model with a \GDAO\Model->table_name value of 
      * 'posts' has many comments for each post record (based on the schema above),
-     * modify \GDAO\Model->_relations like below:
+     * modify \GDAO\Model->relations like below:
      * 
-     * \GDAO\Model->_relations['comments'] = 
+     * \GDAO\Model->relations['comments'] = 
      *      [
      *          'relation_type' => \GDAO\Model::RELATION_TYPE_HAS_MANY,
      * 
@@ -552,7 +548,7 @@ abstract class Model
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model class
      *       whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['foreign_table'].
+     *       \GDAO\Model->relations['relation_name']['foreign_table'].
      *       'relation_name' should be substituted with 'comments' in this case.
      * 
      * Example Schema for a `Has-Many-Through` relationship
@@ -587,12 +583,12 @@ abstract class Model
      *      NOTE: the posts_tags_id column in the posts_tags 
      *            table is an auto-incrementing integer primary key. 
      * 
-     * To specify that a model with a \GDAO\Model->_table_name value of 
+     * To specify that a model with a \GDAO\Model->table_name value of 
      * 'posts' has many tags for each post record through a join table called
      * posts_tags (based on the schema above), modify 
-     * \GDAO\Model->_relations like below:
+     * \GDAO\Model->relations like below:
      * 
-     * \GDAO\Model->_relations['tags'] = 
+     * \GDAO\Model->relations['tags'] = 
      *      [
      *          'relation_type' => \GDAO\Model::RELATION_TYPE_HAS_MANY_THROUGH,
      * 
@@ -618,7 +614,7 @@ abstract class Model
      * 
      * NOTE: 'foreign_models_class_name' should contain the name of a Model class 
      *       whose _table_name property has the same value as
-     *       \GDAO\Model->_relations['relation_name']['foreign_table'].
+     *       \GDAO\Model->relations['relation_name']['foreign_table'].
      *       'relation_name' should be substituted with 'tags' in this case.
      * 
      */
@@ -665,7 +661,7 @@ abstract class Model
      *                          this Model will indeed be powered by a PDO instance
      * 
      */
-    protected string $username = ''; 
+    protected string $username = '';
 
     /**
      *
@@ -707,37 +703,29 @@ abstract class Model
      * 
      */
     public function __construct(
-        string $dsn = '',
-        string $username = '', 
-        string $passwd = '', 
-        array $pdo_driver_opts = [],
-        array $extra_opts = []
+            string $dsn = '',
+            string $username = '',
+            string $passwd = '',
+            array  $pdo_driver_opts = [],
+            string $primary_col_name='',
+            string $table_name=''
     ) {
         $this->dsn = $dsn;
         $this->username = $username;
         $this->passwd = $passwd;
         $this->pdo_driver_opts = $pdo_driver_opts;
+        $this->primary_col = $primary_col_name;
+        $this->table_name = $table_name;
 
-        //set properties of this class specified in $extra_opts
-        /** @var mixed $e_opt_val */
-        foreach($extra_opts as $e_opt_key => $e_opt_val) {
+        if (strlen($this->primary_col) <= 0) {
 
-            if ( property_exists($this, ''.$e_opt_key) ) {
-
-                $this->{''.$e_opt_key} = $e_opt_val;
-
-            }
-        }
-
-        if( strlen($this->primary_col) <= 0 ) {
-
-            $msg = 'Primary Key Column name not set for '.get_class($this);
+            $msg = 'Primary Key Column name not set for ' . get_class($this);
             throw new ModelPrimaryColNameNotSetDuringConstructionException($msg);
         }
 
-        if( strlen($this->table_name) <= 0 ) {
+        if (strlen($this->table_name) <= 0) {
 
-            $msg = 'Table name not set for '.get_class($this);
+            $msg = 'Table name not set for ' . get_class($this);
             throw new ModelTableNameNotSetDuringConstructionException($msg);
         }
     }
@@ -771,16 +759,14 @@ abstract class Model
      * collections. The Model and Record classes are mandatory, the collection 
      * class is optional(php arrays are a good & natively available alternative).
      * 
-     * @param array $extra_opts an array of other parameters that may be needed 
-     *                          in creating an instance of \GDAO\Model\Collection
      * @param \GDAO\Model\RecordInterface[] $list_of_records 
      * 
      * @return \GDAO\Model\CollectionInterface a collection of instances of \GDAO\Model\RecordInterface.
      * 
      */
-    public function createNewCollection(array $extra_opts=[], \GDAO\Model\RecordInterface ...$list_of_records): \GDAO\Model\CollectionInterface {
+    public function createNewCollection(\GDAO\Model\RecordInterface ...$list_of_records): \GDAO\Model\CollectionInterface {
 
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        $msg = 'Must Implement ' . get_class($this) . '::' . __FUNCTION__ . '(...)';
         throw new ModelMustImplementMethodException($msg);
     }
 
@@ -789,13 +775,11 @@ abstract class Model
      * Create and return a new record with specified values.
      * 
      * @param array $col_names_and_values
-     * @param array $extra_opts an array of other parameters that may be needed 
-     *                          in creating an instance of \GDAO\Model\RecordInterface
      * 
      * @return \GDAO\Model\RecordInterface new record with specified values.
      * 
      */
-    public abstract function createNewRecord(array $col_names_and_values = [], array $extra_opts=[]): \GDAO\Model\RecordInterface;
+    public abstract function createNewRecord(array $col_names_and_values = []): \GDAO\Model\RecordInterface;
 
     /**
      * 
@@ -820,7 +804,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function deleteMatchingDbTableRows(array $cols_n_vals=[]): ?int;
+    public abstract function deleteMatchingDbTableRows(array $cols_n_vals = []): ?int;
 
     /**
      * Delete the specified record from the database.
@@ -861,14 +845,14 @@ abstract class Model
      *          SELECT * FROM $this->getTableName()
      *
      * 
-     *        NOTE: each key in the \GDAO\Model->_relations array is a 
-     *              relation name. Eg. array_keys($this->_relations)
+     *        NOTE: each key in the \GDAO\Model->relations array is a 
+     *              relation name. Eg. array_keys($this->relations)
      *              returns an array of relation name(s) for a model.
      * 
      *        NOTE: Implementers of this class should make the retrieved related
      *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_relations['comments'], the retrieved 
+     *              $this->relations['comments'], the retrieved 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
@@ -935,16 +919,16 @@ abstract class Model
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
      * @param null|object $query an object that can be used to build a select query
-     * @param string[] $relations_to_include array of the relationship names (keys from $this->_relations) for related data to add to this fetch
+     * @param string[] $relations_to_include array of the relationship names (keys from $this->relations) for related data to add to this fetch
      * 
      * @return \GDAO\Model\CollectionInterface|bool return a collection of matched record object(s) or false if no matching record(s) were found 
      * 
      * @throws \PDOException
      * 
      */
-    public function fetchRecordsIntoCollection(?object $query=null, array $relations_to_include=[]) {
+    public function fetchRecordsIntoCollection(?object $query = null, array $relations_to_include = []) {
 
-        $msg = 'Must Implement '.get_class($this).'::'.__FUNCTION__.'(...)';
+        $msg = 'Must Implement ' . get_class($this) . '::' . __FUNCTION__ . '(...)';
         throw new ModelMustImplementMethodException($msg);
     }
 
@@ -962,17 +946,17 @@ abstract class Model
      *          SELECT * FROM $this->getTableName()
      * 
      *  `relations_to_include` a method like withRelations that accepts an array of
-     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                         relation names as defined in \GDAO\Model->relations. 
      *                          Eager-fetch related rows of data for each relation name.
      * 
-     *        NOTE: each key in the \GDAO\Model->_relations array is a 
-     *              relation name. Eg. array_keys($this->_relations)
+     *        NOTE: each key in the \GDAO\Model->relations array is a 
+     *              relation name. Eg. array_keys($this->relations)
      *              returns an array of relation name(s) for a model.
      * 
      *        NOTE: Implementers of this class should make the retrieved related
      *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_relations['comments'], the retrieved 
+     *              $this->relations['comments'], the retrieved 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
@@ -1039,14 +1023,14 @@ abstract class Model
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
      * @param null|object $query an object that can be used to build a select query
-     * @param string[] $relations_to_include array of the relationship names (keys from $this->_relations) for related data to add to this fetch
+     * @param string[] $relations_to_include array of the relationship names (keys from $this->relations) for related data to add to this fetch
      * 
      * @return array of records (instances of \GDAO\Model\RecordInterface).
      * 
      * @throws \PDOException
      * 
      */
-    public abstract function fetchRecordsIntoArray(?object $query=null, array $relations_to_include=[]): array;
+    public abstract function fetchRecordsIntoArray(?object $query = null, array $relations_to_include = []): array;
 
     /**
      *
@@ -1062,17 +1046,17 @@ abstract class Model
      *          SELECT * FROM $this->getTableName()
      * 
      *  `relations_to_include` a method like withRelations that accepts an array of
-     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                         relation names as defined in \GDAO\Model->relations. 
      *                          Eager-fetch related rows of data for each relation name.
      * 
-     *        NOTE: each key in the \GDAO\Model->_relations array is a 
-     *              relation name. Eg. array_keys($this->_relations)
+     *        NOTE: each key in the \GDAO\Model->relations array is a 
+     *              relation name. Eg. array_keys($this->relations)
      *              returns an array of relation name(s) for a model.
      * 
      *        NOTE: Implementers of this class should make the retrieved related
      *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_relations['comments'], the retrieved 
+     *              $this->relations['comments'], the retrieved 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
@@ -1139,12 +1123,12 @@ abstract class Model
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      *
      * @param null|object $query an object that can be used to build a select query
-     * @param string[] $relations_to_include array of the relationship names (keys from $this->_relations) for related data to add to this fetch
+     * @param string[] $relations_to_include array of the relationship names (keys from $this->relations) for related data to add to this fetch
      * 
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchRowsIntoArray(?object $query=null, array $relations_to_include=[]): array;
+    public abstract function fetchRowsIntoArray(?object $query = null, array $relations_to_include = []): array;
 
     /**
      *
@@ -1159,17 +1143,17 @@ abstract class Model
      *          SELECT * FROM $this->getTableName()
      * 
      *  `relations_to_include` a method like withRelations that accepts an array of
-     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                         relation names as defined in \GDAO\Model->relations. 
      *                          Eager-fetch related rows of data for each relation name.
      * 
-     *        NOTE: each key in the \GDAO\Model->_relations array is a 
-     *              relation name. Eg. array_keys($this->_relations)
+     *        NOTE: each key in the \GDAO\Model->relations array is a 
+     *              relation name. Eg. array_keys($this->relations)
      *              returns an array of relation name(s) for a model.
      * 
      *        NOTE: Implementers of this class should make the retrieved related
      *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_relations['comments'], the retrieved 
+     *              $this->relations['comments'], the retrieved 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
@@ -1240,7 +1224,7 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchCol(?object $query=null): array;
+    public abstract function fetchCol(?object $query = null): array;
 
     /**
      * 
@@ -1255,17 +1239,17 @@ abstract class Model
      *          SELECT * FROM $this->getTableName() 
      * 
      *  `relations_to_include` a method like withRelations that accepts an array of
-     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                         relation names as defined in \GDAO\Model->relations. 
      *                          Eager-fetch related rows of data for each relation name.
      * 
-     *        NOTE: each key in the \GDAO\Model->_relations array is a 
-     *              relation name. Eg. array_keys($this->_relations)
+     *        NOTE: each key in the \GDAO\Model->relations array is a 
+     *              relation name. Eg. array_keys($this->relations)
      *              returns an array of relation name(s) for a model.
      * 
      *        NOTE: Implementers of this class should make the retrieved related
      *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_relations['comments'], the retrieved 
+     *              $this->relations['comments'], the retrieved 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
@@ -1332,14 +1316,14 @@ abstract class Model
      *                      FETCH NEXT $params['limit_size'] ROWS ONLY
      * 
      * @param null|object $query an object that can be used to build a select query
-     * @param string[] $relations_to_include array of the relationship names (keys from $this->_relations) for related data to add to this fetch
+     * @param string[] $relations_to_include array of the relationship names (keys from $this->relations) for related data to add to this fetch
      * 
      * @return \GDAO\Model\RecordInterface|bool return a record object if found or false if no matching record was found
      * 
      * @throws \PDOException
      * 
      */
-    public abstract function fetchOneRecord(?object $query=null, array $relations_to_include=[]);
+    public abstract function fetchOneRecord(?object $query = null, array $relations_to_include = []);
 
     /**
      *
@@ -1355,17 +1339,17 @@ abstract class Model
      *          SELECT * FROM $this->getTableName()
      * 
      *  `relations_to_include` a method like withRelations that accepts an array of
-     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                         relation names as defined in \GDAO\Model->relations. 
      *                          Eager-fetch related rows of data for each relation name.
      * 
-     *        NOTE: each key in the \GDAO\Model->_relations array is a 
-     *              relation name. Eg. array_keys($this->_relations)
+     *        NOTE: each key in the \GDAO\Model->relations array is a 
+     *              relation name. Eg. array_keys($this->relations)
      *              returns an array of relation name(s) for a model.
      * 
      *        NOTE: Implementers of this class should make the retrieved related
      *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_relations['comments'], the retrieved 
+     *              $this->relations['comments'], the retrieved 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
@@ -1436,7 +1420,7 @@ abstract class Model
      * @throws \PDOException
      * @return mixed[]
      */
-    public abstract function fetchPairs(?object $query=null): array;
+    public abstract function fetchPairs(?object $query = null): array;
 
     /**
      * 
@@ -1451,17 +1435,17 @@ abstract class Model
      *          SELECT * FROM $this->getTableName()
      * 
      *  `relations_to_include` a method like withRelations that accepts an array of
-     *                         relation names as defined in \GDAO\Model->_relations. 
+     *                         relation names as defined in \GDAO\Model->relations. 
      *                          Eager-fetch related rows of data for each relation name.
      * 
-     *        NOTE: each key in the \GDAO\Model->_relations array is a 
-     *              relation name. Eg. array_keys($this->_relations)
+     *        NOTE: each key in the \GDAO\Model->relations array is a 
+     *              relation name. Eg. array_keys($this->relations)
      *              returns an array of relation name(s) for a model.
      * 
      *        NOTE: Implementers of this class should make the retrieved related
      *              data accessible in each record via a property named with the
      *              same name as the relation name. For example, if there exists
-     *              $this->_relations['comments'], the retrieved 
+     *              $this->relations['comments'], the retrieved 
      *              comments for each record returned by this fetch method should
      *              be accessible via $record->comments. Where $record is a 
      *              reference to one of the records returned by this method.
@@ -1537,7 +1521,7 @@ abstract class Model
      * @throws \PDOException
      * 
      */
-    public abstract function fetchValue(?object $query=null);
+    public abstract function fetchValue(?object $query = null);
 
     /**
      * 
@@ -1585,7 +1569,7 @@ abstract class Model
      * @throws \GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException
      * 
      */
-    public abstract function insert(array $data_2_insert=[]);
+    public abstract function insert(array $data_2_insert = []);
 
     /**
      * 
@@ -1637,7 +1621,7 @@ abstract class Model
      * @throws \GDAO\ModelInvalidInsertValueSuppliedException
      * 
      */
-    public abstract function insertMany(array $rows_of_data_2_insert=[]);
+    public abstract function insertMany(array $rows_of_data_2_insert = []);
 
     /**
      * 
@@ -1681,8 +1665,8 @@ abstract class Model
      * 
      */
     public abstract function updateMatchingDbTableRows(
-        array $col_names_n_values_2_save = [], 
-        array $col_names_n_values_2_match = []
+            array $col_names_n_values_2_save = [],
+            array $col_names_n_values_2_match = []
     );
 
     /**
@@ -1701,49 +1685,83 @@ abstract class Model
      */
     public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): ?bool;
 
+
     //////////////////////////////////////
     // Getters for non-public properties
     //////////////////////////////////////
+
+    public function getCollectionClassName(): ?string {
+        
+        return $this->collection_class_name;
+    }
+    
     /**
      *
-     * Get the value of $this->_created_timestamp_column_name.
+     * Get the value of $this->created_timestamp_column_name.
      *
-     * @return string|null the value of $this->_created_timestamp_column_name.
+     * @return string|null the value of $this->created_timestamp_column_name.
      */
     public function getCreatedTimestampColumnName(): ?string {
 
         return $this->created_timestamp_column_name;
     }
-
+    
+    public function getDsn(): string {
+        return $this->dsn;
+    }
+    
+    public function getPasswd(): string {
+        
+        return $this->passwd;
+    }
+    
+    public function getPdoDriverOpts(): array {
+        
+        return $this->pdo_driver_opts;
+    }
+    
+    public function getPrimaryCol(): string {
+        
+        return $this->primary_col;
+    }
+    
     /**
+     * Get the value of $this->primary_col.
      * 
-     * Get the value of $this->_primary_col.
+     * @param bool $prepend_table_name true to return "{$this->table_name}.{$this->primary_col}"
+     *                                 or false to return "{$this->primary_col}"
      * 
-     * @param bool $prepend_table_name true to return "{$this->_table_name}.{$this->_primary_col}"
-     *                                 or false to return "{$this->_primary_col}"
-     * 
-     * @return string the value of $this->_primary_col.
+     * @return string the value of $this->primary_col.
      * 
      */
-    public function getPrimaryColName(bool $prepend_table_name=false): string {
+    public function getPrimaryColName(bool $prepend_table_name = false): string {
 
         return $prepend_table_name ?
-                "{$this->table_name}.{$this->primary_col}" : $this->primary_col;
+                "{$this->getTableName()}.{$this->getPrimaryCol()}" : $this->getPrimaryCol();
     }
-
-    /**
-     *
-     * Get the value of $this->_table_name.
-     *
-     * @return string the value of $this->_table_name.
-     */
-    public function getTableName(): string {
-
-        return $this->table_name;
+    
+    public function getRecordClassName(): ?string {
+        
+        return $this->record_class_name;
     }
-
+    
     /**
+     * Get an array of relation names defined in $this->relations.
      * 
+     * @return array an array of relation names defined in $this->relations.
+     * 
+     */
+    public function getRelationNames(): array {
+
+        return array_keys($this->getRelations());
+    }
+    
+    public function getRelations(): array {
+        
+        return $this->relations;
+    }
+    
+    /**
      * Get an array of table column names.
      * 
      * @return array an array of table column names.
@@ -1751,26 +1769,24 @@ abstract class Model
      */
     public function getTableColNames(): array {
 
-        $keys = array_keys($this->table_cols);
+        $keys = array_keys($this->getTableCols());
 
-        if( $keys === range(0, count($this->table_cols) - 1) ) {
+        if ($keys === range(0, count($this->getTableCols()) - 1)) {
 
-            //$this->_table_cols is a sequential array with numeric keys
+            //$this->table_cols is a sequential array with numeric keys
             //its values are most likely to be column names
-            return $this->table_cols;
-
+            return $this->getTableCols();
         } else {
 
             $keys_2_return = [];
 
             /** @var string|array $potential_col_metadata */
-            foreach($this->table_cols as $key => $potential_col_metadata) {
+            foreach ($this->getTableCols() as $key => $potential_col_metadata) {
 
-                if( is_string($key) ) {
+                if (is_string($key)) {
 
                     $keys_2_return[] = $key;
-
-                } elseif( is_string($potential_col_metadata) ) {
+                } elseif (is_string($potential_col_metadata)) {
 
                     $keys_2_return[] = $potential_col_metadata;
                 }
@@ -1779,27 +1795,126 @@ abstract class Model
             return $keys_2_return;
         }
     }
-
-    /**
-     * 
-     * Get an array of relation names defined in $this->_relations.
-     * 
-     * @return array an array of relation names defined in $this->_relations.
-     * 
-     */
-    public function getRelationNames(): array {
-
-        return array_keys($this->relations);
+    
+    public function getTableCols(): array {
+        
+        return $this->table_cols;
     }
-
+    
     /**
      *
-     * Get the value of $this->_updated_timestamp_column_name.
+     * Get the value of $this->table_name.
      *
-     * @return string|null the value of $this->_updated_timestamp_column_name.
+     * @return string the value of $this->table_name.
+     */
+    public function getTableName(): string {
+
+        return $this->table_name;
+    }
+    
+    /**
+     *
+     * Get the value of $this->updated_timestamp_column_name.
+     *
+     * @return string|null the value of $this->updated_timestamp_column_name.
      */
     public function getUpdatedTimestampColumnName(): ?string {
 
         return $this->updated_timestamp_column_name;
+    }
+    
+    public function getUsername(): string {
+        
+        return $this->username;
+    }
+    
+    public function setCollectionClassName(?string $collection_class_name): self {
+        
+        $this->collection_class_name = $collection_class_name;
+        return $this;
+    }
+    
+    public function setCreatedTimestampColumnName(?string $created_timestamp_column_name): self {
+        
+        $this->created_timestamp_column_name = $created_timestamp_column_name;
+        return $this;
+    }
+    
+    /**
+     * If you are connecting to the DB in the constructor of this class, setting
+     * this will be pointless. If you have another connect method in the Model class
+     * that can be used for connecting to the DB then setting this property would make
+     * sense.
+     */
+    public function setDsn(string $dsn): self {
+        
+        $this->dsn = $dsn;
+        return $this;
+    }
+    
+    /**
+     * If you are connecting to the DB in the constructor of this class, setting
+     * this will be pointless. If you have another connect method in the Model class
+     * that can be used for connecting to the DB then setting this property would make
+     * sense.
+     */
+    public function setPasswd(string $passwd): self {
+        
+        $this->passwd = $passwd;
+        return $this;
+    }
+    
+    public function setPdoDriverOpts(array $pdo_driver_opts): self {
+        
+        $this->pdo_driver_opts = $pdo_driver_opts;
+        return $this;
+    }
+    
+    public function setPrimaryCol(string $primary_col): self {
+
+        $this->primary_col = $primary_col;
+        return $this;
+    }
+    
+    public function setRecordClassName(?string $record_class_name): self {
+        
+        $this->record_class_name = $record_class_name;
+        return $this;
+    }
+    
+    public function setRelations(array $relations): self {
+        
+        $this->relations = $relations;
+        return $this;
+    }
+    
+    public function setTableCols(array $table_cols): self {
+        
+        $this->table_cols = $table_cols;
+        return $this;
+    }
+    
+    public function setTableName(string $table_name): self {
+
+        $this->table_name = $table_name;
+        return $this;
+    }
+    
+    public function setUpdatedTimestampColumnName(?string $updated_timestamp_column_name): self {
+        
+        $this->updated_timestamp_column_name = $updated_timestamp_column_name;
+        return $this;
+    }
+    
+    /**
+     * If you are connecting to the DB in the constructor of this class, setting
+     * this will be pointless. If you have another connect method in the Model class
+     * that can be used for connecting to the DB then setting this property would make
+     * sense.
+     */
+    public function setUsername(string $username): self {
+        
+        $this->username = $username;
+        return $this;
     }
 }
