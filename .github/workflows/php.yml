@@ -23,10 +23,6 @@ jobs:
             dependency-version: [prefer-stable]
             os: [ubuntu-18.04, ubuntu-20.04]
             include:
-                - os: ubuntu-18.04
-                  php: 7.4
-                - os: ubuntu-18.04
-                  php: 8.0
                 - os: ubuntu-20.04
                   php: 7.4
                 - os: ubuntu-20.04
