@@ -34,7 +34,7 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
         array $col_names_and_values = []
     ): \GDAO\Model\RecordInterface { }
 
-    public function deleteMatchingDbTableRows(array $cols_n_vals=[]): ?int { }
+    public function deleteMatchingDbTableRows(array $cols_n_vals): int { }
 
     public function fetchRecordsIntoArray(?object $query=null, array $relations_to_include=[]): array { }
 
