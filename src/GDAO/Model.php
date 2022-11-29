@@ -1,11 +1,9 @@
 <?php
-
 declare(strict_types=1);
 
 namespace GDAO;
 
 /**
- * 
  * An abstract Model class that can be extended to create a Model class that 
  * performs data Creation, Retrieval, Update and Deletion operations on an sql
  * data-source.
@@ -15,33 +13,27 @@ namespace GDAO;
  * 
  * @author Rotimi Adegbamigbe
  * @copyright (c) 2022, Rotexsoft
- * 
  */
 abstract class Model {
 
     /**
-     * 
      * Name of the primary key column in the db table associated with this model
      * Default value is null.
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
      * @todo Work on supporting tables that don't have any primary key column defined
-     * 
      */
     protected string $primary_col = '';
 
     /**
-     *
      * Name of the db table associated with this model
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
-     * 
      */
     protected string $table_name = '';
 
     /**
-     *
      * Array of column information for the db table associated with this model.
      * 
      * This is an OPTIONAL field & may be set by consumers of this class or
@@ -138,12 +130,10 @@ abstract class Model {
      * be easily used to populate $this->table_cols. 
      * Db schema meta-data could also easily be queried using the PDO object 
      * available via $this->getPDO().
-     *  
      */
     protected array $table_cols = [];
 
     /**
-     * 
      * Name of the collection class for this model. 
      * The class must implement \GDAO\Model\CollectionInterface
      * 
@@ -155,22 +145,18 @@ abstract class Model {
      * Implementers of this class should check that $this->collection_class_name 
      * has a valid value before attempting to use it inside method(s) they are 
      * implementing.
-     * 
      */
     protected ?string $collection_class_name = null;
 
     /**
-     * 
      * Name of the record class for this model. 
      * The class must implement \GDAO\Model\RecordInterface
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
-     * 
      */
     protected ?string $record_class_name = null;
 
     /**
-     *
      * Name of a column in the db table associated with this model that is used
      * to keep track of the time when a row of data was initially inserted into
      * a db table. 
@@ -187,12 +173,10 @@ abstract class Model {
      * The value of this field can be used by implementers of this class to 
      * implement functionality that automatically updates the db column that
      * tracks the time a row of data was initially inserted into a db table.
-     * 
      */
     protected ?string $created_timestamp_column_name = null;
 
     /**
-     *
      * Name of a column in the db table associated with this model that is used
      * to keep track of the time when a row of data was last updated in a db 
      * table.
@@ -209,7 +193,6 @@ abstract class Model {
      * The value of this field can be used by implementers of this class to 
      * implement functionality that automatically updates the db column that
      * tracks the time a row of data was last updated in a db table.
-     * 
      */
     protected ?string $updated_timestamp_column_name = null; //string
     
@@ -234,7 +217,6 @@ abstract class Model {
     ////////////////////////////////////////////////////////////////////////////
 
     /**
-     * 
      * A 2-dimensional array meant to hold definitions of Belongs-To, Has-One,
      * Has-Many and Has-Many-Through relationships that the table associated  
      * with the current model has with other tables in the database.
@@ -616,7 +598,6 @@ abstract class Model {
      *       whose _table_name property has the same value as
      *       \GDAO\Model->relations['relation_name']['foreign_table'].
      *       'relation_name' should be substituted with 'tags' in this case.
-     * 
      */
     protected array $relations = [];
 
@@ -641,74 +622,61 @@ abstract class Model {
     public const RELATION_TYPE_HAS_MANY_THROUGH = 'rt_hmt';
 
     /**
-     * 
      * A PDO compliant Data Source Name (DSN) string containing the information 
      * required to connect to a desired database.
      * 
      * @see \PDO::__construct() See description of the 1st parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
      *                          this Model will indeed be powered by a PDO instance
-     * 
      */
     protected string $dsn = '';
 
     /**
-     *
      * The username for the database to be connected to.
      * 
      * @see \PDO::__construct() See description of the 2nd parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
      *                          this Model will indeed be powered by a PDO instance
-     * 
      */
     protected string $username = '';
 
     /**
-     *
      * The password for the database to be connected to.
      * 
      * @see \PDO::__construct() See description of the 3rd parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
      *                          this Model will indeed be powered by a PDO 
      *                          instance
-     * 
      */
     protected string $passwd = '';
 
     /**
-     *
      * An array of options for a PDO driver
      * 
      * @see \PDO::__construct() See description of the 4th parameter 
      *                          (http://php.net/manual/en/pdo.construct.php) if 
      *                          this Model will indeed be powered by a PDO instance
-     * 
      */
     protected array $pdo_driver_opts = [];
 
     /**
-     * 
      * @param string $dsn a dsn string see $dsn parameter for \PDO::__construct(..) https://www.php.net/manual/en/pdo.construct.php
      * @param string $username username for the connection if applicable
      * @param string $passwd password for the connection if applicable
      * @param array $pdo_driver_opts see \PDO::setAttribute(..) documentation
-     * @param array $extra_opts an array that may be used to pass initialization 
-     *                          value(s) for protected and / or private properties
-     *                          of this class
      * 
      * @see \PDO::__construct(...) for definition of first four parameters
      * 
      * @throws \GDAO\ModelPrimaryColNameNotSetDuringConstructionException
      * @throws \GDAO\ModelTableNameNotSetDuringConstructionException
-     * 
      */
     public function __construct(
-            string $dsn = '',
-            string $username = '',
-            string $passwd = '',
-            array  $pdo_driver_opts = [],
-            string $primary_col_name='',
-            string $table_name=''
+        string $dsn = '',
+        string $username = '',
+        string $passwd = '',
+        array  $pdo_driver_opts = [],
+        string $primary_col_name='',
+        string $table_name=''
     ) {
         $this->dsn = $dsn;
         $this->username = $username;
@@ -739,11 +707,9 @@ abstract class Model {
     }
 
     /**
-     * 
      * Returns an array representation of an instance of this class.
      * 
      * @return array an array representation of an instance of this class.
-     * 
      */
     public function toArray(): array {
 
@@ -751,7 +717,6 @@ abstract class Model {
     }
 
     /**
-     * 
      * Create and return a new collection of zero or more records (instances of \GDAO\Model\RecordInterface).
      * 
      * This method is not declared abstract in order to allow both implementers
@@ -762,7 +727,6 @@ abstract class Model {
      * @param \GDAO\Model\RecordInterface[] $list_of_records 
      * 
      * @return \GDAO\Model\CollectionInterface a collection of instances of \GDAO\Model\RecordInterface.
-     * 
      */
     public function createNewCollection(\GDAO\Model\RecordInterface ...$list_of_records): \GDAO\Model\CollectionInterface {
 
@@ -771,18 +735,13 @@ abstract class Model {
     }
 
     /**
-     * 
      * Create and return a new record with specified values.
      * 
-     * @param array $col_names_and_values
-     * 
      * @return \GDAO\Model\RecordInterface new record with specified values.
-     * 
      */
     public abstract function createNewRecord(array $col_names_and_values = []): \GDAO\Model\RecordInterface;
 
     /**
-     * 
      * Delete one or more records matching specified conditions.
      * 
      * @param array $cols_n_vals array of where clause conditions for a delete statement
@@ -802,7 +761,6 @@ abstract class Model {
      *                  OR null if nothing was deleted (no matching records).
      * 
      * @throws \PDOException
-     * 
      */
     public abstract function deleteMatchingDbTableRows(array $cols_n_vals = []): ?int;
 
@@ -821,12 +779,10 @@ abstract class Model {
      *                   been saved to the db.
      * 
      * @throws \PDOException
-     * 
      */
     public abstract function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record): ?bool;
 
     /**
-     * 
      * Fetch a collection (an instance of GDAO\Model\CollectionInterface) of 
      * records (instances of \GDAO\Model\RecordInterface) 
      * [Eager Loading should be implemented here].
@@ -924,7 +880,6 @@ abstract class Model {
      * @return \GDAO\Model\CollectionInterface|bool return a collection of matched record object(s) or false if no matching record(s) were found 
      * 
      * @throws \PDOException
-     * 
      */
     public function fetchRecordsIntoCollection(?object $query = null, array $relations_to_include = []) {
 
@@ -933,7 +888,6 @@ abstract class Model {
     }
 
     /**
-     * 
      * Fetch an array of records (instances of \GDAO\Model\RecordInterface or 
      * any of its sub-classes) [Eager Loading should be considered here].
      * 
@@ -1028,12 +982,10 @@ abstract class Model {
      * @return array of records (instances of \GDAO\Model\RecordInterface).
      * 
      * @throws \PDOException
-     * 
      */
     public abstract function fetchRecordsIntoArray(?object $query = null, array $relations_to_include = []): array;
 
     /**
-     *
      * Fetch an array of db data. Each record is an associative array and not an
      * instance of \GDAO\Model\RecordInterface [Eager Loading should be considered here].
      *
@@ -1131,7 +1083,6 @@ abstract class Model {
     public abstract function fetchRowsIntoArray(?object $query = null, array $relations_to_include = []): array;
 
     /**
-     *
      * Fetch an array of values for a specified column.
      *
      * The methods described below must be available via the $query object
@@ -1227,7 +1178,6 @@ abstract class Model {
     public abstract function fetchCol(?object $query = null): array;
 
     /**
-     * 
      * Fetch a single record matching the specified params.
      * 
      * The methods described below must be available via the $query object
@@ -1321,12 +1271,10 @@ abstract class Model {
      * @return \GDAO\Model\RecordInterface|bool return a record object if found or false if no matching record was found
      * 
      * @throws \PDOException
-     * 
      */
     public abstract function fetchOneRecord(?object $query = null, array $relations_to_include = []);
 
     /**
-     *
      * Fetch an array of key-value pairs from the db table, where the 
      * 1st column's value is the key and the 2nd column's value is the value.
      *
@@ -1423,7 +1371,6 @@ abstract class Model {
     public abstract function fetchPairs(?object $query = null): array;
 
     /**
-     * 
      * Fetch a single value from the db table matching params.
      * 
      * The methods described below must be available via the $query object
@@ -1519,22 +1466,18 @@ abstract class Model {
      *               was found.
      * 
      * @throws \PDOException
-     * 
      */
     public abstract function fetchValue(?object $query = null);
 
     /**
-     * 
      * Return the PDO object powering this model or throw 
      * \GDAO\ModelRequiresPdoInstanceException if no PDO object is available.
      * 
      * @return \PDO the PDO object powering this model.
-     * 
      */
     public abstract function getPDO(): \PDO;
 
     /**
-     * 
      * Insert one row to the model table with the specified values.
      * 
      * An exception (\GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException)
@@ -1567,12 +1510,10 @@ abstract class Model {
      * @throws \PDOException
      * @throws \GDAO\ModelInvalidInsertValueSuppliedException
      * @throws \GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException
-     * 
      */
     public abstract function insert(array $data_2_insert = []);
 
     /**
-     * 
      * Insert one or more rows to the model table with the specified values.
      * It is meant to batch all the data to be inserted into one sql query. 
      * Eg:
@@ -1619,12 +1560,10 @@ abstract class Model {
      * 
      * @throws \PDOException
      * @throws \GDAO\ModelInvalidInsertValueSuppliedException
-     * 
      */
     public abstract function insertMany(array $rows_of_data_2_insert = []);
 
     /**
-     * 
      * Updates rows in the model's db table.
      * 
      * An exception (\GDAO\ModelInvalidUpdateValueSuppliedException) should be
@@ -1662,29 +1601,23 @@ abstract class Model {
      * 
      * @throws \PDOException
      * @throws \GDAO\ModelInvalidUpdateValueSuppliedException
-     * 
      */
     public abstract function updateMatchingDbTableRows(
-            array $col_names_n_values_2_save = [],
-            array $col_names_n_values_2_match = []
+        array $col_names_n_values_2_save = [],
+        array $col_names_n_values_2_match = []
     );
 
     /**
-     * 
      * Update the specified record in the database.
      * Save all fields in the specified record to the corresponding row in the db.
-     * 
-     * @param \GDAO\Model\RecordInterface $record
-     * 
+     *
      * @return bool|null true for a successful update, false for a failed update 
      *                   OR null if supplied record is a record that has never been
      *                   saved to the db.
-     * 
+     *
      * @throws \PDOException
-     * 
      */
     public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): ?bool;
-
 
     //////////////////////////////////////
     // Getters for non-public properties
@@ -1696,7 +1629,6 @@ abstract class Model {
     }
     
     /**
-     *
      * Get the value of $this->created_timestamp_column_name.
      *
      * @return string|null the value of $this->created_timestamp_column_name.
@@ -1715,6 +1647,9 @@ abstract class Model {
         return $this->passwd;
     }
     
+    /**
+     * @return mixed[]
+     */
     public function getPdoDriverOpts(): array {
         
         return $this->pdo_driver_opts;
@@ -1732,7 +1667,6 @@ abstract class Model {
      *                                 or false to return "{$this->primary_col}"
      * 
      * @return string the value of $this->primary_col.
-     * 
      */
     public function getPrimaryColName(bool $prepend_table_name = false): string {
 
@@ -1749,13 +1683,15 @@ abstract class Model {
      * Get an array of relation names defined in $this->relations.
      * 
      * @return array an array of relation names defined in $this->relations.
-     * 
      */
     public function getRelationNames(): array {
 
         return array_keys($this->getRelations());
     }
     
+    /**
+     * @return mixed[]
+     */
     public function getRelations(): array {
         
         return $this->relations;
@@ -1765,17 +1701,15 @@ abstract class Model {
      * Get an array of table column names.
      * 
      * @return array an array of table column names.
-     * 
      */
     public function getTableColNames(): array {
 
-        $keys = array_keys($this->getTableCols());
-
-        if ($keys === range(0, count($this->getTableCols()) - 1)) {
+        if (array_keys($this->getTableCols()) === range(0, count($this->getTableCols()) - 1)) {
 
             //$this->table_cols is a sequential array with numeric keys
             //its values are most likely to be column names
             return $this->getTableCols();
+            
         } else {
 
             $keys_2_return = [];
@@ -1796,13 +1730,15 @@ abstract class Model {
         }
     }
     
+    /**
+     * @return mixed[]
+     */
     public function getTableCols(): array {
         
         return $this->table_cols;
     }
     
     /**
-     *
      * Get the value of $this->table_name.
      *
      * @return string the value of $this->table_name.
@@ -1813,7 +1749,6 @@ abstract class Model {
     }
     
     /**
-     *
      * Get the value of $this->updated_timestamp_column_name.
      *
      * @return string|null the value of $this->updated_timestamp_column_name.
@@ -1864,6 +1799,9 @@ abstract class Model {
         return $this;
     }
     
+    /**
+     * @param mixed[] $pdo_driver_opts
+     */
     public function setPdoDriverOpts(array $pdo_driver_opts): self {
         
         $this->pdo_driver_opts = $pdo_driver_opts;
@@ -1882,12 +1820,18 @@ abstract class Model {
         return $this;
     }
     
+    /**
+     * @param mixed[] $relations
+     */
     public function setRelations(array $relations): self {
         
         $this->relations = $relations;
         return $this;
     }
     
+    /**
+     * @param mixed[] $table_cols
+     */
     public function setTableCols(array $table_cols): self {
         
         $this->table_cols = $table_cols;
