@@ -1366,7 +1366,7 @@ abstract class Model {
      * @param null|object $query an object that can be used to build a select query
      * 
      * @throws \PDOException
-     * @return mixed[]
+     * @return array<int|string, mixed>
      */
     public abstract function fetchPairs(?object $query = null): array;
 
