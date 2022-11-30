@@ -678,12 +678,12 @@ abstract class Model {
         string $primary_col_name='',
         string $table_name=''
     ) {
-        $this->dsn = $dsn;
-        $this->username = $username;
-        $this->passwd = $passwd;
-        $this->pdo_driver_opts = $pdo_driver_opts;
-        $this->primary_col = $primary_col_name;
-        $this->table_name = $table_name;
+        $this->dsn = ($this->dsn === '')? $dsn : $this->dsn;
+        $this->username = ($this->username === '')? $username : $this->username;
+        $this->passwd = ($this->passwd === '')? $passwd : $this->passwd;
+        $this->pdo_driver_opts = ($this->pdo_driver_opts === []) ? $pdo_driver_opts : $this->pdo_driver_opts;
+        $this->primary_col = ($this->primary_col === '') ? $primary_col_name : $this->primary_col;
+        $this->table_name = ($this->table_name === '') ? $table_name : $this->table_name;
 
         if (strlen($this->primary_col) <= 0) {
 
