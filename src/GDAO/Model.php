@@ -1268,11 +1268,11 @@ abstract class Model {
      * @param null|object $query an object that can be used to build a select query
      * @param string[] $relations_to_include array of the relationship names (keys from $this->relations) for related data to add to this fetch
      * 
-     * @return \GDAO\Model\RecordInterface|bool return a record object if found or false if no matching record was found
+     * @return \GDAO\Model\RecordInterface|null return a record object if found or null if no matching record was found
      * 
      * @throws \PDOException
      */
-    public abstract function fetchOneRecord(?object $query = null, array $relations_to_include = []);
+    public abstract function fetchOneRecord(?object $query = null, array $relations_to_include = []): ?\GDAO\Model\RecordInterface;
 
     /**
      * Fetch an array of key-value pairs from the db table, where the 
