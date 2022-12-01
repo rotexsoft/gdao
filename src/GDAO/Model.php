@@ -877,11 +877,11 @@ abstract class Model {
      * @param null|object $query an object that can be used to build a select query
      * @param string[] $relations_to_include array of the relationship names (keys from $this->relations) for related data to add to this fetch
      * 
-     * @return \GDAO\Model\CollectionInterface|bool return a collection of matched record object(s) or false if no matching record(s) were found 
+     * @return \GDAO\Model\CollectionInterface return a collection of matched record object(s) or an empty collection if no matching record(s) were found 
      * 
      * @throws \PDOException
      */
-    public function fetchRecordsIntoCollection(?object $query = null, array $relations_to_include = []) {
+    public function fetchRecordsIntoCollection(?object $query = null, array $relations_to_include = []): \GDAO\Model\CollectionInterface {
 
         $msg = 'Must Implement ' . get_class($this) . '::' . __FUNCTION__ . '(...)';
         throw new ModelMustImplementMethodException($msg);
