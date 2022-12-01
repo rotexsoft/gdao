@@ -62,9 +62,9 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
 
     /**
      * @noRector
-     * @return \GDAO\Model\RecordInterface|bool
+     * @return \GDAO\Model\RecordInterface|null
      */
-    public function fetchOneRecord(?object $query=null, array $relations_to_include=[]) { return false; }
+    public function fetchOneRecord(?object $query=null, array $relations_to_include=[]): ?\GDAO\Model\RecordInterface { return null; }
 
     /**
      * @return mixed[]
