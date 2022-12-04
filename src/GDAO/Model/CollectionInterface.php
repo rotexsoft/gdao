@@ -237,7 +237,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * first line of code in their implementation of $this->deleteAll()
      * 
      */
-    public function _preDeleteAll(): void;
+    public function preDeleteAll(): void;
     
     /**
      * 
@@ -247,7 +247,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * last line of code in their implementation of $this->deleteAll()
      * 
      */
-    public function _postDeleteAll(): void;
+    public function postDeleteAll(): void;
     
     /**
      * 
@@ -257,7 +257,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * first line of code in their implementation of $this->save(...)
      * 
      */
-    public function _preSaveAll(bool $group_inserts_together=false): void;
+    public function preSaveAll(bool $group_inserts_together=false): void;
     
     /**
      * 
@@ -269,5 +269,5 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @param bool|array $save_all_result result returned from $this->saveAll(..)
      * @param bool $group_inserts_together exact value passed to $this->saveAll($group_inserts_together)
      */
-    public function _postSaveAll($save_all_result, bool $group_inserts_together=false): void;
+    public function postSaveAll($save_all_result, bool $group_inserts_together=false): void;
 }
