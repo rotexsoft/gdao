@@ -85,11 +85,7 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
      */
     public function insert(array $col_names_n_vals = []) { return []; }
     
-    /**
-     * @noRector
-     * @return bool|array
-     */
-    public function insertMany(array $col_names_n_vals = []) { return []; }
+    public function insertMany(array $col_names_n_vals = []): bool { return []; }
     
     /**
      * @noRector 

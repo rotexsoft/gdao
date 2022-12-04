@@ -1554,14 +1554,13 @@ abstract class Model {
      *                                     type, else they should throw the following
      *                                     exception: \GDAO\ModelInvalidInsertValueSuppliedException
      * 
-     * @return bool|array false if insert failed, true if the insert succeeded. 
-     *                    A \PDOException will be automatically thrown if things 
-     *                    fail at the PDO level.
+     * @return bool false if insert failed, true if the insert succeeded. 
+     *              A \PDOException will be automatically thrown if things fail at the PDO level.
      * 
      * @throws \PDOException
      * @throws \GDAO\ModelInvalidInsertValueSuppliedException
      */
-    public abstract function insertMany(array $rows_of_data_2_insert = []);
+    public abstract function insertMany(array $rows_of_data_2_insert = []): bool;
 
     /**
      * Updates rows in the model's db table.
