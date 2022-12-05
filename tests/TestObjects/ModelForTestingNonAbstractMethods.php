@@ -89,12 +89,12 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
     
     /**
      * @noRector 
-     * @return bool|array
+     * @return $this
      */
     public function updateMatchingDbTableRows(
         array $col_names_n_values_2_save = [],
         array $col_names_n_values_2_match = []
-    ) { }
+    ): self { return $this; }
 
-    public function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): bool { return true; }
+    public function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): self { return $this; }
 }

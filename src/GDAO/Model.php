@@ -1596,11 +1596,7 @@ abstract class Model {
      *                                          ['id'=>[5,6,7], 'title'=>'yipeedoo'] should generate the sql below:
      *                                          UPDATE `x` SET ...  WHERE id IN (5,6,7)  AND title = 'yipeedoo'
      * 
-     * @return null|bool|int false if update failed, or return the number of rows
-     *                       updated if the update was successful or return
-     *                       null if the first or both args to the function
-     *                       contain an empty array (no update query gets 
-     *                       executed in this return null scenario). 
+     * @return $this
      * 
      * @throws \PDOException
      * @throws \GDAO\ModelInvalidUpdateValueSuppliedException
@@ -1608,19 +1604,17 @@ abstract class Model {
     public abstract function updateMatchingDbTableRows(
         array $col_names_n_values_2_save = [],
         array $col_names_n_values_2_match = []
-    );
+    ):self;
 
     /**
      * Update the specified record in the database.
      * Save all fields in the specified record to the corresponding row in the db.
      *
-     * @return bool|null true for a successful update, false for a failed update 
-     *                   OR null if supplied record is a record that has never been
-     *                   saved to the db.
+     * @return $this
      *
      * @throws \PDOException
      */
-    public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): ?bool;
+    public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): self;
 
     //////////////////////////////////////
     // Getters for non-public properties
