@@ -1583,7 +1583,9 @@ abstract class Model {
      * 
      * @param array $col_names_n_values_2_match array of where clause conditions for an update statement
      *                                          to update one or more records in the db table associated
-     *                                          with this model.
+     *                                          with this model. If this array is empty, that means a 
+     *                                          where clause will not be added to the update statement 
+     *                                          and all rows in the db table will be updated.
      *                            
      *                                          Eg. for a table 'x' with the following columns:
      *                                          'id', 'title' and 'description'
@@ -1594,9 +1596,11 @@ abstract class Model {
      *                                          ['id'=>[5,6,7], 'title'=>'yipeedoo'] should generate the sql below:
      *                                          UPDATE `x` SET ...  WHERE id IN (5,6,7)  AND title = 'yipeedoo'
      * 
-     * @return bool|array false if update failed, or return the number of rows
-     *                    updated if the update was successful or return
-     *                    null if there were no matching records.
+     * @return null|bool|int false if update failed, or return the number of rows
+     *                       updated if the update was successful or return
+     *                       null if the first or both args to the function
+     *                       contain an empty array (no update query gets 
+     *                       executed in this return null scenario). 
      * 
      * @throws \PDOException
      * @throws \GDAO\ModelInvalidUpdateValueSuppliedException
