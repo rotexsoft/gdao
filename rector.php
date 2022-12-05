@@ -30,14 +30,14 @@ return static function (RectorConfig $rectorConfigurator): void {
     $rectorConfigurator->import(SetList::DEAD_CODE);
     $rectorConfigurator->import(SetList::PSR_4);
     $rectorConfigurator->import(SetList::TYPE_DECLARATION);
-    $rectorConfigurator->import(SetList::TYPE_DECLARATION_STRICT);
     
     // get services (needed for register a single rule)
     $services = $rectorConfigurator->services();
     $services->remove(\Rector\CodeQuality\Rector\If_\ShortenElseIfRector::class);
     $services->remove(\Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector::class);
     $services->remove(\Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector::class);
-    $services->remove(Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class);
+    $services->remove(\Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class);
+    $services->remove(\Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector::class);
     
     //TODO:PHP8 comment once PHP 8 becomes minimum version
     (PHP_MAJOR_VERSION < 8) && $services->remove(Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector::class);
