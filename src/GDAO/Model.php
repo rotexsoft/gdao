@@ -1609,6 +1609,9 @@ abstract class Model {
     /**
      * Update the specified record in the database.
      * Save all fields in the specified record to the corresponding row in the db.
+     * Also refresh the $this->updated_timestamp_column_name field in the $record 
+     * with the latest value of the $this->updated_timestamp_column_name field 
+     * from the database if $this->updated_timestamp_column_name !== null
      *
      * @return $this
      *
