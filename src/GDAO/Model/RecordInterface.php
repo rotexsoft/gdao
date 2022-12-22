@@ -142,18 +142,18 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * Get a reference to the data for this record.
      * Modifying the returned data will affect the data inside this record.
      * 
-     * @return array a reference to the current data for this record.
+     * @return null|array a reference to the current data for this record.
      */
-    public function &getDataByRef(): array;
+    public function &getDataByRef(): ?array;
     
     /**
      * 
      * Get a reference to the initial data loaded into this record.
      * Modifying the returned data will affect the initial data inside this record.
      * 
-     * @return array a reference to the initial data loaded into this record.
+     * @return null|array a reference to the initial data loaded into this record.
      */
-    public function &getInitialDataByRef(): array;
+    public function &getInitialDataByRef(): ?array;
     
     /**
      * 
