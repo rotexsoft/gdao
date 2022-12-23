@@ -191,31 +191,11 @@ class ModelTest extends \PHPUnit\Framework\TestCase
             'components'
         );
         
-        $sub_str = <<<EOT
-array (
-  'primary_col' => 'component_id',
-  'table_name' => 'components',
-  'table_cols' => 
-  array (
-  ),
-  'collection_class_name' => NULL,
-  'record_class_name' => NULL,
-  'created_timestamp_column_name' => NULL,
-  'updated_timestamp_column_name' => NULL,
-  'relations' => 
-  array (
-  ),
-  'dsn' => 'testdsn',
-  'username' => 'testusername',
-  'passwd' => 'testpasswd',
-  'pdo_driver_opts' => 
-  array (
-    1002 => 'SET NAMES utf8',
-  ),
-)
-EOT;
-//echo $model->__toString(); exit;
-        PHP_OS_FAMILY !== 'Windows' && $this->assertStringContainsString($sub_str, $model->__toString());
+        $modelAsArray = $model->toArray();
+        // $model->__toString() is just a string representation of $model->toArray()
+        $modelToStringAsArray = eval(' return ' . $model->__toString() . ';');
+        
+        self::assertEquals($modelAsArray, $modelToStringAsArray);
     }
     
     public function testThatToArrayWorksAsExpected(): void {
