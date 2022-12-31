@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace GDAO\Model;
 
 /**
+ * @psalm-suppress MissingTemplateParam
  * 
  * Represents a collection of \GDAO\Model\RecordInterface objects.
  *
