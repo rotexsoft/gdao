@@ -295,7 +295,6 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * Set the \GDAO\Model object for this record
      * 
-     * @param \GDAO\Model $model
      * @return $this
      */
     public function setModel(\GDAO\Model $model): self;

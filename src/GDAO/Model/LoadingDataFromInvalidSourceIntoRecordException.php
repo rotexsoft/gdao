@@ -1,0 +1,6 @@
+<?php
+declare(strict_types=1);
+
+namespace GDAO\Model;
+
+class LoadingDataFromInvalidSourceIntoRecordException extends \Exception{}
