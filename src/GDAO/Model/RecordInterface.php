@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace GDAO\Model;
 
 /**
+ * @psalm-suppress MissingTemplateParam
  * 
  * Contains a list of methods that Record classes must implement.
  *
