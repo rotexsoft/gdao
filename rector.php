@@ -23,8 +23,8 @@ return static function (RectorConfig $rectorConfigurator): void {
     $rectorConfigurator->import(SetList::PHP_72);
     $rectorConfigurator->import(SetList::PHP_73);
     $rectorConfigurator->import(SetList::PHP_74);
-    //$containerConfigurator->import(SetList::PHP_80);
-    //$containerConfigurator->import(SetList::PHP_81);
+    $rectorConfigurator->import(SetList::PHP_80);
+    $rectorConfigurator->import(SetList::PHP_81);
     $rectorConfigurator->import(SetList::CODE_QUALITY);
     $rectorConfigurator->import(SetList::CODING_STYLE);
     $rectorConfigurator->import(SetList::DEAD_CODE);
@@ -38,7 +38,4 @@ return static function (RectorConfig $rectorConfigurator): void {
     $services->remove(\Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector::class);
     $services->remove(\Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class);
     $services->remove(\Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector::class);
-    
-    //TODO:PHP8 comment once PHP 8 becomes minimum version
-    (PHP_MAJOR_VERSION < 8) && $services->remove(Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector::class);
 };

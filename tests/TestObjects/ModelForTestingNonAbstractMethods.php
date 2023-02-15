@@ -77,13 +77,13 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
      * @noRector
      * @return mixed
      */
-    public function fetchValue(?object $query=null) { return 1; }
+    public function fetchValue(?object $query=null): mixed { return 1; }
 
     /**
      * @noRector 
      * @return bool|array
      */
-    public function insert(array $col_names_n_vals = []) { return []; }
+    public function insert(array $col_names_n_vals = []): bool|array { return []; }
     
     public function insertMany(array $col_names_n_vals = []): bool { return []; }
     
@@ -94,7 +94,7 @@ class ModelForTestingNonAbstractMethods extends \GDAO\Model
     public function updateMatchingDbTableRows(
         array $col_names_n_values_2_save = [],
         array $col_names_n_values_2_match = []
-    ): self { return $this; }
+    ): static { return $this; }
 
-    public function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): self { return $this; }
+    public function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): static { return $this; }
 }

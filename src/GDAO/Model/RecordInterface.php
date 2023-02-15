@@ -7,7 +7,7 @@ namespace GDAO\Model;
  * 
  * Contains a list of methods that Record classes must implement.
  *
- * @copyright (c) 2022, Rotexsoft
+ * @copyright (c) 2023, Rotexsoft
  */
 interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate 
 {
@@ -97,7 +97,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return bool true if record was successfully deleted from db or false if not
      */
-    public function delete($set_record_objects_data_to_empty_array=false): bool;
+    public function delete(bool $set_record_objects_data_to_empty_array=false): bool;
     
     /**
      * Get the data for this record.
@@ -166,13 +166,13 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * Set relation data for this record.
      * 
      * @param string $key relation name
-     * @param mixed $value an array or record or collection containing related data
+     * @param array|RecordInterface|CollectionInterface $value an array or record or collection containing related data
      * 
      * @throws \GDAO\Model\RecordRelationWithSameNameAsAnExistingDBTableColumnNameException
      * 
      * @return $this
      */
-    public function setRelatedData($key, $value): self;
+    public function setRelatedData($key, array|RecordInterface|CollectionInterface $value): static;
     
     /**
      * Get the model object that saves and reads data to and from the db on behalf of this record
@@ -187,18 +187,18 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
     /**
      * @return mixed the value stored in the primary-key column for this record.
      */
-    public function getPrimaryVal();
+    public function getPrimaryVal(): mixed;
     
     /**
      * Tells if the record, or a particular table-column in the record, has 
      * changed from its initial value.
      * 
-     * @param string $col The table-column name.
+     * @param null|string $col The table-column name.
      * 
      * @return null|bool Returns null if the table-column name does not exist,
-     * boolean true if the data is changed, boolean false if not changed.
+     *                   true if the data is changed, false if not changed.
      */
-    public function isChanged($col = null): ?bool;
+    public function isChanged(?string $col = null): ?bool;
     
     /**
      * Is the record new? (I.e. its data has never been saved to the db)
@@ -228,7 +228,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return $this
      */
-    public function loadData($data_2_load, array $cols_2_load = []): self;
+    public function loadData(RecordInterface|array $data_2_load, array $cols_2_load = []): static;
     
     /**
      * Set the _is_new attribute of this record to true (meaning that the data
@@ -236,7 +236,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return $this
      */
-    public function markAsNew(): self;
+    public function markAsNew(): static;
     
     /**
      * Set the _is_new attribute of this record to false (meaning that the data
@@ -244,7 +244,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return $this
      */
-    public function markAsNotNew(): self;
+    public function markAsNotNew(): static;
     
     /**
      * Set all properties of this record to the state they should be in for a new record.
@@ -263,18 +263,18 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return $this
      */
-    public function setStateToNew(): self;
+    public function setStateToNew(): static;
 
     /**
      * Save the specified or already existing data for this record to the db.
      * Since this record can only talk to the db via its model property (_model)
      * the save operation will actually be done via $this->model.
      * 
-     * @param \GDAO\Model\RecordInterface|array $data_2_save
+     * @param null|\GDAO\Model\RecordInterface|array $data_2_save if null try to save data already contained in the record
      * 
      * @return null|bool true: successful save, false: failed save, null: no changed data to save
      */
-    public function save($data_2_save = null): ?bool;
+    public function save(null|RecordInterface|array $data_2_save = null): ?bool;
     
     /**
      * Save the specified or already existing data for this record to the db.
@@ -286,18 +286,18 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * mechanism available an Exception must be thrown alerting the caller to
      * use the save method instead.
      * 
-     * @param \GDAO\Model\RecordInterface|array $data_2_save
+     * @param null|\GDAO\Model\RecordInterface|array $data_2_save if null try to save data already contained in the record
      * 
      * @return bool|null true for a successful save, false for failed save, null: no changed data to save
      */
-    public function saveInTransaction($data_2_save = null): ?bool;
+    public function saveInTransaction(null|RecordInterface|array $data_2_save = null): ?bool;
     
     /**
      * Set the \GDAO\Model object for this record
      * 
      * @return $this
      */
-    public function setModel(\GDAO\Model $model): self;
+    public function setModel(\GDAO\Model $model): static;
     
     /**
      * Get all the data and property (name & value pairs) for this record.
@@ -315,7 +315,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @return mixed The data value.
      */
-    public function __get($key);
+    public function __get($key): mixed;
 
     /**
      * Does a certain key exist in the data?
@@ -334,7 +334,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate
      * 
      * @param mixed $val The value to set the data to.
      */
-    public function __set($key, $val): void;
+    public function __set($key, mixed $val): void;
 
     /**
      * Get the string representation of all the data and property 

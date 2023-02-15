@@ -12,7 +12,7 @@ namespace GDAO;
  * the future. 
  * 
  * @author Rotimi Adegbamigbe
- * @copyright (c) 2022, Rotexsoft
+ * @copyright (c) 2023, Rotexsoft
  */
 abstract class Model {
 
@@ -604,22 +604,22 @@ abstract class Model {
     /**
      * @var string
      */
-    public const RELATION_TYPE_HAS_ONE = 'rt_ho';
+    final public const RELATION_TYPE_HAS_ONE = 'rt_ho';
 
     /**
      * @var string
      */
-    public const RELATION_TYPE_HAS_MANY = 'rt_hm';
+    final public const RELATION_TYPE_HAS_MANY = 'rt_hm';
 
     /**
      * @var string
      */
-    public const RELATION_TYPE_BELONGS_TO = 'rt_bt';
+    final public const RELATION_TYPE_BELONGS_TO = 'rt_bt';
 
     /**
      * @var string
      */
-    public const RELATION_TYPE_HAS_MANY_THROUGH = 'rt_hmt';
+    final public const RELATION_TYPE_HAS_MANY_THROUGH = 'rt_hmt';
 
     /**
      * A PDO compliant Data Source Name (DSN) string containing the information 
@@ -1467,7 +1467,7 @@ abstract class Model {
      * 
      * @throws \PDOException
      */
-    public abstract function fetchValue(?object $query = null);
+    public abstract function fetchValue(?object $query = null): mixed;
 
     /**
      * Return the PDO object powering this model or throw 
@@ -1511,7 +1511,7 @@ abstract class Model {
      * @throws \GDAO\ModelInvalidInsertValueSuppliedException
      * @throws \GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException
      */
-    public abstract function insert(array $data_2_insert = []);
+    public abstract function insert(array $data_2_insert = []): bool|array;
 
     /**
      * Insert one or more rows to the model table with the specified values.
@@ -1604,7 +1604,7 @@ abstract class Model {
     public abstract function updateMatchingDbTableRows(
         array $col_names_n_values_2_save = [],
         array $col_names_n_values_2_match = []
-    ):self;
+    ): static;
 
     /**
      * Update the specified record in the database.
@@ -1617,7 +1617,7 @@ abstract class Model {
      *
      * @throws \PDOException
      */
-    public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): self;
+    public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): static;
 
     //////////////////////////////////////
     // Getters for non-public properties
@@ -1763,13 +1763,13 @@ abstract class Model {
         return $this->username;
     }
     
-    public function setCollectionClassName(?string $collection_class_name): self {
+    public function setCollectionClassName(?string $collection_class_name): static {
         
         $this->collection_class_name = $collection_class_name;
         return $this;
     }
     
-    public function setCreatedTimestampColumnName(?string $created_timestamp_column_name): self {
+    public function setCreatedTimestampColumnName(?string $created_timestamp_column_name): static {
         
         $this->created_timestamp_column_name = $created_timestamp_column_name;
         return $this;
@@ -1781,7 +1781,7 @@ abstract class Model {
      * that can be used for connecting to the DB then setting this property would make
      * sense.
      */
-    public function setDsn(string $dsn): self {
+    public function setDsn(string $dsn): static {
         
         $this->dsn = $dsn;
         return $this;
@@ -1793,7 +1793,7 @@ abstract class Model {
      * that can be used for connecting to the DB then setting this property would make
      * sense.
      */
-    public function setPasswd(string $passwd): self {
+    public function setPasswd(string $passwd): static {
         
         $this->passwd = $passwd;
         return $this;
@@ -1802,19 +1802,19 @@ abstract class Model {
     /**
      * @param mixed[] $pdo_driver_opts
      */
-    public function setPdoDriverOpts(array $pdo_driver_opts): self {
+    public function setPdoDriverOpts(array $pdo_driver_opts): static {
         
         $this->pdo_driver_opts = $pdo_driver_opts;
         return $this;
     }
     
-    public function setPrimaryCol(string $primary_col): self {
+    public function setPrimaryCol(string $primary_col): static {
 
         $this->primary_col = $primary_col;
         return $this;
     }
     
-    public function setRecordClassName(?string $record_class_name): self {
+    public function setRecordClassName(?string $record_class_name): static {
         
         $this->record_class_name = $record_class_name;
         return $this;
@@ -1823,7 +1823,7 @@ abstract class Model {
     /**
      * @param mixed[] $relations
      */
-    public function setRelations(array $relations): self {
+    public function setRelations(array $relations): static {
         
         $this->relations = $relations;
         return $this;
@@ -1832,19 +1832,19 @@ abstract class Model {
     /**
      * @param mixed[] $table_cols
      */
-    public function setTableCols(array $table_cols): self {
+    public function setTableCols(array $table_cols): static {
         
         $this->table_cols = $table_cols;
         return $this;
     }
     
-    public function setTableName(string $table_name): self {
+    public function setTableName(string $table_name): static {
 
         $this->table_name = $table_name;
         return $this;
     }
     
-    public function setUpdatedTimestampColumnName(?string $updated_timestamp_column_name): self {
+    public function setUpdatedTimestampColumnName(?string $updated_timestamp_column_name): static {
         
         $this->updated_timestamp_column_name = $updated_timestamp_column_name;
         return $this;
@@ -1856,7 +1856,7 @@ abstract class Model {
      * that can be used for connecting to the DB then setting this property would make
      * sense.
      */
-    public function setUsername(string $username): self {
+    public function setUsername(string $username): static {
         
         $this->username = $username;
         return $this;
