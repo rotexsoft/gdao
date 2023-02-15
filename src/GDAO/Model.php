@@ -14,7 +14,7 @@ namespace GDAO;
  * @author Rotimi Adegbamigbe
  * @copyright (c) 2023, Rotexsoft
  */
-abstract class Model {
+abstract class Model implements \Stringable {
 
     /**
      * Name of the primary key column in the db table associated with this model
@@ -687,13 +687,13 @@ abstract class Model {
 
         if (strlen($this->primary_col) <= 0) {
 
-            $msg = 'Primary Key Column name not set for ' . get_class($this);
+            $msg = 'Primary Key Column name not set for ' . static::class;
             throw new ModelPrimaryColNameNotSetDuringConstructionException($msg);
         }
 
         if (strlen($this->table_name) <= 0) {
 
-            $msg = 'Table name not set for ' . get_class($this);
+            $msg = 'Table name not set for ' . static::class;
             throw new ModelTableNameNotSetDuringConstructionException($msg);
         }
     }
@@ -730,7 +730,7 @@ abstract class Model {
      */
     public function createNewCollection(\GDAO\Model\RecordInterface ...$list_of_records): \GDAO\Model\CollectionInterface {
 
-        $msg = 'Must Implement ' . get_class($this) . '::' . __FUNCTION__ . '(...)';
+        $msg = 'Must Implement ' . static::class . '::' . __FUNCTION__ . '(...)';
         throw new ModelMustImplementMethodException($msg);
     }
 
@@ -883,7 +883,7 @@ abstract class Model {
      */
     public function fetchRecordsIntoCollection(?object $query = null, array $relations_to_include = []): \GDAO\Model\CollectionInterface {
 
-        $msg = 'Must Implement ' . get_class($this) . '::' . __FUNCTION__ . '(...)';
+        $msg = 'Must Implement ' . static::class . '::' . __FUNCTION__ . '(...)';
         throw new ModelMustImplementMethodException($msg);
     }
 
