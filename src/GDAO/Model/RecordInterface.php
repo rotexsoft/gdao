@@ -9,7 +9,7 @@ namespace GDAO\Model;
  *
  * @copyright (c) 2023, Rotexsoft
  */
-interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate 
+interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate, \Stringable
 {
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////

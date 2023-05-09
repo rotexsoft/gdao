@@ -11,7 +11,7 @@ namespace GDAO\Model;
  * @copyright (c) 2023, Rotexsoft
  * 
  */
-interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggregate
+interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggregate, \Stringable
 {
     ////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
