@@ -172,7 +172,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate, 
      * 
      * @return $this
      */
-    public function setRelatedData($key, array|RecordInterface|CollectionInterface $value): static;
+    public function setRelatedData(string $key, array|RecordInterface|CollectionInterface $value): static;
     
     /**
      * Get the model object that saves and reads data to and from the db on behalf of this record
