@@ -60,7 +60,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      *               element key, and the value is the column value for that
      *               element.
      */
-    public function getColVals($col): array;
+    public function getColVals(string $col): array;
     
     /**
      * Returns all the keys for this collection.
@@ -125,7 +125,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * @throws \PDOException
      */
-    public function saveAll($group_inserts_together=false): bool|array;
+    public function saveAll(bool $group_inserts_together=false): bool|array;
     
     /**
      * Injects the model from which the data originates.
