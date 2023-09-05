@@ -766,18 +766,16 @@ abstract class Model implements \Stringable {
 
     /**
      * Delete the specified record from the database.
-     * 
-     * NOTE: Implementers of this class must set the record object to a new state 
-     *       by a call to $record->setStateToNew() after a successful deletion 
-     *       via this method. The record data will still be inside the record 
+     *
+     * NOTE: Implementers of this class must set the record object to a new state
+     *       by a call to $record->setStateToNew() after a successful deletion
+     *       via this method. The record data will still be inside the record
      *       object.
-     * 
-     * @param \GDAO\Model\RecordInterface $record
-     * 
-     * @return bool|null true for a successful deletion, false if deletion failed 
-     *                   OR null if supplied record is a record that has never 
+     *
+     *
+     * @return bool|null true for a successful deletion, false if deletion failed
+     *                   OR null if supplied record is a record that has never
      *                   been saved to the db.
-     * 
      * @throws \PDOException
      */
     public abstract function deleteSpecifiedRecord(\GDAO\Model\RecordInterface $record): ?bool;
