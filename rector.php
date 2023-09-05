@@ -28,14 +28,17 @@ return static function (RectorConfig $rectorConfigurator): void {
     $rectorConfigurator->import(SetList::CODE_QUALITY);
     $rectorConfigurator->import(SetList::CODING_STYLE);
     $rectorConfigurator->import(SetList::DEAD_CODE);
-    $rectorConfigurator->import(SetList::PSR_4);
+    //$rectorConfigurator->import(SetList::PSR_4);
     $rectorConfigurator->import(SetList::TYPE_DECLARATION);
     
-    // get services (needed for register a single rule)
-    $services = $rectorConfigurator->services();
-    $services->remove(\Rector\CodeQuality\Rector\If_\ShortenElseIfRector::class);
-    $services->remove(\Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector::class);
-    $services->remove(\Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector::class);
-    $services->remove(\Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class);
-    $services->remove(\Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector::class);
+    $skipables = [
+        \Rector\CodeQuality\Rector\If_\ShortenElseIfRector::class,
+        \Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector::class,
+        \Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector::class,
+        \Rector\CodingStyle\Rector\ClassMethod\UnSpreadOperatorRector::class,
+        \Rector\DeadCode\Rector\PropertyProperty\RemoveNullPropertyInitializationRector::class,
+        \Rector\TypeDeclaration\Rector\ClassMethod\ReturnNeverTypeRector::class,
+    ];
+    
+    $rectorConfigurator->skip($skipables);
 };
