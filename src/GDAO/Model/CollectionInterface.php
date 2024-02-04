@@ -170,13 +170,13 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      *       of \GDAO\Model\RecordInterface else throw a 
      *       \GDAO\Model\CollectionCanOnlyContainGDAORecordsException exception.
      * 
-     * @param mixed $key The requested key.
+     * @param mixed $offset The requested key.
      * 
-     * @param \GDAO\Model\RecordInterface $val The value to set it to.
+     * @param \GDAO\Model\RecordInterface $value The value to set it to.
      * 
      * @throws \GDAO\Model\CollectionCanOnlyContainGDAORecordsException
      */
-    public function offsetSet(mixed $key, mixed $val): void;
+    public function offsetSet(mixed $offset, mixed $value): void;
     
     /**
      * Returns a string representation of an instance of this class.
