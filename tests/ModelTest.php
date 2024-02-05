@@ -9,23 +9,9 @@ declare(strict_types=1);
  */
 class ModelTest extends \PHPUnit\Framework\TestCase
 {
-    protected $_mock_model_obj_with_no_db_connection;
-    protected $_mock_model_obj_with_memory_sqlite_connection;
-
     protected function setUp(): void {
 
         parent::setUp();
-
-        $this->_mock_model_obj_with_no_db_connection = 
-            new \ModelForTestingNonAbstractMethods('', '', '', [], '', '');
-
-        ////////////////////////////////////////////////////////////////////////
-        $this->_mock_model_obj_with_memory_sqlite_connection = 
-            new \ModelForTestingNonAbstractMethods('', '', '', [], '', '');
-
-        $pdo = new \PDO("sqlite::memory:");
-        $this->_mock_model_obj_with_memory_sqlite_connection->setPDO($pdo);
-        ////////////////////////////////////////////////////////////////////////
     }
     
 ////////////////////////////////////////////////////////////////////////////////
@@ -92,16 +78,12 @@ class ModelTest extends \PHPUnit\Framework\TestCase
                 'foreign_key_col_in_foreign_table' => 'output_id',
                 'primary_key_col_in_foreign_table' => 'output_id',
                 'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName',
-                'foreign_modelscollection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
-                'foreign_modelsrecord_class_name' => '\StdClass',
-                'foreign_table_sql_params' => [
-                    'cols' => ['project_outputs.deliverable_id', 'component_deliverables.deliverable', 'component_deliverables.component_id'],
-                    'where' => [
-                        [ 'col' => 'project_outputs.hidden_fiscal_year', 'op' => '=', 'val' => 16 ],
-                        [ 'col' => 'project_outputs.deactivated', 'op' => '=', 'val' => 0],
-                        [ 'col' => 'project_outputs.parent_id', 'op' => 'is-null'],
-                    ],
-                ]
+                'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
+                'foreign_models_record_class_name' => '\StdClass',
+                'sql_query_modifier' => function(object $selectObj): object {
+                    // Do some stuff to / with $selectObj
+                    return $selectObj;
+                },
             ],
         ];
         
@@ -169,9 +151,9 @@ class ModelTest extends \PHPUnit\Framework\TestCase
         $model->setPrimaryCol('new_pk_col')
               ->setTableName('new_table_name');
         
-        $model_obj_as_array = $model->toArray(); // repopulate after calling setters
-        $this->assertTrue($model_obj_as_array['primary_col'] === 'new_pk_col', $msg);
-        $this->assertTrue($model_obj_as_array['table_name'] === 'new_table_name', $msg);
+        $model_obj_as_array2 = $model->toArray(); // repopulate after calling setters
+        $this->assertTrue($model_obj_as_array2['primary_col'] === 'new_pk_col', $msg);
+        $this->assertTrue($model_obj_as_array2['table_name'] === 'new_table_name', $msg);
         $this->assertTrue($model->getPrimaryCol() === 'new_pk_col', $msg);
         $this->assertTrue($model->getTableName() === 'new_table_name', $msg);
     }
@@ -361,16 +343,12 @@ class ModelTest extends \PHPUnit\Framework\TestCase
                 'foreign_key_col_in_foreign_table' => 'output_id',
                 'primary_key_col_in_foreign_table' => 'output_id',
                 'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName',
-                'foreign_modelscollection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
-                'foreign_modelsrecord_class_name' => '\StdClass',
-                'foreign_table_sql_params' => [
-                    'cols' => ['project_outputs.deliverable_id', 'component_deliverables.deliverable', 'component_deliverables.component_id'],
-                    'where' => [
-                        [ 'col' => 'project_outputs.hidden_fiscal_year', 'op' => '=', 'val' => 16 ],
-                        [ 'col' => 'project_outputs.deactivated', 'op' => '=', 'val' => 0],
-                        [ 'col' => 'project_outputs.parent_id', 'op' => 'is-null'],
-                    ],
-                ]
+                'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
+                'foreign_models_record_class_name' => '\StdClass',
+                'sql_query_modifier' => function(object $selectObj): object {
+                    // Do some stuff to / with $selectObj
+                    return $selectObj;
+                },
             ],
             'a_relation_name2'=> [
                 'relation_type' => \GDAO\Model::RELATION_TYPE_HAS_MANY,
@@ -379,16 +357,12 @@ class ModelTest extends \PHPUnit\Framework\TestCase
                 'foreign_key_col_in_foreign_table' => 'output_id',
                 'primary_key_col_in_foreign_table' => 'output_id',
                 'foreign_models_class_name' => '\\VendorName\\PackageName\\ModelClassName',
-                'foreign_modelscollection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
-                'foreign_modelsrecord_class_name' => '\StdClass',
-                'foreign_table_sql_params' => [
-                    'cols' => ['project_outputs.deliverable_id', 'component_deliverables.deliverable', 'component_deliverables.component_id'],
-                    'where' => [
-                        [ 'col' => 'project_outputs.hidden_fiscal_year', 'op' => '=', 'val' => 16 ],
-                        [ 'col' => 'project_outputs.deactivated', 'op' => '=', 'val' => 0],
-                        [ 'col' => 'project_outputs.parent_id', 'op' => 'is-null'],
-                    ],
-                ]
+                'foreign_models_collection_class_name' => '\\VendorName\\PackageName\\ModelClassName\\Collection',
+                'foreign_models_record_class_name' => '\StdClass',
+                'sql_query_modifier' => function(object $selectObj): object {
+                    // Do some stuff to / with $selectObj
+                    return $selectObj;
+                },
             ],
         ];
         

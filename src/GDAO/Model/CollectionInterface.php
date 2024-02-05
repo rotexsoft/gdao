@@ -8,7 +8,7 @@ namespace GDAO\Model;
  * Represents a collection of \GDAO\Model\RecordInterface objects.
  *
  * @author Rotimi Adegbamigbe
- * @copyright (c) 2023, Rotexsoft
+ * @copyright (c) 2024, Rotexsoft
  * 
  */
 interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggregate, \Stringable
@@ -226,4 +226,13 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * @param bool $group_inserts_together exact value passed to $this->saveAll($group_inserts_together)
      */
     public function postSaveAll(bool|array $save_all_result, bool $group_inserts_together=false): void;
+    
+    /**
+     * Only removes a record from the collection, but DOESN'T delete the record's data from the db
+     * If the specified record doesn't exist in the collection, it does not need to throw an exception 
+     * You should call the record object's delete method if you also want the data deleted from the db
+     * 
+     * @param \GDAO\Model\RecordInterface $record Record to be removed from the collection 
+     */
+    public function removeRecord(\GDAO\Model\RecordInterface $record): static;
 }

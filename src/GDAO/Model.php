@@ -12,13 +12,12 @@ namespace GDAO;
  * the future. 
  * 
  * @author Rotimi Adegbamigbe
- * @copyright (c) 2023, Rotexsoft
+ * @copyright (c) 2024, Rotexsoft
  */
 abstract class Model implements \Stringable {
 
     /**
      * Name of the primary key column in the db table associated with this model
-     * Default value is null.
      * 
      * This is a REQUIRED field & must be properly set by consumers of this class
      * 
@@ -1478,11 +1477,6 @@ abstract class Model implements \Stringable {
     /**
      * Insert one row to the model table with the specified values.
      * 
-     * An exception (\GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException)
-     * should be thrown if the primary key col is auto-incrementing and the 
-     * auto-incremented primary-key value of the inserted record could not be 
-     * retrieved (in this case the insert could have still been successful).
-     * 
      * An exception (\GDAO\ModelInvalidInsertValueSuppliedException) should be
      * thrown if any of the values supplied for insertion is not a boolean, NULL,
      * number or string value (this should happen before even attempting to 
@@ -1507,7 +1501,6 @@ abstract class Model implements \Stringable {
      * 
      * @throws \PDOException
      * @throws \GDAO\ModelInvalidInsertValueSuppliedException
-     * @throws \GDAO\ModelPrimaryColValueNotRetrievableAfterInsertException
      */
     public abstract function insert(array $data_2_insert = []): bool|array;
 
@@ -1611,9 +1604,13 @@ abstract class Model implements \Stringable {
      * with the latest value of the $this->updated_timestamp_column_name field 
      * from the database if $this->updated_timestamp_column_name !== null
      *
+     * An exception (\GDAO\ModelInvalidInsertValueSuppliedException) should be
+     * thrown if $record->getModel()->getTableName() !== $this->getTableName().
+     * 
      * @return $this
      *
      * @throws \PDOException
+     * @throws \GDAO\ModelInvalidUpdateValueSuppliedException
      */
     public abstract function updateSpecifiedRecord(\GDAO\Model\RecordInterface $record): static;
 
@@ -1640,6 +1637,13 @@ abstract class Model implements \Stringable {
         return $this->dsn;
     }
     
+    /**
+     * Consumers of implementations of this package should only call 
+     * this method when debugging applications. Code shipped to production
+     * environments should not have calls to this method in them in order
+     * not to leak the database password into exception stack traces if 
+     * such applications end up displaying exceptions to their end users.
+     */
     public function getPasswd(): string {
         
         return $this->passwd;
@@ -1718,6 +1722,7 @@ abstract class Model implements \Stringable {
                 if (is_string($key)) {
 
                     $keys_2_return[] = $key;
+                    
                 } elseif (is_string($potential_col_metadata)) {
 
                     $keys_2_return[] = $potential_col_metadata;
