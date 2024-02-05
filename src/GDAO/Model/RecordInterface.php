@@ -193,7 +193,7 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate, 
      * Tells if the record, or a particular table-column in the record, has 
      * changed from its initial value.
      * 
-     * @param null|string $col The table-column name.
+     * @param null|string $col The table-column name. If null, check all column values in the record for changes, if non-null, check only specified column for change
      * 
      * @return null|bool Returns null if the table-column name does not exist,
      *                   true if the data is changed, false if not changed.
