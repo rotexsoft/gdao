@@ -61,6 +61,10 @@ and other data manipulation (DM) tasks that cannot be accomplished via this API.
 
   ` ./vendor/bin/phpunit --coverage-text`
 
-## Dev Notes
+## Branching
 
-* Old versions have branches corresponding to their version numbers (e.g. 1.X) while the most current / actively being developed version is on the master branch.
+These are the branches in this repository:
+
+- **master:** contains code for the latest major version of this package
+- **2.x:** contains code for the **2.x** version of this package
+- **1.X:** contains code for the **1.x** version of this package. This version never got a stable release and has been abandoned
