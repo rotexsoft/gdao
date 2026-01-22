@@ -12,7 +12,7 @@ namespace GDAO;
  * the future. 
  * 
  * @author Rotimi Adegbamigbe
- * @copyright (c) 2024, Rotexsoft
+ * @copyright (c) 2026, Rotexsoft
  */
 abstract class Model implements \Stringable {
 

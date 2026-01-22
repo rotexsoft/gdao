@@ -7,7 +7,7 @@ namespace GDAO\Model;
  * 
  * Contains a list of methods that Record classes must implement.
  *
- * @copyright (c) 2024, Rotexsoft
+ * @copyright (c) 2026, Rotexsoft
  */
 interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate, \Stringable
 {
