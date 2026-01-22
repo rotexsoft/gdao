@@ -206,22 +206,22 @@ interface RecordInterface extends \ArrayAccess, \Countable, \IteratorAggregate, 
     public function isNew(): bool;
     
     /**
-     * This method partially or completely overwrites pre-existing data for a 
+     * This method partially or completely overwrites pre-existing data for a
      * record and replaces it with the new data (this does not include related
      * data). If no data has previously been loaded into the record, keep a copy
      * of the loaded data for comparison in $this->isChanged($col=null)).
-     * 
+     *
      * Note if $cols_2_load === null all data should be replaced, else only
      * replace data for the cols in $cols_2_load.
      * 
-     * If $data_2_load is an instance of \GDAO\Model\RecordInterface and if 
-     * $data_2_load->getModel()->getTableName() !== $this->getModel()->getTableName(), 
+     * If $data_2_load is an instance of \GDAO\Model\RecordInterface and if
+     * $data_2_load->getModel()->getTableName() !== $this->getModel()->getTableName(),
      * then the exception below should be thrown:
-     * 
+     *
      *      \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException
      * 
-     * @param \GDAO\Model\RecordInterface|array $data_2_load
-     * @param array $cols_2_load name of field to load from $data_2_load. 
+     * @param \GDAO\Model\RecordInterface|array $data_2_load data to be loaded into the record
+     * @param array $cols_2_load name of field to load from $data_2_load.
      *                           If empty, load all fields in $data_2_load.
      * 
      * @throws \GDAO\Model\LoadingDataFromInvalidSourceIntoRecordException

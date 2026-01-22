@@ -11,10 +11,9 @@
 ![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/rotexsoft/gdao/latest) &nbsp; 
 ![GitHub last commit](https://img.shields.io/github/last-commit/rotexsoft/gdao) &nbsp; 
 ![GitHub Release Date](https://img.shields.io/github/release-date/rotexsoft/gdao) &nbsp; 
-<a href="https://libraries.io/github/rotexsoft/gdao">
+<a href="https://libraries.io/packagist/rotexsoft%2Fgdao">
     <img alt="Libraries.io dependency status for GitHub repo" src="https://img.shields.io/librariesio/github/rotexsoft/gdao">
 </a>
-
 
 ## Description
 
@@ -66,5 +65,6 @@ and other data manipulation (DM) tasks that cannot be accomplished via this API.
 These are the branches in this repository:
 
 - **master:** contains code for the latest major version of this package
+- **3.x:** contains code for the **2.x** version of this package
 - **2.x:** contains code for the **2.x** version of this package
 - **1.X:** contains code for the **1.x** version of this package. This version never got a stable release and has been abandoned

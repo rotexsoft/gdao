@@ -3,12 +3,13 @@ declare(strict_types=1);
 namespace GDAO\Model;
 
 /**
+ * @psalm-suppress ClassMustBeFinal
  * @psalm-suppress MissingTemplateParam
  * 
  * Represents a collection of \GDAO\Model\RecordInterface objects.
  *
  * @author Rotimi Adegbamigbe
- * @copyright (c) 2024, Rotexsoft
+ * @copyright (c) 2026, Rotexsoft
  * 
  */
 interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggregate, \Stringable
@@ -176,6 +177,7 @@ interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggrega
      * 
      * @throws \GDAO\Model\CollectionCanOnlyContainGDAORecordsException
      */
+    #[\Override]
     public function offsetSet(mixed $offset, mixed $value): void;
     
     /**

@@ -14,13 +14,13 @@
         }
     ],    
     "require": {
-        "php": ">=8.1"
+        "php": ">=8.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.0",
+        "phpunit/phpunit": "^11.0",
         "php-coveralls/php-coveralls": "^2.0",
-        "vimeo/psalm": "^5.4.0 || ^6.0.0",
-        "rector/rector": "^1.0.0"
+        "vimeo/psalm": "^6.0",
+        "rector/rector": "^2.0.17"
     },
     "autoload": {
         "classmap": ["src/"]
@@ -30,8 +30,7 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit --coverage-text",
-        "rector": "vendor/bin/rector process src --dry-run -vvv",
-        "rector-clear": "vendor/bin/rector --clear-cache",
+        "rector": "vendor/bin/rector process src --dry-run",
         "psalm": "vendor/bin/psalm --threads=1",
         "psalm-clear-cache": "vendor/bin/psalm --clear-global-cache && vendor/bin/psalm --clear-cache",
         "qa": "composer test && composer rector && composer psalm-clear-cache && composer psalm"

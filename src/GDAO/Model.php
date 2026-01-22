@@ -700,6 +700,7 @@ abstract class Model implements \Stringable {
     /**
      * Returns a string representation of an instance of this class.
      */
+    #[\Override]
     public function __toString(): string {
 
         return var_export($this->toArray(), true);
