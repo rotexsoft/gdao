@@ -672,7 +672,7 @@ abstract class Model implements \Stringable {
     public function __construct(
         string $dsn = '',
         string $username = '',
-        string $passwd = '',
+        #[\SensitiveParameter] string $passwd = '',
         array  $pdo_driver_opts = [],
         string $primary_col_name='',
         string $table_name=''
@@ -1797,7 +1797,7 @@ abstract class Model implements \Stringable {
      * that can be used for connecting to the DB then setting this property would make
      * sense.
      */
-    public function setPasswd(string $passwd): static {
+    public function setPasswd(#[\SensitiveParameter] string $passwd): static {
         
         $this->passwd = $passwd;
         return $this;
